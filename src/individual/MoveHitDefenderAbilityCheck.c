@@ -55,7 +55,7 @@ BOOL __attribute__((section(".init"))) MoveHitDefenderAbilityCheckInternal(struc
     } else if (MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_ROUGH_SKIN)
         || MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_IRON_BARBS)) {
         if ((sp->battlemon[sp->attack_client].hp)
-            && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+            && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
             && ((sp->oneSelfFlag[sp->defence_client].physical_damage) || (sp->oneSelfFlag[sp->defence_client].special_damage))
             && (IsContactBeingMade(GetBattlerAbility(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag))) {
             sp->hp_calc_work = BattleDamageDivide(sp->battlemon[sp->attack_client].maxhp * -1, 8);
@@ -137,7 +137,7 @@ BOOL __attribute__((section(".init"))) MoveHitDefenderAbilityCheckInternal(struc
         }
     } else if (MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_AFTERMATH)) {
         if ((sp->battlemon[sp->defence_client].hp == 0)
-            && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+            && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
             && (CheckSideAbility(bw, sp, CHECK_ABILITY_ALL_HP, 0, ABILITY_DAMP) == 0)
             && (sp->battlemon[sp->attack_client].hp)
             && (IsContactBeingMade(GetBattlerAbility(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag))) {
@@ -149,7 +149,7 @@ BOOL __attribute__((section(".init"))) MoveHitDefenderAbilityCheckInternal(struc
     } else if (MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_INNARDS_OUT)) {
         if ((sp->battlemon[sp->defence_client].hp == 0)
             && IsAttackerOnField(sp)
-            && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+            && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
             && (sp->battlemon[sp->attack_client].hp)) {
             sp->hp_calc_work = sp->store_damage[sp->defence_client];
             sp->battlerIdTemp = sp->attack_client;
@@ -403,7 +403,7 @@ BOOL __attribute__((section(".init"))) MoveHitDefenderAbilityCheckInternal(struc
     } else if (IS_CLIENT_IN_ILLUSION_NO_ABILITY(bw, sp->defence_client)
         && gIllusionStruct.dontRemoveIllusion == FALSE
         && ((sp->oneSelfFlag[sp->defence_client].physical_damage || sp->oneSelfFlag[sp->defence_client].special_damage)
-            || GetBattlerAbility(sp, sp->defence_client) != ABILITY_ILLUSION)) { // illusion has already activated, but it can be taken away without needing to have the ability
+            || !BattlerHasAbility(sp, sp->defence_client, ABILITY_ILLUSION))) { // illusion has already activated, but it can be taken away without needing to have the ability
         // handle illusion here so it takes priority over fainting.  notably
         gIllusionStruct.isSideInIllusion &= ~No2Bit(SanitizeClientForTeamAccess(bw, sp->defence_client));
         gIllusionStruct.illusionClient[SanitizeClientForTeamAccess(bw, sp->defence_client)] = CLIENT_MAX;
@@ -412,7 +412,7 @@ BOOL __attribute__((section(".init"))) MoveHitDefenderAbilityCheckInternal(struc
         sp->battlerIdTemp = sp->defence_client;
         seq_no[0] = BATTLE_SUBSCRIPT_HANDLE_ILLUSION_FADED;
         ret = TRUE;
-    } else if (GetBattlerAbility(sp, sp->defence_client) == ABILITY_COTTON_DOWN) { // not breakable
+    } else if (BattlerHasAbility(sp, sp->defence_client, ABILITY_COTTON_DOWN)) { // not breakable
         if (sp->oneSelfFlag[sp->defence_client].physical_damage || sp->oneSelfFlag[sp->defence_client].special_damage) {
             sp->addeffect_param = MOVE_SUBSCRIPT_PTR_SPEED_DOWN_1_STAGE;
             sp->addeffect_type = SIDE_EFFECT_TYPE_PRINT_WORK_ABILITY;
@@ -420,7 +420,7 @@ BOOL __attribute__((section(".init"))) MoveHitDefenderAbilityCheckInternal(struc
             seq_no[0] = BATTLE_SUBSCRIPT_COTTON_DOWN;
             ret = TRUE;
         }
-    } else if (GetBattlerAbility(sp, sp->defence_client) == ABILITY_PERISH_BODY) { // not breakable
+    } else if (BattlerHasAbility(sp, sp->defence_client, ABILITY_PERISH_BODY)) { // not breakable
         // defender does not need to be alive
         if ((sp->oneSelfFlag[sp->defence_client].physical_damage || sp->oneSelfFlag[sp->defence_client].special_damage)
             && (IsContactBeingMade(GetBattlerAbility(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag))) {

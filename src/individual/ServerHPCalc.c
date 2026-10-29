@@ -41,7 +41,7 @@ void ServerHPCalc(struct BattleSystem *bw, struct BattleStruct *sp)
 
         if ((sp->battlemon[sp->defence_client].condition2 & STATUS2_SUBSTITUTE)
             && (sp->damage < 0)
-            && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_INFILTRATOR)
+            && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_INFILTRATOR))
             && !IsMoveSoundBased(sp->current_move_index)) {
             if ((sp->battlemon[sp->defence_client].moveeffect.substituteHp + sp->damage) <= 0) {
                 sp->oneSelfFlag[sp->attack_client].shell_bell_damage += (sp->battlemon[sp->defence_client].moveeffect.substituteHp * -1);

@@ -259,7 +259,7 @@ u32 __attribute__((section(".init"))) CalculateBallShakesInternal(void *bw, stru
     //     break;
     case ITEM_DREAM_BALL:
         if (sp->battlemon[sp->defence_client].condition & (STATUS_SLEEP)
-            || (GetBattlerAbility(sp, sp->defence_client) == ABILITY_COMATOSE)) {
+            || (BattlerHasAbility(sp, sp->defence_client, ABILITY_COMATOSE))) {
             ballCaptureRatio = 0x4000;
         }
         break;

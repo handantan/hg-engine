@@ -1217,7 +1217,7 @@ void BattleController_CheckSleepOrFrozen(struct BattleSystem *bsys, struct Battl
     int effect = ctx->moveTbl[ctx->current_move_index].effect;
 
     if (ctx->battlemon[ctx->attack_client].condition & STATUS_SLEEP) {
-        if (ctx->field_condition & FIELD_CONDITION_UPROAR && GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_SOUNDPROOF) {
+        if (ctx->field_condition & FIELD_CONDITION_UPROAR && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SOUNDPROOF)) {
             ctx->battlerIdTemp = ctx->attack_client;
             LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_WAKE_UP);
             ctx->next_server_seq_no = ctx->server_seq_no;
@@ -1226,7 +1226,7 @@ void BattleController_CheckSleepOrFrozen(struct BattleSystem *bsys, struct Battl
         } else if ((ctx->current_move_index != MOVE_SLEEP_TALK && ctx->moveNoTemp == MOVE_SLEEP_TALK) == 0) {
             u32 sleepCounterDecrease;
 
-            if (GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_EARLY_BIRD) {
+            if (BattlerHasAbility(ctx, ctx->attack_client, ABILITY_EARLY_BIRD)) {
                 sleepCounterDecrease = 2;
             } else {
                 sleepCounterDecrease = 1;
@@ -1627,7 +1627,7 @@ BOOL BattlerController_RedirectTarget(struct BattleSystem *bsys, struct BattleSt
         return FALSE;
     }
 
-    if (GetBattlerAbility(ctx, battlerIdAttacker) == ABILITY_NORMALIZE || CLIENT_HAS_MOLD_BREAKER_VARIATION(ctx, battlerIdAttacker)) {
+    if (BattlerHasAbility(ctx, battlerIdAttacker, ABILITY_NORMALIZE) || CLIENT_HAS_MOLD_BREAKER_VARIATION(ctx, battlerIdAttacker)) {
         return FALSE;
     }
 
@@ -1654,28 +1654,28 @@ BOOL BattlerController_RedirectTarget(struct BattleSystem *bsys, struct BattleSt
     if (moveType == TYPE_ELECTRIC && (range == RANGE_SINGLE_TARGET || range == RANGE_RANDOM_OPPONENT) && !(ctx->server_status_flag & BATTLE_STATUS_CHARGE_TURN) && CheckSideAbility(bsys, ctx, CHECK_ABILITY_ALL_HP_NOT_USER, battlerIdAttacker, ABILITY_LIGHTNING_ROD)) {
         for (battlerId = 0; battlerId < maxBattlers; battlerId++) {
             battlerIdTarget = ctx->rawSpeedNonRNGClientOrder[battlerId];
-            if (GetBattlerAbility(ctx, battlerIdTarget) == ABILITY_LIGHTNING_ROD && ctx->battlemon[battlerIdTarget].hp && battlerIdAttacker != battlerIdTarget) {
+            if (BattlerHasAbility(ctx, battlerIdTarget, ABILITY_LIGHTNING_ROD) && ctx->battlemon[battlerIdTarget].hp && battlerIdAttacker != battlerIdTarget) {
                 break;
             }
         }
         if (battlerIdTarget != ctx->defence_client
             && ctx->current_move_index != MOVE_SNIPE_SHOT
-            && (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_PROPELLER_TAIL)
-            && (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_STALWART)) {
+            && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_PROPELLER_TAIL))
+            && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_STALWART))) {
             ctx->oneSelfFlag[battlerIdTarget].lightningRodFlag = TRUE;
             ctx->defence_client = battlerIdTarget;
         }
     } else if (moveType == TYPE_WATER && (range == RANGE_SINGLE_TARGET || range == RANGE_RANDOM_OPPONENT) && !(ctx->server_status_flag & BATTLE_STATUS_CHARGE_TURN) && CheckSideAbility(bsys, ctx, CHECK_ABILITY_ALL_HP_NOT_USER, battlerIdAttacker, ABILITY_STORM_DRAIN)) {
         for (battlerId = 0; battlerId < maxBattlers; battlerId++) {
             battlerIdTarget = ctx->rawSpeedNonRNGClientOrder[battlerId];
-            if (GetBattlerAbility(ctx, battlerIdTarget) == ABILITY_STORM_DRAIN && ctx->battlemon[battlerIdTarget].hp && battlerIdAttacker != battlerIdTarget) {
+            if (BattlerHasAbility(ctx, battlerIdTarget, ABILITY_STORM_DRAIN) && ctx->battlemon[battlerIdTarget].hp && battlerIdAttacker != battlerIdTarget) {
                 break;
             }
         }
         if (battlerIdTarget != ctx->defence_client
             && ctx->current_move_index != MOVE_SNIPE_SHOT
-            && (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_PROPELLER_TAIL)
-            && (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_STALWART)) {
+            && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_PROPELLER_TAIL))
+            && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_STALWART))) {
             ctx->oneSelfFlag[battlerIdTarget].stormDrainFlag = TRUE;
             ctx->defence_client = battlerIdTarget;
         }
@@ -1763,7 +1763,7 @@ BOOL BattlerController_DecrementPP(struct BattleSystem *bsys, struct BattleStruc
             default:
                 if (ctx->attack_client != ctx->defence_client
                     && ctx->defence_client != BATTLER_ALLY(ctx->attack_client)
-                    && GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_PRESSURE) {
+                    && BattlerHasAbility(ctx, ctx->defence_client, ABILITY_PRESSURE)) {
                     decreasePP++;
                 }
                 break;
@@ -2484,8 +2484,8 @@ BOOL BattleController_CheckStolenBySnatch(struct BattleSystem *bw UNUSED, struct
 BOOL CanHitThroughSemiInvulnerability(struct BattleStruct *ctx, int attacker, int defender)
 {
     if ((ctx->waza_status_flag & MOVE_STATUS_BYPASSED_ACCURACY)
-        || (GetBattlerAbility(ctx, attacker) == ABILITY_NO_GUARD)
-        || (GetBattlerAbility(ctx, defender) == ABILITY_NO_GUARD)) {
+        || (BattlerHasAbility(ctx, attacker, ABILITY_NO_GUARD))
+        || (BattlerHasAbility(ctx, defender, ABILITY_NO_GUARD))) {
         return TRUE;
     }
 
@@ -2996,7 +2996,7 @@ BOOL BattleController_CheckTypeBasedMoveConditionImmunities1(struct BattleSystem
     if ((priority > 0
             && GetMoveSplit(ctx, ctx->current_move_index) == SPLIT_STATUS
             && ctx->moveTbl[ctx->current_move_index].target != RANGE_OPPONENT_SIDE
-            && GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_PRANKSTER
+            && BattlerHasAbility(ctx, ctx->attack_client, ABILITY_PRANKSTER)
             && HasType(ctx, defender, TYPE_DARK)
             && (ctx->attack_client & 1) != (defender & 1)) // used on an enemy)
                                                            // TODO: Ghost-type immunity to trapping moves
@@ -3100,7 +3100,7 @@ BOOL BattleController_CheckTypeBasedMoveConditionImmunities2(struct BattleSystem
         // Grass-type Leech Seed immunity
         || (moveEffect == MOVE_EFFECT_STATUS_LEECH_SEED && HasType(ctx, defender, TYPE_GRASS))
         // Poison / Steel-type poison / badly poison immunity
-        || ((moveEffect == MOVE_EFFECT_STATUS_POISON || moveEffect == MOVE_EFFECT_STATUS_BADLY_POISON) && (HasType(ctx, defender, TYPE_POISON) || HasType(ctx, defender, TYPE_STEEL)) && GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_CORROSION)) {
+        || ((moveEffect == MOVE_EFFECT_STATUS_POISON || moveEffect == MOVE_EFFECT_STATUS_BADLY_POISON) && (HasType(ctx, defender, TYPE_POISON) || HasType(ctx, defender, TYPE_STEEL)) && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_CORROSION))) {
         BattleController_ResetGeneralMoveFailureFlags(ctx, ctx->attack_client, TRUE);
         ctx->moveStatusFlagForSpreadMoves[defender] = MOVE_STATUS_NO_EFFECT;
         ctx->battlerIdTemp = defender;
@@ -3141,7 +3141,7 @@ BOOL BattleController_CheckUproarStoppingSleepMoves(struct BattleSystem *bsys UN
 BOOL BattleController_CheckSafeguard(struct BattleSystem *bsys UNUSED, struct BattleStruct *ctx, int defender)
 {
     if (ctx->side_condition[IsClientEnemy(bsys, defender)] & SIDE_STATUS_SAFEGUARD
-        && (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_INFILTRATOR)) {
+        && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR))) {
         switch (ctx->moveTbl[ctx->current_move_index].effect) {
         case MOVE_EFFECT_STATUS_SLEEP:
         case MOVE_EFFECT_STATUS_SLEEP_NEXT_TURN:
@@ -3206,7 +3206,7 @@ BOOL BattleController_CheckTerrainBlock(struct BattleSystem *bsys UNUSED, struct
 int BattlerController_CheckSubstituteBlockingStatDropsOrDecorate(struct BattleSystem *bsys UNUSED, struct BattleStruct *ctx, int defender)
 {
     int moveEffect = ctx->moveTbl[ctx->current_move_index].effect;
-    if (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_INFILTRATOR
+    if (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR)
         && ctx->battlemon[defender].condition2 & STATUS2_SUBSTITUTE
         && !IsMoveSoundBased(ctx->current_move_index)) {
         if (ctx->attack_client != defender) {
@@ -3274,7 +3274,7 @@ int BattlerController_CheckMist(struct BattleSystem *bsys, struct BattleStruct *
         case MOVE_EFFECT_SP_ATK_DOWN_3:
         case MOVE_EFFECT_SP_DEF_DOWN_3:
             // infiltrator bypasses mist
-            if (ctx->scw[IsClientEnemy(bsys, defender)].mistCount && GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_INFILTRATOR) {
+            if (ctx->scw[IsClientEnemy(bsys, defender)].mistCount && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR)) {
                 BattleController_ResetGeneralMoveFailureFlags(ctx, ctx->attack_client, TRUE);
                 return BATTLE_MSG_PROTECTED_BY_MIST;
             }
@@ -3887,7 +3887,7 @@ BOOL BattleController_CheckSubstituteBlockingOtherEffects(struct BattleSystem *b
             case MOVE_EFFECT_TRANSFER_STATUS:
             case MOVE_EFFECT_SET_ABILITY_TO_SIMPLE:
             case MOVE_EFFECT_HEAL_TARGET:
-                if (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_INFILTRATOR) {
+                if (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR)) {
                     BattleController_ResetGeneralMoveFailureFlags(ctx, ctx->attack_client, TRUE);
                     LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_BUT_IT_FAILED_SPREAD);
                     ctx->next_server_seq_no = CONTROLLER_COMMAND_25;
@@ -3947,7 +3947,7 @@ BOOL BattleController_CheckMoveFailures4_SingleTarget(struct BattleSystem *bsys 
         if (AbilityNoEntrainment(GetBattlerAbility(ctx, ctx->attack_client))
             || AbilityCantSupress(GetBattlerAbility(ctx, ctx->defence_client))
             || ctx->battlemon[ctx->defence_client].is_currently_dynamaxed
-            || GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_TRUANT
+            || BattlerHasAbility(ctx, ctx->defence_client, ABILITY_TRUANT)
             || GetBattlerAbility(ctx, ctx->attack_client) == GetBattlerAbility(ctx, ctx->defence_client)) {
             butItFailedFlag = TRUE;
         }
@@ -3963,8 +3963,8 @@ BOOL BattleController_CheckMoveFailures4_SingleTarget(struct BattleSystem *bsys 
     // TODO: handle Good As Gold interaction
     case MOVE_SIMPLE_BEAM: {
         if (AbilityCantSupress(GetBattlerAbility(ctx, ctx->defence_client))
-            || GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_TRUANT
-            || GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_SIMPLE) {
+            || BattlerHasAbility(ctx, ctx->defence_client, ABILITY_TRUANT)
+            || BattlerHasAbility(ctx, ctx->defence_client, ABILITY_SIMPLE)) {
             butItFailedFlag = TRUE;
         }
         break;
@@ -3979,7 +3979,7 @@ BOOL BattleController_CheckMoveFailures4_SingleTarget(struct BattleSystem *bsys 
     }
     case MOVE_WORRY_SEED: {
         if (AbilityCantSupress(GetBattlerAbility(ctx, ctx->defence_client))
-            || GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_TRUANT) {
+            || BattlerHasAbility(ctx, ctx->defence_client, ABILITY_TRUANT)) {
             butItFailedFlag = TRUE;
         }
         break;
@@ -4527,7 +4527,7 @@ BOOL BattleController_CheckMoveFailures4_SingleTarget(struct BattleSystem *bsys 
     }
     case MOVE_TRANSFORM: {
         // target ability is good as gold
-        if (GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_GOOD_AS_GOLD
+        if (BattlerHasAbility(ctx, ctx->defence_client, ABILITY_GOOD_AS_GOLD)
             // target is behind a substitute or themselves transformed
             || (ctx->battlemon[ctx->defence_client].condition2 & (STATUS2_TRANSFORM | STATUS2_SUBSTITUTE)) != 0
             // attacker is already transformed
@@ -4738,7 +4738,7 @@ BOOL BattleController_CheckMoveFailures3(struct BattleSystem *bsys UNUSED, struc
         // Yawn into target with status condition / already has Yawn
         || (moveEffect == MOVE_EFFECT_STATUS_SLEEP_NEXT_TURN && (ctx->battlemon[defender].effect_of_moves & MOVE_EFFECT_FLAG_YAWN || ctx->battlemon[defender].condition))
         // Worry Seed when target has Insomnia / Truant
-        || (moveEffect == MOVE_EFFECT_SET_ABILITY_TO_INSOMNIA && (GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_INSOMNIA || GetBattlerAbility(ctx, ctx->defence_client) == ABILITY_TRUANT))
+        || (moveEffect == MOVE_EFFECT_SET_ABILITY_TO_INSOMNIA && (BattlerHasAbility(ctx, ctx->defence_client, ABILITY_INSOMNIA) || BattlerHasAbility(ctx, ctx->defence_client, ABILITY_TRUANT)))
         // Coaching in singles or when there is no ally target available in doubles
         || ((moveEffect == MOVE_EFFECT_COACHING) && (!(BattleTypeGet(bsys) & BATTLE_TYPE_DOUBLES) || (ctx->battlemon[BATTLER_ALLY(ctx->attack_client)].hp == 0)))) {
         BattleController_ResetGeneralMoveFailureFlags(ctx, ctx->attack_client, TRUE);

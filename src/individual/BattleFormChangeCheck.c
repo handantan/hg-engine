@@ -40,7 +40,7 @@ BOOL BattleFormChangeCheck(void *bw, struct BattleStruct *sp, int *seq_no)
         // handle castform
         if ((sp->battlemon[client].species == SPECIES_CASTFORM)
             && (sp->battlemon[client].hp)
-            && (GetBattlerAbility(sp, client) == ABILITY_FORECAST)) {
+            && (BattlerHasAbility(sp, client, ABILITY_FORECAST))) {
             if ((CheckSideAbility(bw, sp, CHECK_ABILITY_ALL_HP, 0, ABILITY_CLOUD_NINE) == 0)
                 && (CheckSideAbility(bw, sp, CHECK_ABILITY_ALL_HP, 0, ABILITY_AIR_LOCK) == 0)) {
                 // Snow does not affect Castform in SV, since it cannot enter Paldea, Kitakami nor Blueberry Academy there is no way to confirm
@@ -136,7 +136,7 @@ BOOL BattleFormChangeCheck(void *bw, struct BattleStruct *sp, int *seq_no)
         // handle arceus
         if ((sp->battlemon[client].species == SPECIES_ARCEUS)
             && (sp->battlemon[client].hp)
-            && (GetBattlerAbility(sp, client) == ABILITY_MULTITYPE)) {
+            && (BattlerHasAbility(sp, client, ABILITY_MULTITYPE))) {
             form_no = GetArceusType(BattleItemDataGet(sp, sp->battlemon[client].item, 1));
             if (sp->battlemon[client].form_no != form_no) {
                 sp->battlemon[client].form_no = form_no;
@@ -149,7 +149,7 @@ BOOL BattleFormChangeCheck(void *bw, struct BattleStruct *sp, int *seq_no)
         // handle Silvally TODO check if this actually works, eventually change to use the memories instead of plates
         if ((sp->battlemon[client].species == SPECIES_SILVALLY)
             && (sp->battlemon[client].hp)
-            && (GetBattlerAbility(sp, client) == ABILITY_RKS_SYSTEM)) {
+            && (BattlerHasAbility(sp, client, ABILITY_RKS_SYSTEM))) {
             form_no = GetArceusType(BattleItemDataGet(sp, sp->battlemon[client].item, 1));
             if (sp->battlemon[client].form_no != form_no) {
                 sp->battlemon[client].form_no = form_no;
@@ -206,7 +206,7 @@ BOOL BattleFormChangeCheck(void *bw, struct BattleStruct *sp, int *seq_no)
 
         // handle darmanitan zen mode
         if ((sp->battlemon[client].species == SPECIES_DARMANITAN)
-            && (GetBattlerAbility(sp, client) == ABILITY_ZEN_MODE)
+            && (BattlerHasAbility(sp, client, ABILITY_ZEN_MODE))
             && (sp->battlemon[client].hp)
             && (sp->battlemon[client].hp <= (s32)(sp->battlemon[client].maxhp / 2))
             && (sp->battlemon[client].form_no < 2)) // forms 0 and 1
@@ -218,7 +218,7 @@ BOOL BattleFormChangeCheck(void *bw, struct BattleStruct *sp, int *seq_no)
             break;
         } else if ((sp->battlemon[client].species == SPECIES_DARMANITAN)
             && (sp->battlemon[client].hp)
-            && (sp->battlemon[client].hp > (s32)(sp->battlemon[client].maxhp / 2) || (GetBattlerAbility(sp, client) != ABILITY_ZEN_MODE))
+            && (sp->battlemon[client].hp > (s32)(sp->battlemon[client].maxhp / 2) || (!BattlerHasAbility(sp, client, ABILITY_ZEN_MODE)))
             && (sp->battlemon[client].form_no >= 2)) // forms 2 and 3
         {
             sp->battlemon[client].form_no -= 2;

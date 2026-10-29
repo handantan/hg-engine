@@ -122,7 +122,7 @@ BOOL CheckDefenderItemEffectOnHit(void *bw, struct BattleStruct *sp, int *seq_no
         // Attacker is alive after the attack
         if ((sp->battlemon[sp->attack_client].hp)
             // Attacker does not have Magic Guard
-            && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+            && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
             // Attacker is not holding an item that prevents contact effects, e.g. Protective Pads
             && (HeldItemHoldEffectGet(sp, sp->attack_client) != HOLD_EFFECT_PREVENT_CONTACT_EFFECTS)
             // punching glove & punching move foundation

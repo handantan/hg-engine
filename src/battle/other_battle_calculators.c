@@ -20,6 +20,7 @@
 #include "../../include/constants/sndseq.h"
 #include "../../include/constants/trainerclass.h"
 #include "../../include/trainer_data.h"
+#include "../../include/pmfg_innates.h"
 
 typedef struct
 {
@@ -792,7 +793,7 @@ void LoadNicknameToCharArray(u16 nickname[], char buf[])
 
 u32 LONG_CALL GetWeather(struct BattleSystem *bsys, struct BattleStruct *ctx, int attacker)
 {
-    if (attacker != 0xFF && GetBattlerAbility(ctx, attacker) == ABILITY_MEGA_SOL) {
+    if (attacker != 0xFF && BattlerHasAbility(ctx, attacker, ABILITY_MEGA_SOL)) {
         return FIELD_CONDITION_SUN;
     }
 
@@ -933,7 +934,7 @@ BOOL LONG_CALL CalcAccuracy(void *bw, struct BattleStruct *sp, int attacker, int
         // Victory Star - 4506/4096 for each Victory Star
 
         if (((attacker == sp->rawSpeedNonRNGClientOrder[i]) && atk_ability == ABILITY_VICTORY_STAR)
-            || ((BATTLER_ALLY(attacker) == sp->rawSpeedNonRNGClientOrder[i]) && GetBattlerAbility(sp, BATTLER_ALLY(attacker)) == ABILITY_VICTORY_STAR)) {
+            || ((BATTLER_ALLY(attacker) == sp->rawSpeedNonRNGClientOrder[i]) && BattlerHasAbility(sp, BATTLER_ALLY(attacker), ABILITY_VICTORY_STAR))) {
             accuracyModifier = QMul_RoundUp(accuracyModifier, UQ412__1_1_BUT_HIGHER);
         }
     }
@@ -1284,7 +1285,7 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
 
     for (i = 0; i < NELEMS(DecreaseSpeedHoldEffects); i++) {
         if (BattleItemDataGet(sp, sp->battlemon[client1].item, 1) == DecreaseSpeedHoldEffects[i]) {
-            if (!(GetBattlerAbility(sp, client1) == ABILITY_KLUTZ && DecreaseSpeedHoldEffects[i] == HOLD_EFFECT_SPEED_DOWN_GROUNDED)) {
+            if (!(BattlerHasAbility(sp, client1, ABILITY_KLUTZ) && DecreaseSpeedHoldEffects[i] == HOLD_EFFECT_SPEED_DOWN_GROUNDED)) {
                 speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__0_5);
                 break;
             }
@@ -1293,7 +1294,7 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
 
     for (i = 0; i < NELEMS(DecreaseSpeedHoldEffects); i++) {
         if (BattleItemDataGet(sp, sp->battlemon[client2].item, 1) == DecreaseSpeedHoldEffects[i]) {
-            if (!(GetBattlerAbility(sp, client2) == ABILITY_KLUTZ && DecreaseSpeedHoldEffects[i] == HOLD_EFFECT_SPEED_DOWN_GROUNDED)) {
+            if (!(BattlerHasAbility(sp, client2, ABILITY_KLUTZ) && DecreaseSpeedHoldEffects[i] == HOLD_EFFECT_SPEED_DOWN_GROUNDED)) {
                 speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__0_5);
                 break;
             }
@@ -1675,18 +1676,18 @@ void LONG_CALL CalcPriorityAndQuickClawCustapBerry(void *bsys, struct BattleStru
         }
 
         // Handle Prankster
-        if (GetBattlerAbility(ctx, client) == ABILITY_PRANKSTER && GetMoveSplit(ctx, move) == SPLIT_STATUS) {
+        if (BattlerHasAbility(ctx, client, ABILITY_PRANKSTER) && GetMoveSplit(ctx, move) == SPLIT_STATUS) {
             priority++;
         }
 
         // Handle Gale Wings
         if (
-            GetBattlerAbility(ctx, client) == ABILITY_GALE_WINGS && ctx->moveTbl[move].type == TYPE_FLYING && ctx->battlemon[client].hp == (s32)ctx->battlemon[client].maxhp) {
+            BattlerHasAbility(ctx, client, ABILITY_GALE_WINGS) && ctx->moveTbl[move].type == TYPE_FLYING && ctx->battlemon[client].hp == (s32)ctx->battlemon[client].maxhp) {
             priority++;
         }
 
         // handle Triage
-        if (GetBattlerAbility(ctx, client) == ABILITY_TRIAGE) {
+        if (BattlerHasAbility(ctx, client, ABILITY_TRIAGE)) {
             for (i = 0; i < NELEMS(TriageMovesList); i++) {
                 if (TriageMovesList[i] == move) {
                     priority = priority + 3;
@@ -1705,7 +1706,7 @@ void LONG_CALL CalcPriorityAndQuickClawCustapBerry(void *bsys, struct BattleStru
         }
 
         if (hold_effect == HOLD_EFFECT_PINCH_PRIORITY) {
-            if (GetBattlerAbility(ctx, client) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, client, ABILITY_GLUTTONY)) {
                 hold_atk /= 2;
             }
             if (ctx->battlemon[client].hp <= (s32)(ctx->battlemon[client].maxhp / hold_atk)) {
@@ -1776,7 +1777,7 @@ int CalcCritical(void *bw, struct BattleStruct *sp, int attacker, int defender, 
         }
     }
 
-    if ((multiplier == 2) && (GetBattlerAbility(sp, attacker) == ABILITY_SNIPER)) {
+    if ((multiplier == 2) && (BattlerHasAbility(sp, attacker, ABILITY_SNIPER))) {
         multiplier = 3;
     }
 
@@ -1946,8 +1947,8 @@ int LONG_CALL GetTypeEffectiveness(struct BattleSystem *bw, struct BattleStruct 
             }
         } else if (TypeEffectivenessTable[typeTableEntryNo][0] == TYPE_FORESIGHT) {
             if ((sp->battlemon[defence_client].condition2 & STATUS2_FORESIGHT)
-                || (GetBattlerAbility(sp, attack_client) == ABILITY_SCRAPPY)
-                || (GetBattlerAbility(sp, attack_client) == ABILITY_MINDS_EYE)) {
+                || (BattlerHasAbility(sp, attack_client, ABILITY_SCRAPPY))
+                || (BattlerHasAbility(sp, attack_client, ABILITY_MINDS_EYE))) {
                 break;
             } else {
                 typeTableEntryNo++;
@@ -2064,7 +2065,7 @@ BOOL LONG_CALL CantEscape(void *bw, struct BattleStruct *sp, int battlerId, Batt
     item = HeldItemHoldEffectGet(sp, battlerId);
 
     // if shed shell or no experience or has run away or has ghost type then there is nothing stopping the battler from escaping
-    if (item == HOLD_EFFECT_FLEE || (battleType & BATTLE_TYPE_NO_EXPERIENCE) || GetBattlerAbility(sp, battlerId) == ABILITY_RUN_AWAY || HasType(sp, battlerId, TYPE_GHOST)) {
+    if (item == HOLD_EFFECT_FLEE || (battleType & BATTLE_TYPE_NO_EXPERIENCE) || BattlerHasAbility(sp, battlerId, ABILITY_RUN_AWAY) || HasType(sp, battlerId, TYPE_GHOST)) {
         return FALSE;
     }
 
@@ -2072,7 +2073,7 @@ BOOL LONG_CALL CantEscape(void *bw, struct BattleStruct *sp, int battlerId, Batt
     maxBattlers = BattleWorkClientSetMaxGet(bw);
 
     battlerIdAbility = CheckSideAbility(bw, sp, CHECK_ABILITY_ALL_HP_NOT_USER, battlerId, ABILITY_SHADOW_TAG);
-    if (battlerIdAbility && GetBattlerAbility(sp, battlerId) != ABILITY_SHADOW_TAG) {
+    if (battlerIdAbility && !BattlerHasAbility(sp, battlerId, ABILITY_SHADOW_TAG)) {
         if (msg == NULL) {
             return TRUE;
         }
@@ -2086,8 +2087,8 @@ BOOL LONG_CALL CantEscape(void *bw, struct BattleStruct *sp, int battlerId, Batt
     battlerIdAbility = CheckSideAbility(bw, sp, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_ARENA_TRAP);
     if (battlerIdAbility) {
         if (!(sp->field_condition & FIELD_CONDITION_GRAVITY) && item != HOLD_EFFECT_SPEED_DOWN_GROUNDED) {
-            if (GetBattlerAbility(sp, battlerId) != ABILITY_LEVITATE
-                && GetBattlerAbility(sp, battlerId) != ABILITY_EELEVATE
+            if (!BattlerHasAbility(sp, battlerId, ABILITY_LEVITATE)
+                && !BattlerHasAbility(sp, battlerId, ABILITY_EELEVATE)
                 && !sp->battlemon[battlerId].moveeffect.magnetRiseTurns && !HasType(sp, battlerId, TYPE_FLYING)) {
                 if (msg == NULL) {
                     return TRUE;
@@ -2147,7 +2148,7 @@ BOOL BattlerCantSwitch(void *bw, struct BattleStruct *sp, int battlerId)
     BOOL ret = FALSE;
 
     // ghost types can switch from anything like they had shed skin
-    if (HeldItemHoldEffectGet(sp, battlerId) == HOLD_EFFECT_SWITCH || GetBattlerAbility(sp, battlerId) == ABILITY_RUN_AWAY || HasType(sp, battlerId, TYPE_GHOST)) {
+    if (HeldItemHoldEffectGet(sp, battlerId) == HOLD_EFFECT_SWITCH || BattlerHasAbility(sp, battlerId, ABILITY_RUN_AWAY) || HasType(sp, battlerId, TYPE_GHOST)) {
         return FALSE;
     }
 
@@ -2155,13 +2156,13 @@ BOOL BattlerCantSwitch(void *bw, struct BattleStruct *sp, int battlerId)
         ret = TRUE;
     }
 
-    if ((GetBattlerAbility(sp, battlerId) != ABILITY_SHADOW_TAG && CheckSideAbility(bw, sp, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_SHADOW_TAG))
+    if ((!BattlerHasAbility(sp, battlerId, ABILITY_SHADOW_TAG) && CheckSideAbility(bw, sp, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_SHADOW_TAG))
         || (HasType(sp, battlerId, TYPE_STEEL) && CheckSideAbility(bw, sp, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_MAGNET_PULL))) {
         ret = TRUE;
     }
 
-    if (((GetBattlerAbility(sp, battlerId) != ABILITY_LEVITATE
-             && GetBattlerAbility(sp, battlerId) != ABILITY_EELEVATE
+    if (((!BattlerHasAbility(sp, battlerId, ABILITY_LEVITATE)
+             && !BattlerHasAbility(sp, battlerId, ABILITY_EELEVATE)
              && sp->battlemon[battlerId].moveeffect.magnetRiseTurns == 0
              && !HasType(sp, battlerId, TYPE_FLYING))
             || HeldItemHoldEffectGet(sp, battlerId) == HOLD_EFFECT_SPEED_DOWN_GROUNDED
@@ -2198,7 +2199,7 @@ BOOL BattleTryRun(void *bw, struct BattleStruct *sp, int battlerId)
         ret = TRUE;
     } else if (battleType & BATTLE_TYPE_NO_EXPERIENCE || HasType(sp, battlerId, TYPE_GHOST)) { // ghost types can always escape regardless of speed
         ret = TRUE;
-    } else if (GetBattlerAbility(sp, battlerId) == ABILITY_RUN_AWAY) {
+    } else if (BattlerHasAbility(sp, battlerId, ABILITY_RUN_AWAY)) {
         sp->oneTurnFlag[battlerId].escape_flag = 2;
         ret = TRUE;
     } else {
@@ -2400,7 +2401,7 @@ BOOL LONG_CALL IsValidParentalBondMove(void *bw, struct BattleStruct *sp, BOOL c
 {
     u32 moveIndex = checkTempMove ? (u32)sp->waza_work : sp->current_move_index;
 
-    return GetBattlerAbility(sp, sp->attack_client) == ABILITY_PARENTAL_BOND && GetMoveSplit(sp, moveIndex) != SPLIT_STATUS && !IsBannedParentalBondMove(moveIndex) && !IsBannedSpreadMoveForParentalBond(bw, sp, moveIndex);
+    return BattlerHasAbility(sp, sp->attack_client, ABILITY_PARENTAL_BOND) && GetMoveSplit(sp, moveIndex) != SPLIT_STATUS && !IsBannedParentalBondMove(moveIndex) && !IsBannedSpreadMoveForParentalBond(bw, sp, moveIndex);
 }
 
 /**
@@ -2681,7 +2682,7 @@ BOOL LONG_CALL BattleSystem_CheckMoveEffect(void *bw, struct BattleStruct *sp, i
         return TRUE;
     }
 
-    BOOL lockOnOrNoGuard = (GetBattlerAbility(sp, battlerIdAttacker) == ABILITY_NO_GUARD) || (GetBattlerAbility(sp, battlerIdTarget) == ABILITY_NO_GUARD)
+    BOOL lockOnOrNoGuard = (BattlerHasAbility(sp, battlerIdAttacker, ABILITY_NO_GUARD)) || (BattlerHasAbility(sp, battlerIdTarget, ABILITY_NO_GUARD))
         || (sp->battlemon[battlerIdTarget].effect_of_moves & MOVE_EFFECT_FLAG_LOCK_ON
             && sp->battlemon[battlerIdTarget].moveeffect.battlerIdLockOn == battlerIdAttacker);
 
@@ -3605,7 +3606,7 @@ u32 LONG_CALL StruggleCheck(struct BattleSystem *bsys, struct BattleStruct *ctx,
                 nonSelectableMoves |= No2Bit(movePos);
             }
         }
-        if (struggleCheckFlags & STRUGGLE_CHECK_GORILLA_TACTICS && GetBattlerAbility(ctx, battlerId) == ABILITY_GORILLA_TACTICS) {
+        if (struggleCheckFlags & STRUGGLE_CHECK_GORILLA_TACTICS && BattlerHasAbility(ctx, battlerId, ABILITY_GORILLA_TACTICS)) {
             if (ctx->waza_no_old[battlerId] != 0) {
                 ctx->battlemon[battlerId].moveeffect.moveNoChoice = ctx->waza_no_old[battlerId];
             }
@@ -3792,15 +3793,15 @@ int LONG_CALL GetClientActionPriority(struct BattleSystem *bsys UNUSED, struct B
         }
     }
 
-    if ((GetBattlerAbility(ctx, battlerId) == ABILITY_PRANKSTER) && (GetMoveSplit(ctx, move) == SPLIT_STATUS)) {
+    if ((BattlerHasAbility(ctx, battlerId, ABILITY_PRANKSTER)) && (GetMoveSplit(ctx, move) == SPLIT_STATUS)) {
         return ctx->moveTbl[move].priority + 1;
     }
 
-    if ((GetBattlerAbility(ctx, battlerId) == ABILITY_GALE_WINGS) && (ctx->moveTbl[move].type == TYPE_FLYING)) {
+    if ((BattlerHasAbility(ctx, battlerId, ABILITY_GALE_WINGS)) && (ctx->moveTbl[move].type == TYPE_FLYING)) {
         return ctx->moveTbl[move].priority + 1;
     }
 
-    if ((GetBattlerAbility(ctx, battlerId) == ABILITY_TRIAGE) && (isTriageMove)) {
+    if ((BattlerHasAbility(ctx, battlerId, ABILITY_TRIAGE)) && (isTriageMove)) {
         return ctx->moveTbl[move].priority + 3;
     }
 
@@ -4047,6 +4048,33 @@ u32 LONG_CALL GetBattlerAbility(struct BattleStruct *ctx, int battlerId)
         return ABILITY_NONE;
     }
     return ability;
+}
+
+/// @brief REQ-TGT-MON-001: is `ability` one of the battler's unlocked species innates?
+/// D-024: innates ignore copy, swap and suppression effects; those only touch the main ability.
+BOOL LONG_CALL BattlerHasInnate(struct BattleStruct *ctx, int battlerId, u32 ability)
+{
+    if (battlerId == BATTLER_NONE || ability == ABILITY_NONE) {
+        return FALSE;
+    }
+    u16 innates[PMFG_NUM_INNATES];
+    u32 unlocked = PMFG_UnlockedInnateCount();
+    if (!unlocked) {
+        return FALSE;
+    }
+    PMFG_GetSpeciesInnates(ctx->battlemon[battlerId].species, ctx->battlemon[battlerId].form_no, innates);
+    for (u32 i = 0; i < unlocked; i++) {
+        if (innates[i] == ability) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+/// @brief main ability (as GetBattlerAbility resolves it) or an unlocked innate
+BOOL LONG_CALL BattlerHasAbility(struct BattleStruct *ctx, int battlerId, u32 ability)
+{
+    return GetBattlerAbility(ctx, battlerId) == ability || BattlerHasInnate(ctx, battlerId, ability);
 }
 
 /// @brief Check if ability causes Trace to fail
@@ -4362,14 +4390,14 @@ BOOL LONG_CALL CanIgnoreRedirection(struct BattleStruct *ctx, int attacker, int 
     }
 
     if (ctx->current_move_index == MOVE_SNIPE_SHOT
-        || GetBattlerAbility(ctx, attacker) == ABILITY_PROPELLER_TAIL
-        || GetBattlerAbility(ctx, attacker) == ABILITY_STALWART) {
+        || BattlerHasAbility(ctx, attacker, ABILITY_PROPELLER_TAIL)
+        || BattlerHasAbility(ctx, attacker, ABILITY_STALWART)) {
         return TRUE;
     }
 
     if (ctx->moveConditionsFlags[user].usedRagePowder
         && (HasType(ctx, attacker, TYPE_GRASS)
-            || GetBattlerAbility(ctx, attacker) == ABILITY_OVERCOAT
+            || BattlerHasAbility(ctx, attacker, ABILITY_OVERCOAT)
             || HeldItemHoldEffectGet(ctx, attacker) == HOLD_EFFECT_SPORE_POWDER_IMMUNITY)) {
         return TRUE;
     }

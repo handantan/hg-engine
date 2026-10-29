@@ -117,7 +117,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
     }
 
     // try and handle defiant lol
-    if ((GetBattlerAbility(sp, sp->state_client) == ABILITY_DEFIANT || GetBattlerAbility(sp, sp->state_client) == ABILITY_COMPETITIVE)
+    if ((BattlerHasAbility(sp, sp->state_client, ABILITY_DEFIANT) || BattlerHasAbility(sp, sp->state_client, ABILITY_COMPETITIVE))
         && sp->oneSelfFlag[sp->state_client].defiant_flag == 0
         && statchange < 0
         && (HeldItemHoldEffectGet(sp, sp->state_client) != HOLD_EFFECT_PREVENT_STAT_DROPS)
@@ -224,7 +224,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                 && sp->addeffect_type != SIDE_EFFECT_TYPE_ABILITY
                 && sp->addeffect_type != SIDE_EFFECT_TYPE_PRINT_WORK_ABILITY) {
                 // infiltrator bypasses mist
-                if (sp->scw[IsClientEnemy(bw, sp->state_client)].mistCount && GetBattlerAbility(sp, sp->attack_client) != ABILITY_INFILTRATOR) {
+                if (sp->scw[IsClientEnemy(bw, sp->state_client)].mistCount && !BattlerHasAbility(sp, sp->attack_client, ABILITY_INFILTRATOR)) {
                     sp->mp.id = BATTLE_MSG_PROTECTED_BY_MIST;
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);
@@ -241,7 +241,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                     flag = 1;
                 } else if ((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->state_client, ABILITY_CLEAR_BODY) == TRUE)
                     || (MoldBreakerAbilityCheck(sp, sp->attack_client, sp->state_client, ABILITY_WHITE_SMOKE) == TRUE)
-                    || (GetBattlerAbility(sp, sp->state_client) == ABILITY_FULL_METAL_BODY)) // Full Metal Body cannot be ignored
+                    || (BattlerHasAbility(sp, sp->state_client, ABILITY_FULL_METAL_BODY))) // Full Metal Body cannot be ignored
                 {
                     sp->mp.id = BATTLE_MSG_STATS_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;
@@ -353,9 +353,9 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);
                     prevented = TRUE;
-                } else if ((GetBattlerAbility(sp, sp->state_client) == ABILITY_CLEAR_BODY)
-                    || (GetBattlerAbility(sp, sp->state_client) == ABILITY_WHITE_SMOKE)
-                    || (GetBattlerAbility(sp, sp->state_client) == ABILITY_FULL_METAL_BODY)) {
+                } else if ((BattlerHasAbility(sp, sp->state_client, ABILITY_CLEAR_BODY))
+                    || (BattlerHasAbility(sp, sp->state_client, ABILITY_WHITE_SMOKE))
+                    || (BattlerHasAbility(sp, sp->state_client, ABILITY_FULL_METAL_BODY))) {
                     sp->mp.id = BATTLE_MSG_STATS_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);
@@ -367,19 +367,19 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                     sp->mp.param[1] = CreateNicknameTag(sp, GetBattleMonItem(sp, sp->state_client));
                     sp->mp.param[2] = STAT_ATTACK + stattochange;
                     prevented = TRUE;
-                } else if ((GetBattlerAbility(sp, sp->state_client) == ABILITY_HYPER_CUTTER) && ((STAT_ATTACK + stattochange) == STAT_ATTACK)) {
+                } else if ((BattlerHasAbility(sp, sp->state_client, ABILITY_HYPER_CUTTER)) && ((STAT_ATTACK + stattochange) == STAT_ATTACK)) {
                     sp->mp.id = BATTLE_MSG_ATTACK_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);
                     prevented = TRUE;
-                } else if ((GetBattlerAbility(sp, sp->state_client) == ABILITY_BIG_PECKS) && ((STAT_ATTACK + stattochange) == STAT_DEFENSE)) {
+                } else if ((BattlerHasAbility(sp, sp->state_client, ABILITY_BIG_PECKS)) && ((STAT_ATTACK + stattochange) == STAT_DEFENSE)) {
                     sp->mp.id = BATTLE_MSG_DEFENSE_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);
                     prevented = TRUE;
-                } else if (((GetBattlerAbility(sp, sp->state_client) == ABILITY_KEEN_EYE)
-                               || (GetBattlerAbility(sp, sp->state_client) == ABILITY_MINDS_EYE)
-                               || (GetBattlerAbility(sp, sp->state_client) == ABILITY_ILLUMINATE))
+                } else if (((BattlerHasAbility(sp, sp->state_client, ABILITY_KEEN_EYE))
+                               || (BattlerHasAbility(sp, sp->state_client, ABILITY_MINDS_EYE))
+                               || (BattlerHasAbility(sp, sp->state_client, ABILITY_ILLUMINATE)))
                     && ((STAT_ATTACK + stattochange) == STAT_ACCURACY)) {
                     sp->mp.id = BATTLE_MSG_ACCURACY_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;

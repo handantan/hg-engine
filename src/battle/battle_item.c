@@ -57,7 +57,7 @@ u32 LONG_CALL MoveHitUTurnHeldItemEffectCheck(void *bw, struct BattleStruct *sp,
         && (sp->attack_client != sp->defence_client)
         && (sp->battlemon[sp->attack_client].hp < (s32)sp->battlemon[sp->attack_client].maxhp)
         && (sp->battlemon[sp->attack_client].hp)
-        && !(GetBattlerAbility(sp, sp->attack_client) == ABILITY_SHEER_FORCE && sp->battlemon[sp->attack_client].sheer_force_flag == 1)) // sheer force prevents shell bell from activating
+        && !(BattlerHasAbility(sp, sp->attack_client, ABILITY_SHEER_FORCE) && sp->battlemon[sp->attack_client].sheer_force_flag == 1)) // sheer force prevents shell bell from activating
     {
         sp->hp_calc_work = BattleDamageDivide(sp->oneSelfFlag[sp->attack_client].shell_bell_damage * -1, atk_item_param);
         sp->battlerIdTemp = sp->attack_client;
@@ -66,11 +66,11 @@ u32 LONG_CALL MoveHitUTurnHeldItemEffectCheck(void *bw, struct BattleStruct *sp,
     }
 
     if ((atk_hold_eff == HOLD_EFFECT_HP_DRAIN_ON_ATK) // life orb
-        && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+        && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
         && (sp->server_status_flag & SERVER_STATUS_FLAG_MOVE_HIT)
         && (GetMoveSplit(sp, sp->current_move_index) != SPLIT_STATUS)
         && (sp->battlemon[sp->attack_client].hp)
-        && !(GetBattlerAbility(sp, sp->attack_client) == ABILITY_SHEER_FORCE && sp->battlemon[sp->attack_client].sheer_force_flag == 1)) // sheer force prevents life orb from activating
+        && !(BattlerHasAbility(sp, sp->attack_client, ABILITY_SHEER_FORCE) && sp->battlemon[sp->attack_client].sheer_force_flag == 1)) // sheer force prevents life orb from activating
     {
         sp->hp_calc_work = BattleDamageDivide(sp->battlemon[sp->attack_client].maxhp * -1, 10);
         sp->battlerIdTemp = sp->attack_client;
@@ -80,7 +80,7 @@ u32 LONG_CALL MoveHitUTurnHeldItemEffectCheck(void *bw, struct BattleStruct *sp,
 
     if ((def_hold_eff == HOLD_EFFECT_RECOIL_PHYSICAL) // jaboca berry
         && (sp->battlemon[sp->attack_client].hp)
-        && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+        && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
         && (sp->oneSelfFlag[sp->defence_client].physical_damage)) {
         sp->hp_calc_work = BattleDamageDivide(sp->battlemon[sp->attack_client].maxhp * -1, def_item_param);
         seq_no[0] = BATTLE_SUBSCRIPT_HELD_ITEM_RECOIL_WHEN_HIT;
@@ -89,7 +89,7 @@ u32 LONG_CALL MoveHitUTurnHeldItemEffectCheck(void *bw, struct BattleStruct *sp,
 
     if ((def_hold_eff == HOLD_EFFECT_DAMAGE_ON_CONTACT) // Rocky Helmet
         && (sp->battlemon[sp->attack_client].hp)
-        && (GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+        && (!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
         // Attacker is not holding an item that prevents contact effects, e.g. Protective Pads
         && (HeldItemHoldEffectGet(sp, sp->attack_client) != HOLD_EFFECT_PREVENT_CONTACT_EFFECTS)
         // Damage was dealt
@@ -163,7 +163,7 @@ u32 LONG_CALL ServerWazaHitAfterCheckAct(void *bw UNUSED, struct BattleStruct *s
                }
                sp->swhac_seq_no++;
 
-               if (GetBattlerAbility(sp,sp->attack_client) == ABILITY_SHEER_FORCE && sp->battlemon[sp->attack_client].sheer_force_flag == 1) // skip over shell bell and life orb if sheer force is active
+               if (BattlerHasAbility(sp,sp->attack_client, ABILITY_SHEER_FORCE) && sp->battlemon[sp->attack_client].sheer_force_flag == 1) // skip over shell bell and life orb if sheer force is active
                    sp->swhac_seq_no = SWHAC_END;
 
                break;
@@ -191,7 +191,7 @@ u32 LONG_CALL ServerWazaHitAfterCheckAct(void *bw UNUSED, struct BattleStruct *s
                break;
            case SWHAC_HELD_ITEM_LIFE_ORB:
                if ((hold_effect == HOLD_EFFECT_HP_DRAIN_ON_ATK)
-                && (GetBattlerAbility(sp,sp->attack_client) != ABILITY_MAGIC_GUARD)
+                && (!BattlerHasAbility(sp,sp->attack_client, ABILITY_MAGIC_GUARD))
                 && ((sp->server_status_flag2 & SERVER_STATUS_FLAG2_U_TURN) == 0)
                 && (sp->server_status_flag & SERVER_STATUS_FLAG_MOVE_HIT)
                 && (GetMoveSplit(sp, sp->current_move_index) != SPLIT_STATUS)
@@ -449,7 +449,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_ATK_UP: // liechi berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= (s32)(ctx->battlemon[battlerId].maxhp) / boost && ctx->battlemon[battlerId].states[1] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
@@ -459,7 +459,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_DEF_UP: // ganlon berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= (s32)(ctx->battlemon[battlerId].maxhp) / boost && ctx->battlemon[battlerId].states[2] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
@@ -469,7 +469,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_SPEED_UP: // salac berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= (s32)(ctx->battlemon[battlerId].maxhp) / boost && ctx->battlemon[battlerId].states[3] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
@@ -479,7 +479,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_SPATK_UP: // petaya berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= (s32)(ctx->battlemon[battlerId].maxhp) / boost && ctx->battlemon[battlerId].states[4] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
@@ -489,7 +489,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_SPDEF_UP: // apicot berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= (s32)(ctx->battlemon[battlerId].maxhp) / boost && ctx->battlemon[battlerId].states[5] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
@@ -499,7 +499,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_CRITRATE_UP: // lansat berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= (s32)(ctx->battlemon[battlerId].maxhp) / boost && !(ctx->battlemon[battlerId].condition2 & STATUS2_FOCUS_ENERGY)) {
@@ -508,7 +508,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_RANDOM_UP: // starf berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= (s32)(ctx->battlemon[battlerId].maxhp) / boost) {
@@ -540,7 +540,7 @@ BOOL LONG_CALL GetHeldItemUseSubscript(void *bw, struct BattleStruct *ctx, int b
             }
             break;
         case HOLD_EFFECT_PINCH_ACC_UP: // micle berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+            if (BattlerHasAbility(ctx, battlerId, ABILITY_GLUTTONY)) {
                 boost /= 2;
             }
             if (ctx->battlemon[battlerId].hp <= ((s32)(ctx->battlemon[battlerId].maxhp) / boost)) {

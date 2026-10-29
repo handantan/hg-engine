@@ -93,6 +93,7 @@ struct PACKED TestBattleScenario {
     u8 expectationPassCount;
     u8 knownFailing : 1;
     u8 markAsFail : 7;
+    u8 innatesUnlocked; // PMFG (REQ-TGT-MON-001): species innates are off in battle tests unless a test sets this
 };
 
 #define FULL_HP (0xFFFF)

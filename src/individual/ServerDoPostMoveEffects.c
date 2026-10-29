@@ -147,7 +147,7 @@ void __attribute__((section(".init"))) ServerDoPostMoveEffectsInternal(void *bsy
         }
 
         if (ctx->moveConditionsFlags[ctx->attack_client].mindBlownOrSteelBeam
-            && GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_MAGIC_GUARD
+            && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_MAGIC_GUARD)
             && (ctx->current_move_index == MOVE_STEEL_BEAM
                 || ctx->current_move_index == MOVE_MIND_BLOWN)) {
             LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_HEAVY_RECOIL);
@@ -695,7 +695,7 @@ void __attribute__((section(".init"))) ServerDoPostMoveEffectsInternal(void *bsy
             for (int turnOrderSlot = 0; turnOrderSlot < BattleWorkClientSetMaxGet(bsys); turnOrderSlot++) {
                 // debug_printf("client: %d, ability: %d, hp: %d\n", ctx->turnOrder[turnOrderSlot], GetBattlerAbility(ctx, ctx->turnOrder[turnOrderSlot]), ctx->battlemon[ctx->turnOrder[turnOrderSlot]].hp);
                 if ((ctx->turnOrder[turnOrderSlot] != ctx->attack_client)
-                    && (GetBattlerAbility(ctx, ctx->turnOrder[turnOrderSlot]) == ABILITY_DANCER && ctx->battlemon[ctx->turnOrder[turnOrderSlot]].hp)) {
+                    && (BattlerHasAbility(ctx, ctx->turnOrder[turnOrderSlot], ABILITY_DANCER) && ctx->battlemon[ctx->turnOrder[turnOrderSlot]].hp)) {
                     // debug_printf("Is Dancer\n");
                     ctx->dancerContext.isActive = TRUE;
                     ctx->dancerContext.originalAttacker = ctx->attack_client;
@@ -1043,7 +1043,7 @@ int LONG_CALL Activate_FlameBurstHit(void *bsys UNUSED, struct BattleStruct *ctx
     if (ctx->current_move_index == MOVE_FLAME_BURST) {
         int ally = BATTLER_ALLY(ctx->defence_client);
         if (ctx->battlemon[ally].hp
-            && (GetBattlerAbility(ctx, ally) != ABILITY_MAGIC_GUARD)
+            && (!BattlerHasAbility(ctx, ally, ABILITY_MAGIC_GUARD))
             && ((ctx->battlemon[ally].effect_of_moves & MOVE_EFFECT_FLAG_SEMI_INVULNERABLE) == 0)
             && ctx->oneSelfFlag[ctx->defence_client].special_damager == ctx->attack_client) {
             ctx->addeffect_param = MOVE_SUBSCRIPT_PTR_FLAME_BURST_HIT;
@@ -1079,7 +1079,7 @@ int LONG_CALL Activate_Rowap_Jaboca(void *bsys UNUSED, struct BattleStruct *ctx)
                 // Attacker is alive after the attack
                 if ((ctx->battlemon[ctx->attack_client].hp)
                     // Attacker does not have Magic Guard
-                    && (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_MAGIC_GUARD)
+                    && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_MAGIC_GUARD))
                     // Attacker dealt physical damage
                     && (ctx->oneSelfFlag[client_no].physical_damage)) {
                     ctx->hp_calc_work = BattleDamageDivide(ctx->battlemon[ctx->attack_client].maxhp * -1, itemPower);
@@ -1096,7 +1096,7 @@ int LONG_CALL Activate_Rowap_Jaboca(void *bsys UNUSED, struct BattleStruct *ctx)
                     && !ctx->futureSightHitTurn
                     && (ctx->battlemon[ctx->attack_client].hp)
                     // Attacker does not have Magic Guard
-                    && (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_MAGIC_GUARD)
+                    && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_MAGIC_GUARD))
                     // Attacker dealt special damage
                     && (ctx->oneSelfFlag[client_no].special_damage)) {
                     ctx->hp_calc_work = BattleDamageDivide(ctx->battlemon[ctx->attack_client].maxhp * -1, itemPower);
@@ -1356,7 +1356,7 @@ int LONG_CALL Activate_SparklingAria(void *bsys, struct BattleStruct *ctx)
                     && (ctx->battlemon[client_no].condition & STATUS_BURN)
                     && (ctx->battlemon[client_no].hp)) {
                     if ((numberOfClientsHitBySparklingAria > 1)
-                        || (GetBattlerAbility(ctx, client_no) != ABILITY_SHIELD_DUST
+                        || (!BattlerHasAbility(ctx, client_no, ABILITY_SHIELD_DUST)
                             && HeldItemHoldEffectGet(ctx, client_no) != HOLD_EFFECT_PREVENT_SECONDARY_EFFECTS)) {
                         ctx->battlerIdTemp = client_no;
                         LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_HEAL_TARGET_BURN);
@@ -1551,7 +1551,7 @@ int LONG_CALL Activate_RampageConfusion(void *bsys UNUSED, struct BattleStruct *
 int LONG_CALL Activate_ShellBell_LifeOrb(void *bw UNUSED, struct BattleStruct *sp)
 {
     if (!IsAttackerOnField(sp)
-        || (GetBattlerAbility(sp, sp->attack_client) == ABILITY_SHEER_FORCE
+        || (BattlerHasAbility(sp, sp->attack_client, ABILITY_SHEER_FORCE)
             && sp->battlemon[sp->attack_client].sheer_force_flag == 1)) { // skip over shell bell and life orb if sheer force is active
         return FALSE;
     }
@@ -1575,7 +1575,7 @@ int LONG_CALL Activate_ShellBell_LifeOrb(void *bw UNUSED, struct BattleStruct *s
         break;
     }
     case HOLD_EFFECT_HP_DRAIN_ON_ATK: {
-        if ((GetBattlerAbility(sp, sp->attack_client) != ABILITY_MAGIC_GUARD)
+        if ((!BattlerHasAbility(sp, sp->attack_client, ABILITY_MAGIC_GUARD))
             && (GetMoveSplit(sp, sp->current_move_index) != SPLIT_STATUS)
             && (sp->battlemon[sp->attack_client].hp)) {
             sp->hp_calc_work = BattleDamageDivide(sp->battlemon[sp->attack_client].maxhp * -1, 10);
@@ -1753,7 +1753,7 @@ int LONG_CALL Activate_FormChange(void *bsys, struct BattleStruct *ctx)
     } break;
     case SPECIES_GRENINJA:
         if (ctx->oneTurnFlag[ctx->attack_client].numberOfKOs) {
-            if (GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_BATTLE_BOND
+            if (BattlerHasAbility(ctx, ctx->attack_client, ABILITY_BATTLE_BOND)
                 && ctx->battlemon[ctx->attack_client].form_no == 1
                 && ctx->onceOnlyAbilityFlags[SanitizeClientForTeamAccess(bsys, ctx->attack_client)][ctx->sel_mons_no[ctx->attack_client]].battleBondFlag == FALSE) {
                 ctx->state_client = ctx->attack_client;
@@ -1862,7 +1862,7 @@ int LONG_CALL Activate_KeeMarangaBerry_RedCard_EjectButton(void *bsys, struct Ba
             // Defender is alive after the attack
             if (!ctx->futureSightHitTurn
                 && (ctx->currentMoveSwitchStatus < CURRENT_MOVE_SWITCH_PENDING)
-                && !((GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_SHEER_FORCE) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
+                && !((BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SHEER_FORCE)) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
                 && ((ctx->oneSelfFlag[client_no].physical_damage)
                     || (ctx->oneSelfFlag[client_no].special_damage))
                 && CanSwitchMon(bsys, ctx, client_no)) {
@@ -1882,7 +1882,7 @@ int LONG_CALL Activate_KeeMarangaBerry_RedCard_EjectButton(void *bsys, struct Ba
             if (IsAttackerOnField(ctx)
                 && !ctx->futureSightHitTurn
                 && ctx->battlemon[ctx->attack_client].hp
-                && !((GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_SHEER_FORCE) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
+                && !((BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SHEER_FORCE)) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
                 //&& (ctx->currentMoveSwitchStatus < CURRENT_MOVE_SWITCH_PENDING)
                 // Damage was dealt
                 && ((ctx->oneSelfFlag[client_no].physical_damage)
@@ -1963,7 +1963,7 @@ int LONG_CALL Activate_Berserk_AngerShell_ColorChange(void *bsys UNUSED, struct 
                 && (ctx->battlemon[client_no].states[STAT_SPECIAL_ATTACK] < 12)
                 && ((ctx->oneSelfFlag[client_no].physical_damage) || (ctx->oneSelfFlag[client_no].special_damage))
                 // berserk doesn't activate if the Pokémon gets attacked by a sheer force boosted move
-                && !((GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_SHEER_FORCE) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
+                && !((BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SHEER_FORCE)) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
                 // berserk doesn't activate until the last hit of a multi-hit move
                 && (ctx->battlemon[client_no].hp <= (s32)(ctx->battlemon[client_no].maxhp / 2))
                 && (
@@ -1989,7 +1989,7 @@ int LONG_CALL Activate_Berserk_AngerShell_ColorChange(void *bsys UNUSED, struct 
                     || (ctx->battlemon[client_no].states[STAT_SPECIAL_DEFENSE] > 0))
                 && ((ctx->oneSelfFlag[client_no].physical_damage) || (ctx->oneSelfFlag[client_no].special_damage))
                 // anger shell doesn't activate if the Pokémon gets attacked by a sheer force boosted move
-                && !((GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_SHEER_FORCE) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
+                && !((BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SHEER_FORCE)) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
                 // anger shell doesn't activate until the last hit of a multi-hit move
                 && (ctx->battlemon[client_no].hp <= (s32)(ctx->battlemon[client_no].maxhp / 2))
                 && (
@@ -2007,7 +2007,7 @@ int LONG_CALL Activate_Berserk_AngerShell_ColorChange(void *bsys UNUSED, struct 
                 return TRUE;
             }
         } else if (MoldBreakerAbilityCheck(ctx, ctx->attack_client, client_no, ABILITY_COLOR_CHANGE)) {
-            if (GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_SHEER_FORCE && ctx->battlemon[ctx->attack_client].sheer_force_flag == 1) { // sheer force doesn't let color change activate
+            if (BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SHEER_FORCE) && ctx->battlemon[ctx->attack_client].sheer_force_flag == 1) { // sheer force doesn't let color change activate
                 return FALSE;
             }
 
@@ -2061,7 +2061,7 @@ int LONG_CALL Activate_Pickpocket(void *bsys, struct BattleStruct *sp)
                 // if the attacker has its species-specific item or the target would get its item, then pickpocket can not activate
                 && CanTrickHeldItem(sp, sp->attack_client, client_no)
                 // pickpocket doesn't activate if attacked by sheer force
-                && !(GetBattlerAbility(sp, sp->attack_client) == ABILITY_SHEER_FORCE && sp->battlemon[sp->attack_client].sheer_force_flag == 1)) {
+                && !(BattlerHasAbility(sp, sp->attack_client, ABILITY_SHEER_FORCE) && sp->battlemon[sp->attack_client].sheer_force_flag == 1)) {
 
                 sp->defence_client = client_no;
                 LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_HANDLE_PICKPOCKET_DEF);
@@ -2694,8 +2694,8 @@ int LONG_CALL Activate_WimpOut_EmergencyExit(void *bsys, struct BattleStruct *ct
         }
 
         if ((ctx->currentMoveSwitchStatus < CURRENT_MOVE_SWITCH_PENDING)
-            && ((GetBattlerAbility(ctx, client_no) == ABILITY_WIMP_OUT) // not affected by Mold Breaker
-                || (GetBattlerAbility(ctx, client_no) == ABILITY_EMERGENCY_EXIT))
+            && ((BattlerHasAbility(ctx, client_no, ABILITY_WIMP_OUT)) // not affected by Mold Breaker
+                || (BattlerHasAbility(ctx, client_no, ABILITY_EMERGENCY_EXIT)))
             && (ctx->pursuitContext.isActive == FALSE)
             //&& ((ctx->battlemon[client_no].effect_of_moves & MOVE_EFFECT_FLAG_SEMI_INVULNERABLE) == 0) // unsure if bug
             && (ctx->battlemon[client_no].hp <= (s32)(ctx->battlemon[client_no].maxhp / 2))
@@ -2710,7 +2710,7 @@ int LONG_CALL Activate_WimpOut_EmergencyExit(void *bsys, struct BattleStruct *ct
                 int overallDamage = ctx->store_damage[ctx->defence_client];
                 if ((ctx->oneSelfFlag[client_no].physical_damage || ctx->oneSelfFlag[client_no].special_damage)
                     // EE doesn't activate if the Pokémon gets attacked by a sheer force boosted move
-                    && !((GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_SHEER_FORCE) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
+                    && !((BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SHEER_FORCE)) && (ctx->battlemon[ctx->attack_client].sheer_force_flag == 1))
                     && (
                         // checks if the pokémon has gone below half HP from the current damage instance
                         (ctx->battlemon[client_no].hp - overallDamage) > (s32)ctx->battlemon[client_no].maxhp / 2)) {

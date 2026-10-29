@@ -552,7 +552,9 @@ u32 LONG_CALL MoldBreakerAbilityCheckInternal(int attacker, int defender, int at
  */
 u32 LONG_CALL MoldBreakerAbilityCheck(struct BattleStruct *sp, int attacker, int defender, u32 ability)
 {
-    return MoldBreakerAbilityCheckInternal(attacker, defender, IsAttackerOnField(sp) ? GetBattlerAbility(sp, attacker) : ABILITY_NONE, GetBattlerAbility(sp, defender), sp->current_move_index, sp->moveTbl[sp->current_move_index].split, ability);
+    // D-024: Mold Breaker ignores the main ability only; innates always count
+    return MoldBreakerAbilityCheckInternal(attacker, defender, IsAttackerOnField(sp) ? GetBattlerAbility(sp, attacker) : ABILITY_NONE, GetBattlerAbility(sp, defender), sp->current_move_index, sp->moveTbl[sp->current_move_index].split, ability)
+        || BattlerHasInnate(sp, defender, ability);
 }
 
 /**
@@ -617,12 +619,12 @@ BOOL LONG_CALL SynchroniseAbilityCheck(void *bw, struct BattleStruct *sp, int se
 BOOL LONG_CALL TryGetSynchronizeStatusSubsequence(struct BattleStruct *sp, int *seq_no)
 {
     if ((sp->defence_client != 0xFF)
-        && (GetBattlerAbility(sp, sp->defence_client) == ABILITY_SYNCHRONIZE)
+        && (BattlerHasAbility(sp, sp->defence_client, ABILITY_SYNCHRONIZE))
         && (sp->defence_client == sp->state_client)
         && (sp->server_status_flag & SERVER_STATUS_FLAG_SYNCHRONIZE)) {
         sp->battlerIdTemp = sp->defence_client;
         sp->state_client = sp->attack_client;
-    } else if ((GetBattlerAbility(sp, sp->attack_client) == ABILITY_SYNCHRONIZE)
+    } else if ((BattlerHasAbility(sp, sp->attack_client, ABILITY_SYNCHRONIZE))
         && (sp->attack_client == sp->state_client)
         && (sp->server_status_flag & SERVER_STATUS_FLAG_SYNCHRONIZE)) {
         sp->battlerIdTemp = sp->attack_client;
@@ -697,13 +699,13 @@ BOOL ServerFlinchCheck(void *bw, struct BattleStruct *sp)
     heldeffect = HeldItemHoldEffectGet(sp, sp->attack_client);
     atk = HeldItemAtkGet(sp, sp->attack_client, 0);
 
-    if (GetBattlerAbility(sp, sp->attack_client) == ABILITY_STENCH) // stench adds 10% flinch chance
+    if (BattlerHasAbility(sp, sp->attack_client, ABILITY_STENCH)) // stench adds 10% flinch chance
     {
         atk += 10;
         heldeffect = HOLD_EFFECT_SOMETIMES_FLINCH; // doesn't permanently change the hold effect, just for this function
     }
 
-    if (GetBattlerAbility(sp, sp->attack_client) == ABILITY_SERENE_GRACE) {
+    if (BattlerHasAbility(sp, sp->attack_client, ABILITY_SERENE_GRACE)) {
         sereneGraceShift = 1;
     }
 

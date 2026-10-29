@@ -517,11 +517,11 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                     switch (GetBattlerAbility(sp, battlerId)) {
                     case ABILITY_SHED_SKIN:
                     case ABILITY_HYDRATION:
-                        if ((GetBattlerAbility(sp, battlerId) == ABILITY_SHED_SKIN
+                        if ((BattlerHasAbility(sp, battlerId, ABILITY_SHED_SKIN)
                                 && sp->battlemon[battlerId].condition & STATUS_ANY_PERSISTENT
                                 && sp->battlemon[battlerId].hp
                                 && (BattleRand(bw) % 3 == 0)) // Generation V onward: Shed Skin has a 1/3 chance of curing the Pokémon.
-                            || (GetBattlerAbility(sp, battlerId) == ABILITY_HYDRATION
+                            || (BattlerHasAbility(sp, battlerId, ABILITY_HYDRATION)
                                 && GetWeather(bw, sp, 0xFF) & FIELD_CONDITION_RAIN_ALL
                                 && sp->battlemon[battlerId].hp
                                 && (u8)sp->battlemon[battlerId].condition)) {
@@ -725,7 +725,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
 
                 if ((sp->battlemon[battlerId].effect_of_moves & MOVE_EFFECT_FLAG_LEECH_SEED)
                     && (sp->battlemon[sp->battlemon[battlerId].effect_of_moves & MOVE_EFFECT_FLAG_LEECH_SEED_RECIPIENT].hp != 0)
-                    && (GetBattlerAbility(sp, battlerId) != ABILITY_MAGIC_GUARD)
+                    && (!BattlerHasAbility(sp, battlerId, ABILITY_MAGIC_GUARD))
                     && IsBattlerOnField(sp, battlerId)) {
                     sp->attack_client_work = sp->battlemon[battlerId].effect_of_moves & MOVE_EFFECT_FLAG_LEECH_SEED_RECIPIENT;
                     sp->defence_client_work = battlerId;
@@ -1625,7 +1625,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                     } else if (sp->battlemon[battlerId].condition2 & STATUS2_UPROAR) {
                         u8 battlerIdSleep;
                         for (battlerIdSleep = 0; battlerIdSleep < client_set_max; battlerIdSleep++) {
-                            if ((sp->battlemon[battlerIdSleep].condition & STATUS_SLEEP) && sp->battlemon[battlerIdSleep].hp != 0 && GetBattlerAbility(sp, battlerIdSleep) != ABILITY_SOUNDPROOF) {
+                            if ((sp->battlemon[battlerIdSleep].condition & STATUS_SLEEP) && sp->battlemon[battlerIdSleep].hp != 0 && !BattlerHasAbility(sp, battlerIdSleep, ABILITY_SOUNDPROOF)) {
                                 sp->battlerIdTemp = battlerIdSleep;
                                 LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_WAKE_UP);
                                 sp->next_server_seq_no = sp->server_seq_no;
@@ -1729,7 +1729,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                         break;
                     }
                     case ABILITY_SLOW_START: {
-                        if ((sp->battlemon[battlerId].slow_start_end_flag == 0) && (sp->battlemon[battlerId].hp) && (GetBattlerAbility(sp, battlerId) == ABILITY_SLOW_START) && ((sp->total_turn - sp->battlemon[battlerId].moveeffect.slowStartTurns) == 5)) {
+                        if ((sp->battlemon[battlerId].slow_start_end_flag == 0) && (sp->battlemon[battlerId].hp) && (BattlerHasAbility(sp, battlerId, ABILITY_SLOW_START)) && ((sp->total_turn - sp->battlemon[battlerId].moveeffect.slowStartTurns) == 5)) {
                             sp->battlemon[battlerId].slow_start_end_flag = 1;
                             sp->battlerIdTemp = battlerId;
                             seq_no = BATTLE_SUBSCRIPT_SLOW_START_END;
@@ -1739,7 +1739,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                     }
                     case ABILITY_BAD_DREAMS: {
                         while (sp->updateMonConditionData < client_set_max) {
-                            if (sp->updateMonConditionData != battlerId && sp->updateMonConditionData != BATTLER_ALLY(battlerId) && (sp->battlemon[sp->updateMonConditionData].condition & STATUS_SLEEP) && GetBattlerAbility(sp, sp->updateMonConditionData) != ABILITY_MAGIC_GUARD && sp->battlemon[sp->updateMonConditionData].hp != 0) {
+                            if (sp->updateMonConditionData != battlerId && sp->updateMonConditionData != BATTLER_ALLY(battlerId) && (sp->battlemon[sp->updateMonConditionData].condition & STATUS_SLEEP) && !BattlerHasAbility(sp, sp->updateMonConditionData, ABILITY_MAGIC_GUARD) && sp->battlemon[sp->updateMonConditionData].hp != 0) {
                                 seq_no = BATTLE_SUBSCRIPT_BAD_DREAMS;
                                 sp->hp_calc_work = BattleDamageDivide(sp->battlemon[sp->updateMonConditionData].maxhp * -1, 8); // 1/8 health drop, can probably put binding band in here too soon
 #ifdef DEBUG_ENDTURN_LOGIC
@@ -1763,7 +1763,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                         sp->next_server_seq_no = sp->server_seq_no;
                         sp->server_seq_no = MOVE_SEQUENCE_NO; // not sure what this corresponds to
                     }
-                    if (GetBattlerAbility(sp, battlerId) == ABILITY_BAD_DREAMS) {
+                    if (BattlerHasAbility(sp, battlerId, ABILITY_BAD_DREAMS)) {
                         if (sp->updateMonConditionData >= client_set_max) {
                             sp->updateMonConditionData = 0;
                             sp->endTurnEventBlockSequenceNumber++;
@@ -1874,7 +1874,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
 
                     if (sp->battlemon[battlerId].species == SPECIES_MORPEKO
                         && sp->battlemon[battlerId].hp
-                        && GetBattlerAbility(sp, battlerId) == ABILITY_HUNGER_SWITCH
+                        && BattlerHasAbility(sp, battlerId, ABILITY_HUNGER_SWITCH)
                         && !sp->battlemon[battlerId].is_currently_terastallized
                         && !(sp->battlemon[battlerId].condition2 & STATUS2_TRANSFORM)) {
                         sp->battlemon[battlerId].form_no ^= 1;

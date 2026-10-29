@@ -18,6 +18,8 @@
 #include "bag.h"
 #include "battle.h"
 #include "overlay.h"
+#include "pmfg_innates.h"
+#include "pmfg_settings.h"
 #include "rtc.h"
 #include "save.h"
 #include "script.h"
@@ -1727,15 +1729,8 @@ u32 LONG_CALL GetLevelCap(void)
 #ifdef DEBUG_BATTLE_SCENARIOS
     return 0;
 #else
-#ifdef IMPLEMENT_LEVEL_CAP
-    u32 levelCap = GetScriptVar(LEVEL_CAP_VARIABLE);
-    if (levelCap > 100 || levelCap == 0) {
-        levelCap = 100;
-    }
-    return levelCap;
-#else
-    return 100;
-#endif // IMPLEMENT_LEVEL_CAP
+    // PMFG (REQ-TGT-SYS-002): only the HARD setting caps leveling; SOFT shrinks EXP instead (battle_script_commands.c)
+    return PMFG_GetSetting(SETTING_LEVEL_CAP) == SETTING_LEVEL_CAP_HARD ? PMFG_ProgressLevelCap() : 100;
 #endif // DEBUG_BATTLE_SCENARIOS
 }
 

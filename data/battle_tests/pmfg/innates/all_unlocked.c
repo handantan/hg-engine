@@ -1,5 +1,5 @@
 // Test: PMFG Innates - all unlocked innates are active alongside the main ability
-// REQ-TGT-MON-001: criterion 1. Uses Feraligatr's innate 3 (Intimidate) from target/data/innates.csv; update if that row changes. Test battles count as all-unlocked.
+// REQ-TGT-MON-001: criterion 1. Uses Feraligatr's innate 3 (Intimidate) from target/data/innates.csv; update if that row changes. Sets .innatesUnlocked, as battle facilities force innates on.
 #include "../../battle_tests.h"
 BEGIN_TEST
 {
@@ -64,8 +64,9 @@ BEGIN_TEST
         },
     },
     .expectations = {
-        { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "Feraligatr's Intimidate" },
+        // the effect, not the popup: the popup still names the main ability ("Feraligatr's Torrent"), REQ-TGT-MON-003
+        { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "The opposing Snorlax's Attack fell!" },
     },
-    .knownFailing = TRUE, // red until Phase 4 implements the REQ
+    .innatesUnlocked = TRUE,
 }
 END_TEST

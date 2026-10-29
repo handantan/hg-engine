@@ -22,6 +22,8 @@
 #include "pokemon.h"
 #include "q412.h"
 #include "save.h"
+#include "pmfg_settings.h"
+#include "pmfg_innates.h"
 #include "system.h"
 #include "window.h"
 
@@ -1067,7 +1069,7 @@ BOOL btl_scr_cmd_24_jumptocurmoveeffectscript(void *bw UNUSED, struct BattleStru
         effect = MOVE_EFFECT_HIT;
     }
 
-    if (GetBattlerAbility(sp, sp->attack_client) == ABILITY_SHEER_FORCE || HeldItemHoldEffectGet(sp, sp->defence_client) == HOLD_EFFECT_PREVENT_SECONDARY_EFFECTS) {
+    if (BattlerHasAbility(sp, sp->attack_client, ABILITY_SHEER_FORCE) || HeldItemHoldEffectGet(sp, sp->defence_client) == HOLD_EFFECT_PREVENT_SECONDARY_EFFECTS) {
         // list taken from bulbapedia article on sheer force and the moves affected.
         // Also applies to covert cloak
         switch (effect) {
@@ -1134,7 +1136,7 @@ BOOL btl_scr_cmd_24_jumptocurmoveeffectscript(void *bw UNUSED, struct BattleStru
             break;
         }
 
-        if (GetBattlerAbility(sp, sp->attack_client) == ABILITY_SHEER_FORCE) {
+        if (BattlerHasAbility(sp, sp->attack_client, ABILITY_SHEER_FORCE)) {
             // moves boosted by sheer force that still maintain their effect
             if ((sheer_force_active == TRUE)
                 || (sp->current_move_index == MOVE_SPARKLING_ARIA)
@@ -1341,6 +1343,39 @@ u8 ALIGN4 scratchpad[4] = { 0, 0, 0, 0 };
 #define trackPartyExperience scratchpad[2]
 
 /**
+ *  @brief apply the PMFG level cap (REQ-TGT-SYS-002) and exp_multiplier (REQ-TGT-SYS-003) settings to the experience just calculated
+ *
+ *  @param sp global battle structure
+ *  @param pp the Pokémon gaining the experience
+ */
+static void ApplyExpMultiplier(struct BattleStruct *sp, struct PartyPokemon *pp)
+{
+    // REQ-TGT-SYS-002 SOFT level cap (SoulGold): EXP / 4, 8, 16, 32, 64 for 0, 1, 2, 3, 4+ levels at or over the cap
+    if (pp != NULL && PMFG_GetSetting(SETTING_LEVEL_CAP) == SETTING_LEVEL_CAP_SOFT) {
+        u32 level = GetMonData(pp, MON_DATA_LEVEL, NULL), cap = PMFG_ProgressLevelCap();
+        if (level >= cap) {
+            u32 shift = 2 + (level - cap > 4 ? 4 : level - cap);
+            sp->obtained_exp >>= shift;
+            sp->exp_share_obtained_exp >>= shift;
+        }
+    }
+    switch (PMFG_GetSetting(SETTING_EXP_MULTIPLIER)) {
+        case SETTING_EXP_MULTIPLIER_X1_5:
+            sp->obtained_exp = sp->obtained_exp * 3 / 2;
+            sp->exp_share_obtained_exp = sp->exp_share_obtained_exp * 3 / 2;
+            break;
+        case SETTING_EXP_MULTIPLIER_X2:
+            sp->obtained_exp *= 2;
+            sp->exp_share_obtained_exp *= 2;
+            break;
+        case SETTING_EXP_MULTIPLIER_X0:
+            sp->obtained_exp = 0;
+            sp->exp_share_obtained_exp = 0;
+            break;
+    }
+}
+
+/**
  *  @brief task to distribute experience
  *
  *  @param arg0 task structure
@@ -1449,6 +1484,7 @@ void Task_DistributeExp_Extend(void *arg0, void *work)
                 }
                 sp->exp_share_obtained_exp = 0;
             }
+            ApplyExpMultiplier(sp, pp);
         }
     }
 
@@ -1507,6 +1543,7 @@ void Task_DistributeExp_Extend(void *arg0, void *work)
             }
             sp->exp_share_obtained_exp = 0;
         }
+        ApplyExpMultiplier(sp, pp);
     }
 
 #ifdef DEBUG_PRINT_EXPERIENCE_VALUES
@@ -1885,9 +1922,9 @@ s32 LONG_CALL GetPokemonWeight(void *bw UNUSED, struct BattleStruct *sp, int att
 
     // Handle Heavy Ball (not attacking)
     if (attack_client == -1) {
-        if (GetBattlerAbility(sp, client) == ABILITY_HEAVY_METAL) {
+        if (BattlerHasAbility(sp, client, ABILITY_HEAVY_METAL)) {
             weight *= 2;
-        } else if (GetBattlerAbility(sp, client) == ABILITY_LIGHT_METAL) {
+        } else if (BattlerHasAbility(sp, client, ABILITY_LIGHT_METAL)) {
             weightModifier *= 2;
         }
     } else {
@@ -2231,8 +2268,8 @@ BOOL LONG_CALL MoldBreakerIsClientGrounded(struct BattleStruct *sp, u32 attacker
 {
     u8 holdeffect = HeldItemHoldEffectGet(sp, defender);
 
-    BOOL hasLevitate = attacker == defender ? GetBattlerAbility(sp, defender) == ABILITY_LEVITATE : MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_LEVITATE);
-    BOOL hasEelevate = attacker == defender ? GetBattlerAbility(sp, defender) == ABILITY_EELEVATE : MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_EELEVATE);
+    BOOL hasLevitate = attacker == defender ? (u32)BattlerHasAbility(sp, defender, ABILITY_LEVITATE) : MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_LEVITATE);
+    BOOL hasEelevate = attacker == defender ? (u32)BattlerHasAbility(sp, defender, ABILITY_EELEVATE) : MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_EELEVATE);
 
     if ((!hasLevitate && !hasEelevate && holdeffect != HOLD_EFFECT_UNGROUND_DESTROYED_ON_HIT // not holding Air Balloon
             && (sp->battlemon[defender].moveeffect.magnetRiseTurns) == 0 && !HasType(sp, defender, TYPE_FLYING))
@@ -2694,17 +2731,17 @@ BOOL btl_scr_cmd_F9_canclearprimalweather(void *bw, struct BattleStruct *sp)
             client_no = sp->turnOrder[i];
             switch (currentPrimalWeather) {
             case FIELD_CONDITION_EXTREMELY_HARSH_SUNLIGHT:
-                if (GetBattlerAbility(sp, client_no) == ABILITY_DESOLATE_LAND && sp->battlemon[client_no].hp != 0) {
+                if (BattlerHasAbility(sp, client_no, ABILITY_DESOLATE_LAND) && sp->battlemon[client_no].hp != 0) {
                     count++;
                 }
                 break;
             case FIELD_CONDITION_HEAVY_RAIN:
-                if (GetBattlerAbility(sp, client_no) == ABILITY_PRIMORDIAL_SEA && sp->battlemon[client_no].hp != 0) {
+                if (BattlerHasAbility(sp, client_no, ABILITY_PRIMORDIAL_SEA) && sp->battlemon[client_no].hp != 0) {
                     count++;
                 }
                 break;
             case FIELD_CONDITION_STRONG_WINDS:
-                if (GetBattlerAbility(sp, client_no) == ABILITY_DELTA_STREAM && sp->battlemon[client_no].hp != 0) {
+                if (BattlerHasAbility(sp, client_no, ABILITY_DELTA_STREAM) && sp->battlemon[client_no].hp != 0) {
                     count++;
                 }
                 break;
@@ -2927,11 +2964,11 @@ BOOL btl_scr_cmd_FE_calcconfusiondamage(void *bsys, struct BattleStruct *ctx)
     ctx->hp_calc_work *= -1;
 
     if ((ctx->battlemon[attacker].species == SPECIES_MIMIKYU
-            && (GetBattlerAbility(ctx, attacker) == ABILITY_DISGUISE)
+            && (BattlerHasAbility(ctx, attacker, ABILITY_DISGUISE))
             && (ctx->battlemon[attacker].form_no == 0 || ctx->battlemon[attacker].form_no == 2)
             && !(ctx->battlemon[attacker].condition2 & STATUS2_TRANSFORM))
         || (ctx->battlemon[attacker].species == SPECIES_EISCUE
-            && (GetBattlerAbility(ctx, attacker) == ABILITY_ICE_FACE)
+            && (BattlerHasAbility(ctx, attacker, ABILITY_ICE_FACE))
             && (ctx->battlemon[attacker].form_no == 0)
             && !(ctx->battlemon[attacker].condition2 & STATUS2_TRANSFORM))) {
         ctx->hp_calc_work = 0;
@@ -3229,7 +3266,7 @@ BOOL btl_scr_cmd_103_checkprotectcontactmoves(void *bsys UNUSED, struct BattleSt
             }
             break;
         case MOVE_SPIKY_SHIELD:
-            if (GetBattlerAbility(ctx, ctx->attack_client) != ABILITY_MAGIC_GUARD) {
+            if (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_MAGIC_GUARD)) {
                 ctx->hp_calc_work = BattleDamageDivide(ctx->battlemon[ctx->attack_client].maxhp * -1, 8);
                 ctx->addeffect_type = SIDE_EFFECT_TYPE_CONTACT_PROTECTED;
                 ctx->battlerIdTemp = ctx->attack_client;
@@ -3527,7 +3564,7 @@ BOOL BtlCmd_SetMultiHit(struct BattleSystem *bsys, struct BattleStruct *ctx)
     if (ctx->multiHitCountTemp == 0) {
         // Handle 2-5 hits
         if (cnt == 0) {
-            if (GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_SKILL_LINK) {
+            if (BattlerHasAbility(ctx, ctx->attack_client, ABILITY_SKILL_LINK)) {
                 cnt = 5;
             } else if ((ctx->battlemon[ctx->attack_client].species == SPECIES_GRENINJA && ctx->battlemon[ctx->attack_client].form_no == 1)
                 && ctx->current_move_index == MOVE_WATER_SHURIKEN) {
@@ -3774,7 +3811,7 @@ BOOL BtlCmd_CheckSubstitute(void *bsys, struct BattleStruct *ctx)
     // handle infiltrator
     if ((ctx->addeffect_type == 4 || ctx->addeffect_type == 1) // SIDE_EFFECT_TYPE_MOVE_EFFECT || SIDE_EFFECT_TYPE_DIRECT
                                                                // if the current check is being done from a move or move effect
-        && GetBattlerAbility(ctx, ctx->attack_client) == ABILITY_INFILTRATOR // and the attacker's ability is infiltrator
+        && BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR) // and the attacker's ability is infiltrator
         && ctx->current_move_index != MOVE_TRANSFORM // and the move is not transform
         && ctx->current_move_index != MOVE_SKY_DROP) // and the move is not sky drop
     {
@@ -5458,7 +5495,7 @@ BOOL BtlCmd_TryPursuit(struct BattleSystem *bsys, struct BattleStruct *ctx)
                 moveIndex = BattleMon_GetMoveIndex(&ctx->battlemon[battlerId], moveNo);
                 if (ctx->moveTbl[moveNo].effect == MOVE_EFFECT_HIT_BEFORE_SWITCH && ctx->battlemon[battlerId].pp[moveIndex]) {
                     // ctx->battlemon[battlerId].movePPCur[moveIndex]--;
-                    /* if (GetBattlerAbility(ctx, ctx->battlerIdSwitch) == ABILITY_PRESSURE && ctx->battlemon[battlerId].movePPCur[moveIndex]) {
+                    /* if (BattlerHasAbility(ctx, ctx->battlerIdSwitch, ABILITY_PRESSURE) && ctx->battlemon[battlerId].movePPCur[moveIndex]) {
                        ctx->battlemon[battlerId].movePPCur[moveIndex]--;
                    }
                    */
@@ -5987,8 +6024,8 @@ BOOL btl_scr_cmd_12C_TryActivateEmergencyExit(void *bsys, struct BattleStruct *c
     int noActivation = read_battle_script_param(ctx);
 
     if (IsBattlerOnField(ctx, client_no)
-        && ((GetBattlerAbility(ctx, client_no) == ABILITY_WIMP_OUT) // not affected by Mold Breaker
-            || (GetBattlerAbility(ctx, client_no) == ABILITY_EMERGENCY_EXIT))
+        && ((BattlerHasAbility(ctx, client_no, ABILITY_WIMP_OUT)) // not affected by Mold Breaker
+            || (BattlerHasAbility(ctx, client_no, ABILITY_EMERGENCY_EXIT)))
         //&& ((ctx->battlemon[client_no].effect_of_moves & MOVE_EFFECT_FLAG_SEMI_INVULNERABLE) == 0) // unsure if bug
         && (ctx->battlemon[client_no].hp <= (s32)(ctx->battlemon[client_no].maxhp / 2))
         // EE can be triggered by any residual damage, such as Burn, Sandstorm, Curse, etc

@@ -202,15 +202,15 @@ u16 LONG_CALL GetBattleMonItem(struct BattleStruct *sp, int client_no)
     if (client_no == BATTLER_NONE) {
         return 0;
     }
-    if (GetBattlerAbility(sp, client_no) == ABILITY_KLUTZ) {
+    if (BattlerHasAbility(sp, client_no, ABILITY_KLUTZ)) {
         return 0;
     }
     if (sp->battlemon[client_no].moveeffect.embargoFlag) {
         return 0;
     }
     // handle unnerve:  if an opposing pokemon has unnerve and the item it is holding is a berry, then no item will be read.
-    if (((GetBattlerAbility(sp, BATTLER_OPPONENT(client_no)) == ABILITY_UNNERVE && sp->battlemon[BATTLER_OPPONENT(client_no)].hp != 0)
-            || (GetBattlerAbility(sp, BATTLER_ACROSS(client_no)) == ABILITY_UNNERVE && sp->battlemon[BATTLER_ACROSS(client_no)].hp != 0))
+    if (((BattlerHasAbility(sp, BATTLER_OPPONENT(client_no), ABILITY_UNNERVE) && sp->battlemon[BATTLER_OPPONENT(client_no)].hp != 0)
+            || (BattlerHasAbility(sp, BATTLER_ACROSS(client_no), ABILITY_UNNERVE) && sp->battlemon[BATTLER_ACROSS(client_no)].hp != 0))
         && (IS_ITEM_BERRY(sp->battlemon[client_no].item))) {
         return 0;
     }
