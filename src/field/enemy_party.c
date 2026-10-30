@@ -18,6 +18,8 @@
 #include "save.h"
 #include "script.h"
 #include "trainer_data.h"
+#include "pmfg_settings.h"
+#include "pmfg_innates.h"
 
 #ifdef DEBUG_BATTLE_SCENARIOS
 #include "test_battle.h"
@@ -57,6 +59,41 @@ void randomize(int arr[], int n)
 }
 
 extern u32 gLastPokemonLevelForMoneyCalc;
+
+/**
+ *  @brief REQ-TGT-TRN-002: highest authored level in a trpoke buffer. Walks the records with the same field sizes
+ *         MakeTrainerPokemonParty reads below; keep the two in step.
+ */
+static u32 TrainerPartyHighestLevel(const u8 *buf, u8 dataType, u8 pokecount)
+{
+    u32 offset = 0, highest = 1;
+    for (int i = 0; i < pokecount; i++) {
+        u32 level = buf[offset + 2] | (buf[offset + 3] << 8);
+        if (level > highest) {
+            highest = level;
+        }
+        offset += 6; // ivs, ability slot, level, species
+        offset += (dataType & TRAINER_DATA_TYPE_ITEMS) ? 2 : 0;
+        offset += (dataType & TRAINER_DATA_TYPE_MOVES) ? 8 : 0;
+        offset += (dataType & TRAINER_DATA_TYPE_ABILITY) ? 2 : 0;
+        offset += (dataType & TRAINER_DATA_TYPE_BALL) ? 2 : 0;
+        offset += (dataType & TRAINER_DATA_TYPE_IV_EV_SET) ? 12 : 0;
+        offset += (dataType & TRAINER_DATA_TYPE_NATURE_SET) ? 1 : 0;
+        offset += (dataType & TRAINER_DATA_TYPE_SHINY_LOCK) ? 1 : 0;
+        if (dataType & TRAINER_DATA_TYPE_ADDITIONAL_FLAGS) {
+            u32 flags = buf[offset] | (buf[offset + 1] << 8) | (buf[offset + 2] << 16) | (buf[offset + 3] << 24);
+            offset += 4;
+            offset += (flags & TRAINER_DATA_EXTRA_TYPE_STATUS) ? 4 : 0;
+            for (u32 f = TRAINER_DATA_EXTRA_TYPE_HP; f <= TRAINER_DATA_EXTRA_TYPE_SP_DEF; f <<= 1) {
+                offset += (flags & f) ? 2 : 0;
+            }
+            offset += (flags & TRAINER_DATA_EXTRA_TYPE_PP_COUNTS) ? 4 : 0;
+            offset += (flags & TRAINER_DATA_EXTRA_TYPE_NICKNAME) ? 22 : 0;
+        }
+        offset += 2; // ball seal
+    }
+    return highest;
+}
 
 /**
  *  @brief create the trainer Party from the trainer data file and trainer party file
@@ -128,6 +165,22 @@ void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
     }
 
     struct PartyPokemon *mons[pokecount];
+
+    // REQ-TGT-TRN-002 (refs/soulgold/src/battle_main.c:2010-2085, level_scaling.c:179-195,404-430,483-508): party
+    // average + 1 - a per-save, per-trainer 0..1, minus each mon's authored gap below the top (at most 2)
+    u32 scaledPartyLevel = 0, highestLevel = 0;
+    if (PMFG_GetSetting(SETTING_TRAINER_LEVEL_SCALING) == SETTING_TRAINER_LEVEL_SCALING_ON) {
+        u32 id = bp->trainer_id[num];
+        highestLevel = TrainerPartyHighestLevel(buf, bp->trainer_data[num].data_type, pokecount);
+        scaledPartyLevel = PMFG_PartyScalingLevel();
+        if (id != 2 && id != 3 && id != 265) { // the first rival battles get no +1 and no variation (SoulGold)
+            u32 seed = PlayerProfile_GetTrainerID_VisibleHalf(Sav2_PlayerData_GetProfileAddr(SaveBlock2_get())) ^ (id * 1103515245u);
+            seed ^= seed >> 16;
+            seed *= 2246822519u;
+            seed ^= seed >> 13;
+            scaledPartyLevel += 1 - seed % 2;
+        }
+    }
 
     for (i = 0; i < pokecount; i++) {
         mons[i] = AllocMonZeroed(heapID);
@@ -281,6 +334,11 @@ void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
         }
         rnd = (rnd << 8) + rnd_tmp;
         pow = pow * 31 / 255;
+        if (scaledPartyLevel) {
+            u32 gap = highestLevel - level > 2 ? 2 : highestLevel - level;
+            level = scaledPartyLevel > gap ? scaledPartyLevel - gap : 1;
+            level = level > 100 ? 100 : level;
+        }
         PokeParaSet(mons[i], species, level, pow, 1, rnd, 2, 0);
         SetMonData(mons[i], MON_DATA_FORM, &form_no);
 
@@ -422,6 +480,50 @@ void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
 extern u32 space_for_setmondata;
 
 /**
+ *  @brief REQ-TGT-SYS-007: the shiny_odds setting (1/8192..1/256) as one extra roll on top of the base 1/8192, so the
+ *         total is ~1/N. Wild mons only, like H&S; SHINY_ODDS itself stays, as changing it would flip existing mons.
+ *
+ *  @param mon wild PartyPokemon whose personality may be rerolled to a shiny one
+ */
+static void TryApplyShinyOddsSetting(struct PartyPokemon *mon)
+{
+    static const u16 sOneIn[] = { 8192, 4096, 2048, 1024, 512, 256 }; // SETTING_SHINY_ODDS_* order
+    u32 otId = GetMonData(mon, MON_DATA_OTID, NULL), pid = GetMonData(mon, MON_DATA_PERSONALITY, NULL);
+    if (CalcShininessByOtIdAndPersonality(otId, pid) || gf_rand() % 8192 >= 8192 / sOneIn[PMFG_GetSetting(SETTING_SHINY_ODDS)] - 1) {
+        return;
+    }
+    pid = GenerateShinyPIDKeepSubstructuresIntact(otId, pid);
+    SetMonData(mon, MON_DATA_PERSONALITY, &pid);
+    RecalcPartyPokemonStats(mon);
+    ResetPartyPokemonAbility(mon);
+}
+
+/**
+ *  @brief REQ-TGT-TRN-002 (refs/soulgold/src/level_scaling.c:542-558, include/config/level_scaling.h:52-58): wild
+ *         level = party average - 8 - 0..2, never below 3.
+ *         shortcut: the rolled level is the floor (SoulGold floors at the slot minimum, which this hook can't see), so
+ *         scaling only raises levels; scripted wild battles through this hook scale too. Revisit if statics feel off.
+ *
+ *  @param mon wild PartyPokemon to re-level
+ *  @param fightType battle type flags (the Bug-Catching Contest never scales, as in SoulGold)
+ */
+static void TryApplyWildLevelScaling(struct PartyPokemon *mon, u32 fightType)
+{
+    if (PMFG_GetSetting(SETTING_WILD_LEVEL_SCALING) != SETTING_WILD_LEVEL_SCALING_ON || (fightType & BATTLE_TYPE_BUG_CONTEST)) {
+        return;
+    }
+    s32 level = (s32)PMFG_PartyScalingLevel() - 8 - gf_rand() % 3;
+    if (level <= (s32)GetMonData(mon, MON_DATA_LEVEL, NULL)) {
+        return;
+    }
+    u32 exp = GetExpByGrowthRateAndLevel(PokePersonalParaGet(GetMonData(mon, MON_DATA_SPECIES, NULL), PERSONAL_EXP_GROUP), level);
+    SetMonData(mon, MON_DATA_EXPERIENCE, &exp);
+    SetMonData(mon, MON_DATA_LEVEL, &level);
+    RecalcPartyPokemonStats(mon);
+    InitBoxMonMoveset(&mon->box);
+}
+
+/**
  *  @brief add a PartyPokemon to the "wild battler"'s party
  *
  *  @param inTarget battler whose party to add to
@@ -471,6 +573,8 @@ BOOL LONG_CALL AddWildPartyPokemon(int inTarget, EncounterInfo *encounterInfo, s
         InitBoxMonMoveset(&encounterPartyPokemon->box);
     }
 
+    TryApplyWildLevelScaling(encounterPartyPokemon, encounterBattleParam->fight_type);
+    TryApplyShinyOddsSetting(encounterPartyPokemon);
     ChangeToBattleForm(encounterPartyPokemon);
 
     return PokeParty_Add(encounterBattleParam->poke_party[inTarget], encounterPartyPokemon);

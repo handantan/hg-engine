@@ -10,14 +10,21 @@
 #include "constants/move_effects.h"
 
 #include "battle.h"
+#include "pmfg_settings.h"
 
 #ifdef DEBUG_BATTLE_SCENARIOS
 #include "test_battle.h"
 #endif // DEBUG_BATTLE_SCENARIOS
 
-#if defined(DISABLE_ITEMS_IN_TRAINER_BATTLE)
+// DISABLE_ITEMS_IN_TRAINER_BATTLE, or the PMFG player_items setting at OFF (REQ-TGT-SYS-005)
+// shortcut: OFF only blocks the bag in trainer battles; H&S also blocks non-ball items in wild battles, which needs a bag-side check
 void overrideItemUsage(struct BattleSystem *bsys, struct BattleStruct *ctx)
 {
+#if !defined(DISABLE_ITEMS_IN_TRAINER_BATTLE)
+    if (PMFG_GetSetting(SETTING_PLAYER_ITEMS) != SETTING_PLAYER_ITEMS_OFF) {
+        return;
+    }
+#endif
     BattleMessage msg;
     int battlerId;
     u32 fight_type = BattleTypeGet(bsys);
@@ -34,7 +41,6 @@ void overrideItemUsage(struct BattleSystem *bsys, struct BattleStruct *ctx)
         }
     }
 }
-#endif
 
 void overrideRunButton(struct BattleSystem *bsys, struct BattleStruct *ctx)
 {
@@ -108,9 +114,7 @@ BOOL LONG_CALL BattleContext_Main(struct BattleSystem *bsys, struct BattleStruct
 #ifdef DEBUG_BATTLE_SCENARIOS
     TestBattle_autoSelectPlayerMoves(bsys, ctx);
 #endif
-#if defined(DISABLE_ITEMS_IN_TRAINER_BATTLE)
     overrideItemUsage(bsys, ctx);
-#endif
     overrideRunButton(bsys, ctx);
 
     if (ctx->server_seq_no == CONTROLLER_COMMAND_45) {

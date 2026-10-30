@@ -21,6 +21,7 @@
 #include "../../include/constants/trainerclass.h"
 #include "../../include/trainer_data.h"
 #include "../../include/pmfg_innates.h"
+#include "../../include/pmfg_settings.h"
 
 typedef struct
 {
@@ -2202,6 +2203,13 @@ BOOL BattleTryRun(void *bw, struct BattleStruct *sp, int battlerId)
     } else if (BattlerHasAbility(sp, battlerId, ABILITY_RUN_AWAY)) {
         sp->oneTurnFlag[battlerId].escape_flag = 2;
         ret = TRUE;
+    } else if (PMFG_GetSetting(SETTING_LESS_ESCAPES) == SETTING_LESS_ESCAPES_ON) {
+        // REQ-TGT-SYS-005 (H&S battle_util.c:618-623, its `& 512` read as `% 512` per D-019): checked even when faster
+        ret = (u32)sp->battlemon[battlerId].speed * 128 / sp->battlemon[battlerId ^ 1].speed + sp->escape_count * 30 > (u32)(BattleRand(bw) % 512);
+        if (!ret) {
+            SCIO_IncRecord(bw, battlerId, 0, 99);
+        }
+        sp->escape_count++;
     } else {
         if (sp->battlemon[battlerId].speed < sp->battlemon[battlerId ^ 1].speed) {
             run = sp->battlemon[battlerId].speed * 128 / sp->battlemon[battlerId ^ 1].speed + sp->escape_count * 30;

@@ -11,6 +11,6 @@
 // the cap is the entry of the first milestone the player hasn't reached
 static const u8 sLevelCapUntil[] = { 1, 2, 3, 4, 5, 6, 7, 100, 8, 101, 102, 103, 255 };
 static const u8 sLevelCapTable_Normal[] = { 12, 19, 26, 34, 42, 45, 48, 55, 58, 62, 70, 100, 100 };
-static const u8 sLevelCapTable_Hard[] = { 8, 15, 20, 23, 29, 33, 37, 42, 42, 54, 54, 70, 100 };
+static const u8 sLevelCapTable_Hard[] = { 9, 16, 23, 31, 39, 42, 45, 52, 55, 59, 67, 70, 100 };
 
 #endif // PMFG_LEVEL_CAPS_H

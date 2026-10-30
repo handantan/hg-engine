@@ -10,6 +10,9 @@ static const u8 sDefaults[NUM_PMFG_SETTINGS] = PMFG_SETTING_DEFAULTS;
 
 u8 LONG_CALL PMFG_GetSetting(u8 setting)
 {
+#ifdef DEBUG_BATTLE_SCENARIOS
+    return sDefaults[setting]; // battle tests start with no field system, so script vars can't be read
+#endif
     u16 var = GetScriptVar(PMFG_SETTINGS_VAR_BASE + setting / 4);
     return ((var >> ((setting % 4) * 4)) & 0xF) ^ sDefaults[setting];
 }

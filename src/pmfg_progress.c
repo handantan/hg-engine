@@ -76,3 +76,24 @@ void LONG_CALL PMFG_GetSpeciesInnates(u16 species, u8 form, u16 *out)
     // shortcut: reads the NARC on every ability check; cache per battler if battles feel slow
     ReadFromNarcMemberByIdPair(out, ARC_CODE_ADDONS, CODE_ADDON_PMFG_INNATES, sizeof(u16) * PMFG_NUM_INNATES * PokeOtherFormMonsNoGet(species, form), sizeof(u16) * PMFG_NUM_INNATES);
 }
+
+// REQ-TGT-TRN-002 (refs/soulgold/src/level_scaling.c:32-76): the party's average level, skipping mons 7+ levels below the top
+u32 LONG_CALL PMFG_PartyScalingLevel(void)
+{
+    struct Party *party = SaveData_GetPlayerPartyPtr(SaveBlock2_get());
+    u32 levels[6], highest = 1, total = 0, count = 0;
+    for (int i = 0; i < party->count; i++) {
+        struct PartyPokemon *mon = Party_GetMonByIndex(party, i);
+        levels[i] = GetMonData(mon, MON_DATA_IS_EGG, NULL) ? 0 : GetMonData(mon, MON_DATA_LEVEL, NULL);
+        if (levels[i] > highest) {
+            highest = levels[i];
+        }
+    }
+    for (int i = 0; i < party->count; i++) {
+        if (levels[i] != 0 && highest - levels[i] < 7) {
+            total += levels[i];
+            count++;
+        }
+    }
+    return count ? total / count : 1;
+}
