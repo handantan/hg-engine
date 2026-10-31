@@ -2302,4 +2302,8 @@
 .equ FLAG_TEMP_x403E, 0x403E
 .equ FLAG_TEMP_x403F, 0x403F
 
+// pmfg: flags PMFG scripts and map events own. Each id is one no pret script, event or source uses
+// (tools/free_flags.py lists them; tests/data/test_free_flags.py keeps this block honest).
+.equ FLAG_PMFG_HIDE_RADIO_TOWER_OAK, 0x40 // REQ-TGT-MAP-001
+
 .endif // GUARD_SCRIPT_FLAGS
