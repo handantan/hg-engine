@@ -808,20 +808,24 @@ _0A82:
 
 _0A8C:
     menu_item_add 64, 255, 2
+    menu_item_add 477, 255, 4 // pmfg: SETTINGS (SYS-008)
     menu_item_add 66, 255, 3
     menu_exec
     switch VAR_SPECIAL_x8006
     case 0, _0B01
     case 1, _0C23
     case 2, _0DBA
+    case 4, _PMFG_Settings
     goto _0DF0
 
 _0AD1:
+    menu_item_add 477, 255, 4 // pmfg: SETTINGS (SYS-008)
     menu_item_add 66, 255, 2
     menu_exec
     switch VAR_SPECIAL_x8006
     case 0, _0B01
     case 1, _0C23
+    case 4, _PMFG_Settings
     goto _0DF0
 
 _0B01:
@@ -1007,6 +1011,16 @@ _0DBA:
 
 _0DE7:
     npc_msg 94
+    goto _0A2E
+
+// pmfg: SYS-008, the settings screen, entered like the Hall of Fame above
+_PMFG_Settings:
+    play_se SEQ_SE_DP_PC_LOGIN
+    closemsg
+    call _0E16
+    pmfg_settings_viewer
+    restore_overworld
+    call _0E02
     goto _0A2E
 
 _0DF0:

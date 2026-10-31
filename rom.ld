@@ -925,3 +925,8 @@ gApplication_NewGameFieldsys = 0x020FA15C;
 Heap_Create = 0x0201A910 | 1;
 Heap_Destroy = 0x0201A9C4 | 1;
 FreeBgTilemapBuffer = 0x0201BB4C | 1;
+/* pmfg: SYS-008, the options screen from the PC script (as pret's ScrCmd_PartySelectUI launches the party menu) */
+OverlayManager_GetArgs = 0x020072A4 | 1;
+FieldSystem_LaunchApplication = 0x0203DFB4 | 1;
+SetupNativeScript = 0x0203FD58 | 1;
+ScrNative_WaitApplication = 0x020429F8 | 1;

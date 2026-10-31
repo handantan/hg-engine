@@ -12,12 +12,15 @@
 // pmfg: options screen app (B-020), shown once after Oak's speech. First asks RECOMMENDED / CUSTOM; CUSTOM lists the
 // settings of Docs/requirements/target/data/settings.csv a page at a time. Text only, one BG layer, laid out like
 // hg-engine's crash screen (src/save.c), whose ROM graphics templates it reuses.
+// From the PC (SYS-008, args PMFG_OPTIONS_ARGS_PC) it opens on the pages, ease-only settings can't go above their
+// current value, and B leaves without saving.
 
 #define HEAP_ID 0x4B // overlay 36's heap, destroyed before this app starts
 #define TEXT_SPEED_NOTRANSFER 0xFF
 #define COLOR(fg, shadow, bg) (((fg) << 16) | ((shadow) << 8) | (bg))
 #define COLOR_NORMAL COLOR(1, 2, 15)
 #define COLOR_SELECTED COLOR(3, 4, 15)
+#define COLOR_LOCKED COLOR(2, 15, 15)
 
 // the ROM's own save-error screen setup (arm9 rodata), also used by src/save.c
 #define ROM_GRAPHICS_BANKS ((void *)0x0210855C)
@@ -44,7 +47,9 @@ static struct {
     u8 state;
     u8 cursor; // prompt choice, or row on the page
     u8 page;
+    BOOL pc;
     u8 values[NUM_PMFG_SETTINGS];
+    u8 limit[NUM_PMFG_SETTINGS]; // number of values the player may pick, from index 0
 } sApp;
 
 static void Print(u32 win, const u16 *text, u32 x, u32 y, u32 color)
@@ -73,14 +78,14 @@ static void Draw(void)
         Print(WIN_TITLE, sPmfgOptionsPageTitle[sApp.page], 136, 0, COLOR_NORMAL);
         for (u8 row = 0; row < PMFG_OPTIONS_ROWS && RowSetting(row) != PMFG_OPTIONS_NO_ROW; row++) {
             u8 s = RowSetting(row);
-            u32 color = row == sApp.cursor ? COLOR_SELECTED : COLOR_NORMAL;
+            u32 color = row == sApp.cursor ? COLOR_SELECTED : sApp.limit[s] == 1 ? COLOR_LOCKED : COLOR_NORMAL;
             Print(WIN_ROWS, sPmfgOptionsLabel[s], 0, row * 16, color);
             Print(WIN_ROWS, sPmfgOptionsValue[s][sApp.values[s]], 160, row * 16, color);
         }
         Print(WIN_DESC, sPmfgOptionsDesc[RowSetting(sApp.cursor)], 0, 0, COLOR_NORMAL);
     }
     if (sApp.state == STATE_PAGES) {
-        Print(WIN_DESC, sPmfgOptionsText[PMFG_OPTIONS_TEXT_HELP], 0, 32, COLOR(2, 15, 15)); // third line, under the description
+        Print(WIN_DESC, sPmfgOptionsText[sApp.pc ? PMFG_OPTIONS_TEXT_HELP_PC : PMFG_OPTIONS_TEXT_HELP], 0, 32, COLOR_LOCKED); // third line, under the description
     }
     for (int i = 0; i < WIN_COUNT; i++) {
         CopyWindowToVram(&sApp.windows[i]);
@@ -108,10 +113,8 @@ static void HandleInput(void)
             sApp.cursor = (sApp.cursor + rows - 1) % rows;
         } else if (keys & PAD_KEY_DOWN) {
             sApp.cursor = (sApp.cursor + 1) % rows;
-        } else if (keys & PAD_KEY_RIGHT) {
-            sApp.values[s] = (sApp.values[s] + 1) % sPmfgOptionsNumValues[s];
-        } else if (keys & PAD_KEY_LEFT) {
-            sApp.values[s] = (sApp.values[s] + sPmfgOptionsNumValues[s] - 1) % sPmfgOptionsNumValues[s];
+        } else if ((keys & (PAD_KEY_RIGHT | PAD_KEY_LEFT)) && sApp.limit[s] > 1) {
+            sApp.values[s] = (sApp.values[s] + ((keys & PAD_KEY_RIGHT) ? 1 : sApp.limit[s] - 1)) % sApp.limit[s];
         } else if (keys & (PAD_BUTTON_R | PAD_BUTTON_L)) {
             sApp.page = (sApp.page + ((keys & PAD_BUTTON_R) ? 1 : PMFG_OPTIONS_PAGES - 1)) % PMFG_OPTIONS_PAGES;
             sApp.cursor = 0;
@@ -119,6 +122,8 @@ static void HandleInput(void)
             for (u8 i = 0; i < NUM_PMFG_SETTINGS; i++) {
                 PMFG_SetSetting(i, sApp.values[i]);
             }
+            sApp.state = STATE_DONE;
+        } else if ((keys & PAD_BUTTON_B) && sApp.pc) {
             sApp.state = STATE_DONE;
         } else {
             return;
@@ -130,13 +135,15 @@ static void HandleInput(void)
     }
 }
 
-static BOOL PMFG_OptionsScreen_Init(void *manager UNUSED, int *state UNUSED)
+static BOOL PMFG_OptionsScreen_Init(void *manager, int *state UNUSED)
 {
     Heap_Create(3, HEAP_ID, 0x20000);
-    sApp.state = STATE_PROMPT;
+    sApp.pc = OverlayManager_GetArgs(manager) == PMFG_OPTIONS_ARGS_PC;
+    sApp.state = sApp.pc ? STATE_PAGES : STATE_PROMPT;
     sApp.cursor = sApp.page = 0;
     for (u8 i = 0; i < NUM_PMFG_SETTINGS; i++) {
         sApp.values[i] = PMFG_GetSetting(i); // a new game reads as all defaults
+        sApp.limit[i] = sApp.pc && sPmfgOptionsEaseOnly[i] ? sApp.values[i] + 1 : sPmfgOptionsNumValues[i];
     }
 
     Main_SetVBlankIntrCB(NULL, NULL);
@@ -183,7 +190,9 @@ static BOOL PMFG_OptionsScreen_Exit(void *manager UNUSED, int *state UNUSED)
     GfGfx_DisableEngineAPlanes();
     GfGfx_DisableEngineBPlanes();
     Heap_Destroy(HEAP_ID);
-    RegisterMainOverlay(0xFFFFFFFF, &gApplication_NewGameFieldsys); // what overlay 36 did before the hook
+    if (!sApp.pc) {
+        RegisterMainOverlay(0xFFFFFFFF, &gApplication_NewGameFieldsys); // what overlay 36 did before the hook
+    }
     return TRUE;
 }
 

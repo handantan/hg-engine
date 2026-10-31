@@ -6775,6 +6775,13 @@ move_person_facing obj_partner_poke, 0x8000, 0, 0x8001, VAR_SPECIAL_RESULT
 DummyTextTrap \slot, \unk
 .endm
 
+// pmfg: SYS-008, opens the PMFG settings screen from the PC and waits for it (the field must be faded out)
+.equ NEW_COMMAND_PMFG_SETTINGS_VIEWER, 1
+
+.macro pmfg_settings_viewer
+RunNewCommand NEW_COMMAND_PMFG_SETTINGS_VIEWER, 0
+.endm
+
 .macro QueueNewRepel
 RunNewCommand NEW_COMMAND_QUEUE_NEW_REPEL, 0x800C
 .endm
