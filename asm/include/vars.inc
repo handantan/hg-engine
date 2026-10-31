@@ -406,4 +406,8 @@
 .equ SPECIAL_VARS_START, SPECIAL_VAR_BASE
 .equ SPECIAL_VARS_END, (SPECIAL_VAR_BASE + NUM_SPECIAL_VARS - 1)
 
+// pmfg: vars PMFG scripts own, from the top of the free range 0x4152-0x416E (PMFG tools/gen_settings_header.py)
+// D-046: the legend path chosen at Radio Tower 5F, as a game version (7 Ho-Oh / HeartGold, 8 Lugia / SoulSilver); 0 = not yet
+.equ VAR_PMFG_LEGEND_VERSION, 0x416E
+
 .endif // GUARD_SCRIPT_VARS

@@ -95,9 +95,15 @@ _0102:
 _0119:
 	wait_movement
 	npc_msg 2
-	get_game_version VAR_SPECIAL_RESULT
-	compare VAR_SPECIAL_RESULT, 7
-	goto_if_ne _014E
+	// pmfg: D-046, the player picks the legend path (SoulGold GoldenrodCity_RadioTower_5F/scripts.inc:503-515):
+	// Rainbow Wing = Ho-Oh, HeartGold's branches; Silver Wing = Lugia, SoulSilver's
+	npc_msg 13
+	touchscreen_menu_hide
+	getmenuchoice VAR_SPECIAL_RESULT
+	touchscreen_menu_show
+	compare VAR_SPECIAL_RESULT, 0
+	goto_if_ne _PMFG_SilverWing
+	setvar VAR_PMFG_LEGEND_VERSION, 7
 	giveitem_no_check ITEM_RAINBOW_FEATHER, 1
 	setflag FLAG_UNK_093
 	npc_msg 5
@@ -131,7 +137,8 @@ _01B2:
 	wait_movement
 	apply_movement obj_player, _02EC
 	wait_movement
-	get_game_version VAR_SPECIAL_RESULT
+	// pmfg: D-046, the legend path chosen at the Radio Tower, not the game version
+	pmfg_get_legend_version VAR_SPECIAL_RESULT
 	compare VAR_SPECIAL_RESULT, 7
 	goto_if_ne _01E2
 	npc_msg 7
@@ -204,6 +211,10 @@ _025D:
 	white_out
 	releaseall
 	end
+
+_PMFG_SilverWing:
+	setvar VAR_PMFG_LEGEND_VERSION, 8
+	goto _014E
 
 _PMFG_OakEastOfPlayer:
 	apply_movement obj_player, _PMFG_FaceRight

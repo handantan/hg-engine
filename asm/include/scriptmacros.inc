@@ -6782,6 +6782,16 @@ DummyTextTrap \slot, \unk
 RunNewCommand NEW_COMMAND_PMFG_SETTINGS_VIEWER, 0
 .endm
 
+// pmfg: D-046, the Ho-Oh/Lugia path chosen at Radio Tower 5F, used where the legend scripts read get_game_version.
+// Until the choice it is this ROM's own version (HeartGold), as in vanilla.
+.macro pmfg_get_legend_version,var
+get_game_version \var
+compare VAR_PMFG_LEGEND_VERSION, 0
+goto_if_eq .Lpmfg_legend_version_\@
+copyvar \var, VAR_PMFG_LEGEND_VERSION
+.Lpmfg_legend_version_\@:
+.endm
+
 .macro QueueNewRepel
 RunNewCommand NEW_COMMAND_QUEUE_NEW_REPEL, 0x800C
 .endm

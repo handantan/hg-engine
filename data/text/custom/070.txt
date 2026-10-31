@@ -11,3 +11,4 @@ Are you expecting something?\nThis is what they call Fake Out.\rI really must go
 Oak: {STRVAR_1 3, 0, 0}! You pulled off a\nmiracle by taking down Team Rocket!\rI knew I was right to trust you with\nthe Pokédex.\rI want you to have this. You’ve\nmore than earned it.\r
 {STRVAR_1 3, 0, 0} received\nthe Mega Ring!
 Oak: That is a Mega Ring.\rWith a Mega Stone, it lets the bond\nbetween Trainer and Pokémon\ffully show itself.\rI’m sure you can pull it off.\nWell, I must be going!\r
+Director: There were two wings up\nthere, in fact.\rThe Rainbow Wing calls Ho-Oh to the\nBell Tower. The Silver Wing calls\fLugia to the Whirl Islands.\rWill you take the Rainbow Wing?\n(No: the Silver Wing) {YESNO 0}

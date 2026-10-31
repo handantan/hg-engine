@@ -11,6 +11,7 @@
 // PMFG story progress (REQ-TGT-MON-001 innate unlocks, REQ-TGT-SYS-002 level caps). Flags: pret/pokeheartgold include/constants/flags.h
 #define PMFG_FLAG_BEAT_RADIO_TOWER_ROCKETS 0xC6
 #define PMFG_FLAG_BELL_TOWER_HO_OH_DONE    0x108 // FLAG_UNK_108: set only when the Ho-Oh battle ends without a loss (caught or KO), scr_seq_0021_D17R0110.s:82
+#define PMFG_FLAG_WHIRL_ISLANDS_LUGIA_DONE 0x109 // FLAG_UNK_109: the same for Lugia, scr_seq_0104_D40R0107.s:118
 
 static u32 BadgeCount(void)
 {
@@ -28,8 +29,9 @@ static BOOL MilestoneReached(u8 milestone, u32 badges)
     switch (milestone) {
         case PMFG_MILESTONE_ROCKET_TAKEOVER:
             return CheckScriptFlag(PMFG_FLAG_BEAT_RADIO_TOWER_ROCKETS);
-        case PMFG_MILESTONE_LEGENDARY_STORY: // SoulGold: Lugia chamber; HeartGold: the Bell Tower Ho-Oh event
-            return CheckScriptFlag(PMFG_FLAG_BELL_TOWER_HO_OH_DONE); // not FLAG_HIDE_BELL_TOWER_HO_OH: the new-game init script sets it
+        case PMFG_MILESTONE_LEGENDARY_STORY: // D-046: whichever legend the player chose at the Radio Tower, as SoulGold
+            // not FLAG_HIDE_BELL_TOWER_HO_OH: the new-game init script sets it
+            return CheckScriptFlag(PMFG_FLAG_BELL_TOWER_HO_OH_DONE) || CheckScriptFlag(PMFG_FLAG_WHIRL_ISLANDS_LUGIA_DONE);
         case PMFG_MILESTONE_JOHTO_CHAMPION:
             return CheckScriptFlag(PMFG_FLAG_GAME_CLEAR);
         case PMFG_MILESTONE_KANTO_CHAMPION: // HGSS has no Kanto League: all 16 badges
