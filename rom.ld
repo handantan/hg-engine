@@ -922,3 +922,6 @@ Save_MapObjects_Get = 0x0203B9D0 | 1;
 /* pmfg: options screen (B-020), addresses from the US ROM, see PMFG Docs/plan/phase-4-options-screen.md */
 RegisterMainOverlay = 0x02000EF4 | 1;
 gApplication_NewGameFieldsys = 0x020FA15C;
+Heap_Create = 0x0201A910 | 1;
+Heap_Destroy = 0x0201A9C4 | 1;
+FreeBgTilemapBuffer = 0x0201BB4C | 1;
