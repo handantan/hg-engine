@@ -1071,7 +1071,7 @@ def dump_text(msg_members, repo_root, msgenc, charmap, include_generated, includ
     workdir = os.path.join(repo_root, "build", "dump_scripts_text")
 
     os.makedirs(workdir, exist_ok = True)
-    os.makedirs(os.path.join(repo_root, "data", "text"), exist_ok = True)
+    os.makedirs(os.path.join(repo_root, "data", "text", "custom"), exist_ok = True)
 
     generated = 0
     engine_managed = 0

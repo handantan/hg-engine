@@ -789,6 +789,22 @@ $(SCR_SEQ_DIR) $(SCR_SEQ_OBJ_DIR) $(ZONE_EVENT_DIR) $(ZONE_EVENT_OBJ_DIR):
 	@mkdir -p $@
 
 
+# pmfg: raw ROM file overlay (PMFG ADR-004). data/rawfs/<narc path>/<member index> replaces that member of
+# $(FILESYS)/<narc path>, for files hg-engine has no source form of (maps, matrices, textures, ...)
+RAWFS_DIR := data/rawfs
+RAWFS_ARCHIVES := $(sort $(patsubst $(RAWFS_DIR)/%/,%,$(dir $(shell find $(RAWFS_DIR) -type f -name '[0-9]*' 2>/dev/null))))
+RAWFS_STAMPS := $(addprefix $(BUILD)/rawfs/,$(addsuffix .stamp,$(RAWFS_ARCHIVES)))
+
+# one stamp per archive so -j never writes an archive twice at once. rom.nds (not base/arm9.bin, which every build
+# rewrites) re-applies after a re-extract, so a DSPRE edit made since the last apply is not overwritten by each build
+define RAWFS_RULE
+$(BUILD)/rawfs/$(1).stamp: $(wildcard $(RAWFS_DIR)/$(1)/*) $(ROMNAME)
+	$$(PYTHON) scripts/rawfs_overlay.py $(FILESYS)/$(1) $(RAWFS_DIR)/$(1)
+	@mkdir -p $$(dir $$@) && touch $$@
+endef
+$(foreach a,$(RAWFS_ARCHIVES),$(eval $(call RAWFS_RULE,$(a))))
+
+
 HEADBUTT_NARC := $(BUILD_NARC)/headbutt.narc
 HEADBUTT_TARGET := $(FILESYS)/a/2/5/2
 HEADBUTT_DEPENDENCIES := data/Headbutt.c

@@ -398,7 +398,7 @@ clean_code:
 CODE_ADDON_ARTIFACTS := $(wildcard $(BUILD)/a028/9_*) $(wildcard $(BUILD)/a028/8_1*) $(wildcard $(BUILD)/a028/8_2*) $(BUILD)/a028/8_07 $(BUILD)/a028/8_08 $(BUILD)/a028/8_09
 CODE_ADDON_ARTIFACTS := $(filter-out $(BUILD)/a028/8_1 $(BUILD)/a028/8_2 $(BUILD)/a028/8_3 $(BUILD)/a028/8_4 $(BUILD)/a028/8_5 $(BUILD)/a028/8_6, $(CODE_ADDON_ARTIFACTS))
 
-move_narc: $(NARC_FILES)
+move_narc: $(NARC_FILES) $(RAWFS_STAMPS)
 ifneq ($(strip $(ZONE_EVENT_OBJS)),)
 	@echo "zone events:"
 	cp $(ZONE_EVENT_NARC) $(ZONE_EVENT_TARGET)

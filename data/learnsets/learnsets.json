@@ -10,6 +10,10 @@
         "Move": "MOVE_TACKLE"
       },
       {
+        "Level": 2,
+        "Move": "MOVE_DOUBLE_SLAP"
+      },
+      {
         "Level": 3,
         "Move": "MOVE_VINE_WHIP"
       },
