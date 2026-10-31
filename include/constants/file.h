@@ -150,6 +150,7 @@
 #define OVERLAY_PARTY_HANDLEUSEITEMONMON             149
 #define OVERLAY_INHERITMOVES                         150
 #define OVERLAY_CREATETRADEMON                       151
+#define OVERLAY_PMFG_OPTIONS                         152 // pmfg: options screen (B-020), linked at PMFG_OPTIONS_ENTRY
 
 #define MAX_ACTIVE_OVERLAYS 8
 

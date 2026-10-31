@@ -919,3 +919,6 @@ sub_0207294C = 0x0207294C | 1;
 sub_02017068 = 0x02017068 | 1;
 MapObjectManager_RestoreFromSave = 0x0205E648 | 1;
 Save_MapObjects_Get = 0x0203B9D0 | 1;
+/* pmfg: options screen (B-020), addresses from the US ROM, see PMFG Docs/plan/phase-4-options-screen.md */
+RegisterMainOverlay = 0x02000EF4 | 1;
+gApplication_NewGameFieldsys = 0x020FA15C;

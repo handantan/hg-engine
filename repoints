@@ -131,3 +131,6 @@ arm9 sPokeathlonShop_NatdexThursday 0210FA30
 arm9 sPokeathlonShop_NatdexFriday 0210FA34
 arm9 sPokeathlonShop_NatdexSaturday 0210FA38
 #endif
+
+# pmfg: options screen after Oak's speech (PMFG B-020): overlay 36 registers it instead of gApplication_NewGameFieldsys
+0036 PMFG_OptionsScreenApp 021E5998
