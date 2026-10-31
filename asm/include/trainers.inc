@@ -741,4 +741,12 @@
 .equ TRAINER_PARTNER_RIVAL_2, 736
 .equ TRAINER_PARTNER_RIVAL_3, 737
 
+// pmfg: trainers PMFG adds (Docs/requirements/target/data/new_trainers.csv, tools/apply_target_data.py)
+.equ TRAINER_PMFG_CHUCK_SECOND, 738
+.equ TRAINER_PMFG_CHUCK_THIRD, 739
+.equ TRAINER_PMFG_JASMINE_SECOND, 740
+.equ TRAINER_PMFG_JASMINE_THIRD, 741
+.equ TRAINER_PMFG_PRYCE_SECOND, 742
+.equ TRAINER_PMFG_PRYCE_THIRD, 743
+
 .endif
