@@ -30053,10 +30053,6 @@
       },
       {
         "Level": 60,
-        "Move": "MOVE_AROMATHERAPY"
-      },
-      {
-        "Level": 60,
         "Move": "MOVE_GIGA_DRAIN"
       },
       {
