@@ -764,6 +764,25 @@
 /* Trainer 738 */ scrdef scr_seq_0953_normalTrainer
 /* Trainer 739 */ scrdef scr_seq_0953_739
 
+/* Trainer 740 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 741 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 742 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 743 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 744 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 745 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 746 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 747 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 748 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 749 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 750 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 751 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 752 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 753 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 754 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 755 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 756 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 757 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 758 */ scrdef scr_seq_0953_normalTrainer
 // to add new trainers, just keep the list going here with more normalTrainer entries.
 
 scrdef_end
