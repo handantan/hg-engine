@@ -2694,7 +2694,27 @@
 // define your custom move effects below like this
 // #define ITEM_CUSTOM_1 (MAX_BASE_ITEM_NUM + 1)
 
-#define MAX_TOTAL_ITEM_NUM ITEM_CANARI_BREAD
+// pmfg: SoulGold's type Mega stones (REQ-TGT-ITM-001)
+#define ITEM_NORMALITE                   (MAX_BASE_ITEM_NUM + 1)
+#define ITEM_FIRETITE                    (MAX_BASE_ITEM_NUM + 2)
+#define ITEM_WATERTITE                   (MAX_BASE_ITEM_NUM + 3)
+#define ITEM_ELECTRITE                   (MAX_BASE_ITEM_NUM + 4)
+#define ITEM_GRASSTITE                   (MAX_BASE_ITEM_NUM + 5)
+#define ITEM_ICETITE                     (MAX_BASE_ITEM_NUM + 6)
+#define ITEM_FIGHTITE                    (MAX_BASE_ITEM_NUM + 7)
+#define ITEM_POISONTITE                  (MAX_BASE_ITEM_NUM + 8)
+#define ITEM_GROUNDITE                   (MAX_BASE_ITEM_NUM + 9)
+#define ITEM_FLYINGITE                   (MAX_BASE_ITEM_NUM + 10)
+#define ITEM_PSYCHITE                    (MAX_BASE_ITEM_NUM + 11)
+#define ITEM_BUGTITE                     (MAX_BASE_ITEM_NUM + 12)
+#define ITEM_ROCKTITE                    (MAX_BASE_ITEM_NUM + 13)
+#define ITEM_GHOSTITE                    (MAX_BASE_ITEM_NUM + 14)
+#define ITEM_DRAGOTITE                   (MAX_BASE_ITEM_NUM + 15)
+#define ITEM_DARKTITE                    (MAX_BASE_ITEM_NUM + 16)
+#define ITEM_STEELTITE                   (MAX_BASE_ITEM_NUM + 17)
+#define ITEM_FAIRYTITE                   (MAX_BASE_ITEM_NUM + 18)
+
+#define MAX_TOTAL_ITEM_NUM ITEM_FAIRYTITE
 
 #define NUM_MEGA_STONES   (48) // includes the pixie plate, doesn't include plza megas due to overflowing bag
 #define NUM_HMS           (ITEM_HM08 - ITEM_HM01 + 1) // intentionally do not include HM07_ORAS (Dive)
@@ -2709,7 +2729,7 @@
 #define IS_ITEM_MAIL(item) ((item >= ITEM_GRASS_MAIL && item <= ITEM_BRICK_MAIL))
 
 #define IS_ITEM_MEGA_STONE(item) \
-    (item >= ITEM_GENGARITE && item <= ITEM_LATIOSITE) || (item >= ITEM_SWAMPERTITE && item <= ITEM_DIANCITE) || (item >= ITEM_CAMERUPTITE && item <= ITEM_BEEDRILLITE) || (item >= ITEM_CLEFABLITE && item <= ITEM_FALINKSITE) || (item >= ITEM_RAICHUNITE_X && item <= ITEM_GLIMMORANITE)
+    (item >= ITEM_GENGARITE && item <= ITEM_LATIOSITE) || (item >= ITEM_SWAMPERTITE && item <= ITEM_DIANCITE) || (item >= ITEM_CAMERUPTITE && item <= ITEM_BEEDRILLITE) || (item >= ITEM_CLEFABLITE && item <= ITEM_FALINKSITE) || (item >= ITEM_RAICHUNITE_X && item <= ITEM_GLIMMORANITE) || (item >= ITEM_NORMALITE && item <= ITEM_FAIRYTITE)
 
 #define IS_ITEM_Z_CRYSTAL(item) ((item >= ITEM_NORMALIUM_Z_HELD && item <= ITEM_PIKANIUM_Z_HELD) || (item >= ITEM_DECIDIUM_Z_HELD && item <= ITEM_MEWNIUM_Z_HELD) || (item == ITEM_PIKASHUNIUM_Z_HELD) || (item >= ITEM_MIMIKIUM_Z_ITEM && item <= ITEM_ULTRANECROZIUM_Z_ITEM))
 

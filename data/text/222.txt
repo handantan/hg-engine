@@ -2683,3 +2683,21 @@ Hyper Babiri Berry
 Hyper Chilan Berry
 Hyper Roseli Berry
 Canari Bread
+Normalite
+Firetite
+Watertite
+Electrite
+Grasstite
+Icetite
+Fightite
+Poisontite
+Groundite
+Flyingite
+Psychite
+Bugtite
+Rocktite
+Ghostite
+Dragotite
+Darktite
+Steeltite
+Fairytite

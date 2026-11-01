@@ -1,1 +1,18 @@
-{COLOR 255}Custom Items{COLOR 0}
+{COLOR 255}Normalites{COLOR 0}
+{COLOR 255}Firetites{COLOR 0}
+{COLOR 255}Watertites{COLOR 0}
+{COLOR 255}Electrites{COLOR 0}
+{COLOR 255}Grasstites{COLOR 0}
+{COLOR 255}Icetites{COLOR 0}
+{COLOR 255}Fightites{COLOR 0}
+{COLOR 255}Poisontites{COLOR 0}
+{COLOR 255}Groundites{COLOR 0}
+{COLOR 255}Flyingites{COLOR 0}
+{COLOR 255}Psychites{COLOR 0}
+{COLOR 255}Bugtites{COLOR 0}
+{COLOR 255}Rocktites{COLOR 0}
+{COLOR 255}Ghostites{COLOR 0}
+{COLOR 255}Dragotites{COLOR 0}
+{COLOR 255}Darktites{COLOR 0}
+{COLOR 255}Steeltites{COLOR 0}
+{COLOR 255}Fairytites{COLOR 0}
