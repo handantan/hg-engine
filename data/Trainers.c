@@ -32096,6 +32096,46 @@ const TrainerData sTrainerData[] = {
             },
         },
     },
+    [749] = {
+        .name = "Norman",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_PSYCHIC_M,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 33,
+                .species = SPECIES_MEOWSTIC,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 33,
+                .species = SPECIES_MEOWSTIC_FEMALE,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_INTRO,
+                .text = "Let me see what your\\nPokémon are capable of.\\r",
+            },
+            {
+                .type = TRMSG_LOSE,
+                .text = "Ooh, your Pokémon have\\npotential.\\n",
+            },
+            {
+                .type = TRMSG_AFTER,
+                .text = "You know how Pokémon have\\ndifferent abilities?\\fPeople are like that too.\\nEveryone has different\\rpotential.\\n",
+            },
+        },
+    },
     [750] = {
         .name = "Philip",
         .data = {
@@ -32570,46 +32610,6 @@ const TrainerData sTrainerData[] = {
             {
                 .type = TRMSG_DBL_1POKE_2,
                 .text = "Oh? Only one Pokémon?\\nThen, we don’t battle with you.\\fIf there’s only one Pokémon, it will\\nbe lonesome. That’s not nice.\\n",
-            },
-        },
-    },
-    [749] = {
-        .name = "Norman",
-        .data = {
-            .trainerType = TRAINER_DATA_TYPE_NOTHING,
-            .trainerClass = TRAINERCLASS_PSYCHIC_M,
-            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
-            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
-            .battleType = SINGLE_BATTLE,
-        },
-        .party = {
-            {
-                .ivs = 0,
-                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
-                .level = 33,
-                .species = SPECIES_MEOWSTIC,
-                .ballSeal = 0,
-            },
-            {
-                .ivs = 0,
-                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
-                .level = 33,
-                .species = SPECIES_MEOWSTIC_FEMALE,
-                .ballSeal = 0,
-            },
-        },
-        .text = {
-            {
-                .type = TRMSG_INTRO,
-                .text = "Let me see what your\\nPokémon are capable of.\\r",
-            },
-            {
-                .type = TRMSG_LOSE,
-                .text = "Ooh, your Pokémon have\\npotential.\\n",
-            },
-            {
-                .type = TRMSG_AFTER,
-                .text = "You know how Pokémon have\\ndifferent abilities?\\fPeople are like that too.\\nEveryone has different\\rpotential.\\n",
             },
         },
     },
