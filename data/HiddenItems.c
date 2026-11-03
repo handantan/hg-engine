@@ -241,4 +241,31 @@ const HiddenItemData sHiddenItemParam[] = {
     { ITEM_DEEP_SEA_TOOTH, 1, 0, 0, 38 }, // R20
     { ITEM_DEEP_SEA_SCALE, 1, 0, 0, 229 }, // R20
     { ITEM_PP_MAX, 1, 0, 0, 230 }, // R46
+// pmfg: tools/sg_item_sheet.py begin (REQ-TGT-MAP-007)
+    { ITEM_REVIVE, 1, 0, 0, 231 }, // R27 (SoulGold)
+    { ITEM_MAX_REVIVE, 1, 0, 0, 232 }, // R28 (SoulGold)
+    { ITEM_ETHER, 1, 0, 0, 233 }, // R29 (SoulGold)
+    { ITEM_FULL_HEAL, 1, 0, 0, 234 }, // R30 (SoulGold)
+    { ITEM_ANTIDOTE, 1, 0, 0, 235 }, // R31 (SoulGold)
+    { ITEM_ADAMANT_MINT, 1, 0, 0, 236 }, // R32 (SoulGold)
+    { ITEM_ETHER, 1, 0, 0, 237 }, // R33 (SoulGold)
+    { ITEM_MODEST_MINT, 1, 0, 0, 238 }, // R34 (SoulGold)
+    { ITEM_AWAKENING, 1, 0, 0, 239 }, // R34 (SoulGold)
+    { ITEM_STARDUST, 1, 0, 0, 240 }, // R35 (SoulGold)
+    { ITEM_CARBOS, 1, 0, 0, 241 }, // R36 (SoulGold)
+    { ITEM_FULL_HEAL, 1, 0, 0, 242 }, // R37 (SoulGold)
+    { ITEM_REVIVE, 1, 0, 0, 243 }, // R38 (SoulGold)
+    { ITEM_HYPER_POTION, 1, 0, 0, 244 }, // R39 (SoulGold)
+    { ITEM_DUSK_BALL, 1, 0, 0, 245 }, // R42 (SoulGold)
+    { ITEM_QUICK_BALL, 1, 0, 0, 246 }, // R43 (SoulGold)
+    { ITEM_FULL_RESTORE, 1, 0, 0, 247 }, // R45 (SoulGold)
+    { ITEM_RARE_BONE, 1, 0, 0, 248 }, // R46 (SoulGold)
+    { ITEM_PP_UP, 1, 0, 0, 249 }, // R47 (SoulGold)
+    { ITEM_MAX_REPEL, 1, 0, 0, 250 }, // R47 (SoulGold)
+    { ITEM_IRON, 1, 0, 0, 251 }, // R48 (SoulGold)
+    { ITEM_RARE_CANDY, 1, 0, 0, 252 }, // R26 (SoulGold)
+    { ITEM_ULTRA_BALL, 1, 0, 0, 253 }, // R26 (SoulGold)
+    { ITEM_PARALYZE_HEAL, 1, 0, 0, 254 }, // W40 (SoulGold)
+    { ITEM_QUIET_MINT, 1, 0, 0, 255 }, // W41 (SoulGold)
+// pmfg: tools/sg_item_sheet.py end
 };

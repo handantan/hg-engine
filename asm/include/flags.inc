@@ -2305,5 +2305,17 @@
 // pmfg: flags PMFG scripts and map events own. Each id is one no pret script, event or source uses
 // (tools/free_flags.py lists them; tests/data/test_free_flags.py keeps this block honest).
 .equ FLAG_PMFG_HIDE_RADIO_TOWER_OAK, 0x40 // REQ-TGT-MAP-001
+// pmfg: tools/sg_item_sheet.py begin (REQ-TGT-MAP-007)
+.equ FLAG_PMFG_ITEMBALL_R27_CARBOS, 0x41 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R27_MOON_STONE, 0x42 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R27_ABILITY_PATCH, 0x43 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R42_ROOM_SERVICE, 0x44 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R47_SHELL_BELL, 0x45 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R47_PRISM_SCALE, 0x46 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R47_LUCKY_PUNCH, 0x47 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R47_RAZOR_FANG, 0x48 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_R26_CHOICE_SCARF, 0x49 // REQ-TGT-MAP-007
+.equ FLAG_PMFG_ITEMBALL_W41_RAZOR_CLAW, 0x4a // REQ-TGT-MAP-007
+// pmfg: tools/sg_item_sheet.py end
 
 .endif // GUARD_SCRIPT_FLAGS
