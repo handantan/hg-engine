@@ -22,5 +22,9 @@
 .equ obj_R47_mount_2_2, 11
 .equ obj_R47_gsleader5, 12
 .equ obj_R47_gswoman3_2, 13
+.equ obj_R47_monstarball_5, 14
+.equ obj_R47_monstarball_6, 15
+.equ obj_R47_monstarball_7, 16
+.equ obj_R47_monstarball_8, 17
 
 .endif //SCR_SEQ_R47_H_

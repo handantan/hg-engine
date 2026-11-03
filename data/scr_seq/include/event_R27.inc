@@ -19,5 +19,8 @@
 .equ obj_R27_monstarball_2, 8
 .equ obj_R27_monstarball_3, 9
 .equ obj_R27_gsman3_3, 10
+.equ obj_R27_monstarball_4, 11
+.equ obj_R27_monstarball_5, 12
+.equ obj_R27_monstarball_6, 13
 
 .endif //SCR_SEQ_R27_H_

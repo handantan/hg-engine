@@ -22,5 +22,6 @@
 .equ obj_R42_follower_mon_static_suicune, 11
 .equ obj_R42_minaki, 12
 .equ obj_R42_thief, 13
+.equ obj_R42_monstarball_4, 14
 
 .endif //SCR_SEQ_R42_H_
