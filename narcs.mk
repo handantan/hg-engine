@@ -724,12 +724,15 @@ $(foreach i,$(shell seq 1 $(words $(SCR_SEQ_SRCS))),\
 	$(eval $(call SCR_SEQ_RULE,$(word $(i),$(SCR_SEQ_SRCS)),$(word $(i),$(SCR_SEQ_MEMBERS)))))
 
 # only the members that were built replace what the rom already has, so every script left out stays as rom.nds had it
-# pmfg: dspre_guard.py stops the build first if DSPRE edited one of the built members in base/root (PMFG ADR-004)
+# pmfg: dspre_guard.py stops the build first if DSPRE edited one of the built members in base/root (PMFG ADR-004).
+# It compares with its own copy of the last output: DSPRE's Save ROM removes build/narc/<archive> before it builds
+DSPRE_REF := $(BUILD)/dspre_ref
 $(SCR_SEQ_NARC): $(SCR_SEQ_OBJS) | $(SCR_SEQ_DIR)
-	$(PYTHON) scripts/dspre_guard.py $(SCR_SEQ_TARGET) $@ $(SCR_SEQ_MEMBERS)
+	$(PYTHON) scripts/dspre_guard.py $(SCR_SEQ_TARGET) $(DSPRE_REF)/$(notdir $@) $(SCR_SEQ_MEMBERS)
 	$(NARCHIVE) extract $(SCR_SEQ_TARGET) -o $(SCR_SEQ_DIR) -nf
 	$(if $(SCR_SEQ_OBJS),cp $(SCR_SEQ_OBJS) $(SCR_SEQ_DIR)/)
 	$(NARCHIVE) create $@ $(SCR_SEQ_DIR) -nf
+	@mkdir -p $(DSPRE_REF) && cp $@ $(DSPRE_REF)/
 
 # for convenience, rebuild SCR_SEQ_NARC every build so that DSPRE changes are not overwritten
 .PHONY: $(SCR_SEQ_NARC)
@@ -769,10 +772,11 @@ $(foreach i,$(shell seq 1 $(words $(ZONE_EVENT_JSONS))),\
 
 # like the scripts, the built maps are laid over the rom's own zone event data rather than replacing the narc wholesale
 $(ZONE_EVENT_NARC): $(ZONE_EVENT_OBJS) | $(ZONE_EVENT_DIR)
-	$(PYTHON) scripts/dspre_guard.py $(ZONE_EVENT_TARGET) $@ $(ZONE_EVENT_MEMBERS)
+	$(PYTHON) scripts/dspre_guard.py $(ZONE_EVENT_TARGET) $(DSPRE_REF)/$(notdir $@) $(ZONE_EVENT_MEMBERS)
 	$(NARCHIVE) extract $(ZONE_EVENT_TARGET) -o $(ZONE_EVENT_DIR) -nf
 	$(if $(ZONE_EVENT_OBJS),cp $(ZONE_EVENT_OBJS) $(ZONE_EVENT_DIR)/)
 	$(NARCHIVE) create $@ $(ZONE_EVENT_DIR) -nf
+	@mkdir -p $(DSPRE_REF) && cp $@ $(DSPRE_REF)/
 
 # for convenience, rebuild ZONE_EVENT_NARC every build so that DSPRE changes are not overwritten
 .PHONY: $(ZONE_EVENT_NARC)
@@ -911,7 +915,7 @@ clean_trgfx:
 # only the archives that were built replace what the rom already has, so every archive left out stays as rom.nds had it
 # if no keys.csv, fall back to msgenc's own key as before
 $(MSGDATA_NARC): $(MSGDATA_DEPENDENCIES) $(MSGDATA_COMPILETIME_DEPENDENCIES) $(wildcard $(MSGDATA_KEYS))
-	$(PYTHON) scripts/dspre_guard.py $(MSGDATA_TARGET) $@ $(MSGDATA_DEPENDENCIES) $(MSGDATA_COMPILETIME_DEPENDENCIES)
+	$(PYTHON) scripts/dspre_guard.py $(MSGDATA_TARGET) $(DSPRE_REF)/$(notdir $@) $(MSGDATA_DEPENDENCIES) $(MSGDATA_COMPILETIME_DEPENDENCIES)
 	$(NARCHIVE) extract $(MSGDATA_TARGET) -o $(MSGDATA_DIR) -nf
 	for file in $(MSGDATA_DEPENDENCIES); do $(PYTHON) tools/source/dumptools/validate_text_archive.py $(CHARMAP) $$file || exit 1; done
 	for file in $(MSGDATA_DEPENDENCIES) $(MSGDATA_COMPILETIME_DEPENDENCIES); do \
@@ -920,6 +924,7 @@ $(MSGDATA_NARC): $(MSGDATA_DEPENDENCIES) $(MSGDATA_COMPILETIME_DEPENDENCIES) $(w
 		$(MSGENC) -e -c $(CHARMAP) $${key:+-k $$key} $$file $(MSGDATA_DIR)/7_$$archive; \
 	done
 	$(NARCHIVE) create $@ $(MSGDATA_DIR) -nf
+	@mkdir -p $(DSPRE_REF) && cp $@ $(DSPRE_REF)/
 
 # rebuild every build so edits other tools make to base/root are not overwritten by a stale copy
 .PHONY: $(BATTLEHUD_NARC) $(MOVEPARTICLES_NARC) $(OPENDEMO_NARC) $(BAGGFX_NARC) $(DEXGFX_NARC) $(BATTLEGFX_NARC)

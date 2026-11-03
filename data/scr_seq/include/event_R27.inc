@@ -6,6 +6,7 @@
 .equ _EV_scr_seq_R27_002, 2
 .equ _EV_scr_seq_R27_003, 3
 .equ _EV_scr_seq_R27_004, 4
+.equ _EV_scr_seq_R27_005, 5
 
 .equ obj_R27_gsbigman, 0
 .equ obj_R27_gswoman3, 1
@@ -17,5 +18,6 @@
 .equ obj_R27_monstarball, 7
 .equ obj_R27_monstarball_2, 8
 .equ obj_R27_monstarball_3, 9
+.equ obj_R27_gsman3_3, 10
 
 .endif //SCR_SEQ_R27_H_

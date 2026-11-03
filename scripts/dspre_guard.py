@@ -3,11 +3,12 @@
 
 The scr_seq, zone_event and msg_data rules unpack base/root's archive and copy the members built from source over it.
 DSPRE saves its edits into base/root, so an edit to one of those members (a map whose script, events or text are
-already in engine/data) would be lost silently. The previous build output is what the build last copied to base/root:
-a member that differs from it there was changed since, by DSPRE. PMFG's tools/dspre_sync.py folds it into engine/data
-and refreshes the previous output, after which the build goes through. DSPRE_DISCARD=1 drops the edit instead.
+already in engine/data) would be lost silently. build/dspre_ref holds a copy of what the build last copied to base/root
+(not build/narc, which DSPRE's Save ROM removes before it builds): a member that differs from it there was changed
+since, by DSPRE. PMFG's tools/dspre_sync.py folds it into engine/data and refreshes the copy, after which the build
+goes through. DSPRE_DISCARD=1 drops the edit instead. No copy yet (first build after a clean): nothing to compare.
 
-    python scripts/dspre_guard.py base/root/a/0/3/2 build/narc/zone_event.narc build/zone_event/2_028 data/text/369.txt ...
+    python scripts/dspre_guard.py base/root/a/0/3/2 build/dspre_ref/zone_event.narc build/zone_event/2_028 data/text/369.txt ...
 """
 
 import os
