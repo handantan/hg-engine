@@ -1727,11 +1727,13 @@ u32 CheckCanUseBallOnDoublesFromBag(struct BattleStruct *sp)
 u32 LONG_CALL GetLevelCap(void)
 {
 #ifdef DEBUG_BATTLE_SCENARIOS
-    return 0;
-#else
+    // cap 0 = no EXP and no level-ups, which upstream tests rely on; PMFG EXP tests opt in by setting level_cap
+    if (PMFG_GetSetting(SETTING_LEVEL_CAP) == SETTING_LEVEL_CAP_OFF) {
+        return 0;
+    }
+#endif // DEBUG_BATTLE_SCENARIOS
     // PMFG (REQ-TGT-SYS-002): only the HARD setting caps leveling; SOFT shrinks EXP instead (battle_script_commands.c)
     return PMFG_GetSetting(SETTING_LEVEL_CAP) == SETTING_LEVEL_CAP_HARD ? PMFG_ProgressLevelCap() : 100;
-#endif // DEBUG_BATTLE_SCENARIOS
 }
 
 /**

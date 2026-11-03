@@ -15,6 +15,9 @@
 
 static u32 BadgeCount(void)
 {
+#ifdef DEBUG_BATTLE_SCENARIOS
+    return 0; // battle tests see the first caps (12 NORMAL, 9 HARD) whatever the test save holds
+#endif
     struct PlayerProfile *profile = Sav2_PlayerData_GetProfileAddr(SaveBlock2_get());
     u32 badges = 0;
     for (int i = 0; i < 16; i++) {

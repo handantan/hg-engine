@@ -2,6 +2,7 @@
 #include "types.h"
 #include "save.h"
 #include "pmfg_settings.h"
+#include "test_battle.h"
 
 // PMFG settings layer (REQ-TGT-SYS-001). Each setting is a 4-bit field in the save vars from PMFG_SETTINGS_VAR_BASE,
 // stored XOR its default so a zeroed var (new game, or a save from before a setting existed) reads as the default.
@@ -11,7 +12,7 @@ static const u8 sDefaults[NUM_PMFG_SETTINGS] = PMFG_SETTING_DEFAULTS;
 u8 LONG_CALL PMFG_GetSetting(u8 setting)
 {
 #ifdef DEBUG_BATTLE_SCENARIOS
-    return sDefaults[setting]; // battle tests start with no field system, so script vars can't be read
+    return TestBattle_GetCurrentScenario()->settings[setting] ^ sDefaults[setting]; // no field system, so no script vars
 #endif
     u16 var = GetScriptVar(PMFG_SETTINGS_VAR_BASE + setting / 4);
     return ((var >> ((setting % 4) * 4)) & 0xF) ^ sDefaults[setting];

@@ -6,6 +6,7 @@
 #include "types.h"
 
 #include "battle.h"
+#include "pmfg_settings.h"
 
 #define AI_SCRIPT_MAX_MOVES 8
 
@@ -94,7 +95,11 @@ struct PACKED TestBattleScenario {
     u8 knownFailing : 1;
     u8 markAsFail : 7;
     u8 innatesUnlocked; // PMFG (REQ-TGT-MON-001): species innates are off in battle tests unless a test sets this
+    u8 settings[NUM_PMFG_SETTINGS]; // PMFG (REQ-TGT-SYS-001): stored XOR the default like the save, so unset = default; use PMFG_SETTING
 };
+
+// PMFG: `.settings = { PMFG_SETTING(EXP_MULTIPLIER, X2) }`
+#define PMFG_SETTING(setting, value) [SETTING_##setting] = SETTING_##setting##_##value ^ SETTING_##setting##_DEFAULT
 
 #define FULL_HP (0xFFFF)
 
