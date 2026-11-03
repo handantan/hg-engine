@@ -10,8 +10,10 @@
 #include "../../include/pmfg_options_text.h"
 
 // pmfg: options screen app (B-020), shown once after Oak's speech. First asks RECOMMENDED / CUSTOM; CUSTOM lists the
-// settings of Docs/requirements/target/data/settings.csv a page at a time. Text only, one BG layer, laid out like
-// hg-engine's crash screen (src/save.c), whose ROM graphics templates it reuses.
+// settings of Docs/requirements/target/data/settings.csv a page at a time, over the HGSS Options app's backgrounds
+// (BG setup and graphics as pret src/options_app.c:448-458,548-657): its touch-screen gradient behind framed menu
+// windows on both screens, the description on the touch screen. The top-screen Options art isn't used: its HGSS option
+// buttons are drawn into the background.
 // From the PC (SYS-008, args PMFG_OPTIONS_ARGS_PC) it opens on the pages, ease-only settings can't go above their
 // current value, and B leaves without saving.
 
@@ -21,23 +23,51 @@
 #define COLOR_NORMAL COLOR(1, 2, 15)
 #define COLOR_SELECTED COLOR(3, 4, 15)
 #define COLOR_LOCKED COLOR(2, 15, 15)
+#define FONT_PAL 13
+#define FRAME_PAL 2 // after the gradient's two palettes
+#define FRAME_TILE 600 // after the windows' tiles (title 1-60, rows 61-540)
 
-// the ROM's own save-error screen setup (arm9 rodata), also used by src/save.c
-#define ROM_GRAPHICS_BANKS ((void *)0x0210855C)
+// the ROM's own save-error screen display modes (arm9 rodata), also used by src/save.c
 #define ROM_GRAPHICS_MODES ((void *)0x02108530)
-#define ROM_BG_TEMPLATE ((void *)0x02108540)
+
+// BG layers (pret GF_BG_LYR_*) and the Options app's graphics archive a/0/7/2 (pret NARC_a_0_7_2)
+enum { BG_TEXT = 1, BG_BACK = 2, BG_SUB_BACK = 4, BG_SUB_TEXT = 5 };
+#define NARC_OPTIONS_GFX 72
+#define PAL_LOCATION_MAIN_BG 0
+#define PAL_LOCATION_SUB_BG 4
+
+// pret include/bg_window.h; hg-engine declares the BG calls with void *
+typedef struct {
+    u32 x, y, bufferSize, baseTile;
+    u8 size, colorMode, screenBase, charBase, bgExtPltt, priority, areaOver, dummy;
+    u32 mosaic;
+} BgTemplate;
+
+// raw NitroSDK values: size 1 = 256x256, screenBase n = 0xn*0x800, charBase n = n*0x4000
+#define BG_TEMPLATE(scr, chr, prio) { .bufferSize = 0x800, .size = 1, .screenBase = (scr), .charBase = (chr), .priority = (prio) }
+static const BgTemplate sBgTemplates[] = {
+    [0] = BG_TEMPLATE(30, 1, 1), // BG_TEXT: screen 0xF000, chars 0x4000
+    [1] = BG_TEMPLATE(29, 0, 2), // BG_BACK: screen 0xE800, chars 0x0000
+    [2] = BG_TEMPLATE(31, 0, 1), // BG_SUB_BACK: screen 0xF800, chars 0x0000
+    [3] = BG_TEMPLATE(30, 2, 0), // BG_SUB_TEXT: screen 0xF000, chars 0x8000
+};
+static const u8 sBgLayers[] = { BG_TEXT, BG_BACK, BG_SUB_BACK, BG_SUB_TEXT };
+static const u32 sGraphicsBanks[10] = { [0] = 0x01, [2] = 0x04 }; // pret GraphicsBanks: bg GX_VRAM_BG_128_A, subbg GX_VRAM_SUB_BG_128_C
 
 void LONG_CALL Heap_Create(u32 parent, u32 heapId, u32 size);
 void LONG_CALL Heap_Destroy(u32 heapId);
 void LONG_CALL FreeBgTilemapBuffer(void *bgConfig, u32 layer);
+u32 LONG_CALL GfGfxLoader_LoadCharData(u32 narcId, s32 memberNo, void *bgConfig, u32 layer, u32 tileStart, u32 szByte, BOOL isCompressed, u32 heapId);
+void LONG_CALL GfGfxLoader_LoadScrnData(u32 narcId, s32 memberNo, void *bgConfig, u32 layer, u32 tileStart, u32 szByte, BOOL isCompressed, u32 heapId);
+void LONG_CALL GfGfxLoader_GXLoadPal(u32 narcId, s32 memberNo, u32 location, u32 palSlotOffset, u32 szByte, u32 heapId);
 
 enum { STATE_PROMPT, STATE_PAGES, STATE_DONE };
 enum { WIN_TITLE, WIN_ROWS, WIN_DESC, WIN_COUNT };
 
 static const WindowTemplate sWindows[WIN_COUNT] = {
-    [WIN_TITLE] = { .bgId = 0, .left = 1, .top = 0, .width = 30, .height = 2, .palette = 1, .baseTile = 1 },
-    [WIN_ROWS] = { .bgId = 0, .left = 1, .top = 2, .width = 30, .height = 16, .palette = 1, .baseTile = 61 },
-    [WIN_DESC] = { .bgId = 0, .left = 1, .top = 18, .width = 30, .height = 6, .palette = 1, .baseTile = 541 },
+    [WIN_TITLE] = { .bgId = BG_TEXT, .left = 1, .top = 1, .width = 30, .height = 2, .palette = FONT_PAL, .baseTile = 1 },
+    [WIN_ROWS] = { .bgId = BG_TEXT, .left = 1, .top = 5, .width = 30, .height = 16, .palette = FONT_PAL, .baseTile = 61 },
+    [WIN_DESC] = { .bgId = BG_SUB_TEXT, .left = 1, .top = 16, .width = 30, .height = 6, .palette = FONT_PAL, .baseTile = 1 },
 };
 
 static struct {
@@ -149,20 +179,28 @@ static BOOL PMFG_OptionsScreen_Init(void *manager, int *state UNUSED)
     Main_SetVBlankIntrCB(NULL, NULL);
     GfGfx_DisableEngineAPlanes();
     GfGfx_DisableEngineBPlanes();
-    GfGfx_SetBanks(ROM_GRAPHICS_BANKS);
+    GfGfx_SetBanks((void *)sGraphicsBanks);
     sApp.bgConfig = BgConfig_Alloc(HEAP_ID);
     SetBothScreensModesAndDisable(ROM_GRAPHICS_MODES);
-    InitBgFromTemplate(sApp.bgConfig, 0, ROM_BG_TEMPLATE, 0);
-    BgClearTilemapBufferAndCommit(sApp.bgConfig, 0);
-    LoadFontPal0(0, 0x20, HEAP_ID);
-    BG_ClearCharDataRange(0, 0x20, 0, HEAP_ID);
-    BG_SetMaskColor(0, 0);
-    BG_SetMaskColor(4, 0);
+    for (int i = 0; i < (int)NELEMS(sBgLayers); i++) {
+        InitBgFromTemplate(sApp.bgConfig, sBgLayers[i], (void *)&sBgTemplates[i], 0);
+        BgClearTilemapBufferAndCommit(sApp.bgConfig, sBgLayers[i]);
+    }
+    BG_ClearCharDataRange(BG_TEXT, 0x20, 0, HEAP_ID);
+    BG_ClearCharDataRange(BG_SUB_TEXT, 0x20, 0, HEAP_ID);
+    for (int sub = 0; sub < 2; sub++) {
+        GfGfxLoader_GXLoadPal(NARC_OPTIONS_GFX, 3, sub ? PAL_LOCATION_SUB_BG : PAL_LOCATION_MAIN_BG, 0, 0x40, HEAP_ID);
+        GfGfxLoader_LoadCharData(NARC_OPTIONS_GFX, 8, sApp.bgConfig, sub ? BG_SUB_BACK : BG_BACK, 0, 0, FALSE, HEAP_ID);
+        GfGfxLoader_LoadScrnData(NARC_OPTIONS_GFX, 19, sApp.bgConfig, sub ? BG_SUB_BACK : BG_BACK, 0, 0, FALSE, HEAP_ID);
+        LoadFontPal0(sub ? PAL_LOCATION_SUB_BG : PAL_LOCATION_MAIN_BG, FONT_PAL * 0x20, HEAP_ID);
+        LoadUserFrameGfx1(sApp.bgConfig, sub ? BG_SUB_TEXT : BG_TEXT, FRAME_TILE, FRAME_PAL, 0, HEAP_ID);
+    }
 
     sApp.string = String_New(64, HEAP_ID);
     ResetAllTextPrinters();
     for (int i = 0; i < WIN_COUNT; i++) {
         AddWindow(sApp.bgConfig, &sApp.windows[i], (void *)&sWindows[i]);
+        DrawFrameAndWindow1(&sApp.windows[i], FALSE, FRAME_TILE, FRAME_PAL);
     }
     Draw();
     GfGfx_BothDispOn();
@@ -185,7 +223,9 @@ static BOOL PMFG_OptionsScreen_Exit(void *manager UNUSED, int *state UNUSED)
         RemoveWindow(&sApp.windows[i]);
     }
     String_Delete(sApp.string);
-    FreeBgTilemapBuffer(sApp.bgConfig, 0);
+    for (int i = 0; i < (int)NELEMS(sBgLayers); i++) {
+        FreeBgTilemapBuffer(sApp.bgConfig, sBgLayers[i]);
+    }
     sys_FreeMemoryEz(sApp.bgConfig);
     GfGfx_DisableEngineAPlanes();
     GfGfx_DisableEngineBPlanes();

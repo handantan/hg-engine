@@ -608,6 +608,8 @@ CheckMoveCallsOtherMove = 0x02252698 | 1;
 //StruggleCheck = 0x022517EC | 1;
 
 GfGfxLoader_LoadCharData = 0x020078F0 | 1;
+GfGfxLoader_LoadScrnData = 0x02007914 | 1; /* pmfg: BL targets in overlay 54 OptionsApp_SetupGraphicsData, order as pret src/options_app.c:651-657 */
+GfGfxLoader_GXLoadPal = 0x02007938 | 1;
 PaletteData_LoadNarc = 0x02003200 | 1;
 Ground_ActorResourceSet = 0x02265FD4 | 1;
 BattleWorkGroundBGChg = 0x0223B874 | 1;
