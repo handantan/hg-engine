@@ -146,6 +146,7 @@ BOOL btl_scr_cmd_12A_GoToIfMoveConditionFlagSet(void *bsys, struct BattleStruct 
 BOOL btl_scr_cmd_12B_TryActivateReceiver(void *bsys, struct BattleStruct *ctx);
 BOOL btl_scr_cmd_12C_TryActivateEmergencyExit(void *bsys, struct BattleStruct *ctx);
 BOOL btl_scr_cmd_12D_TryEatHpBerry(void *bsys, struct BattleStruct *ctx);
+BOOL btl_scr_cmd_12E_TryWildItemDrop(void *bw, struct BattleStruct *sp);
 BOOL BtlCmd_GoToMoveScript(struct BattleSystem *bsys, struct BattleStruct *ctx);
 BOOL BtlCmd_WeatherHPRecovery(void *bw, struct BattleStruct *sp);
 BOOL BtlCmd_CalcWeatherBallParams(void *bw, struct BattleStruct *sp);
@@ -491,7 +492,8 @@ const u8 *BattleScrCmdNames[] = {
     "GoToIfMoveConditionFlagSet",
     "TryActivateReceiver"
     "TryActivateEmergencyExit"
-    "TryEatHpBerry"
+    "TryEatHpBerry",
+    "TryWildItemDrop"
     // "YourCustomCommand",
 };
 
@@ -580,6 +582,7 @@ const btl_scr_cmd_func NewBattleScriptCmdTable[] = {
     [0x12B - START_OF_NEW_BTL_SCR_CMDS] = btl_scr_cmd_12B_TryActivateReceiver,
     [0x12C - START_OF_NEW_BTL_SCR_CMDS] = btl_scr_cmd_12C_TryActivateEmergencyExit,
     [0x12D - START_OF_NEW_BTL_SCR_CMDS] = btl_scr_cmd_12D_TryEatHpBerry,
+    [0x12E - START_OF_NEW_BTL_SCR_CMDS] = btl_scr_cmd_12E_TryWildItemDrop, // PMFG REQ-TGT-SYS-011
     // [BASE_ENGINE_BTL_SCR_CMDS_MAX - START_OF_NEW_BTL_SCR_CMDS + 1] = btl_scr_cmd_custom_01_your_custom_command,
 };
 
@@ -6127,5 +6130,33 @@ BOOL btl_scr_cmd_12D_TryEatHpBerry(void *bsys, struct BattleStruct *ctx)
         IncrementBattleScriptPtr(ctx, failAddress);
     }
 
+    return FALSE;
+}
+
+/**
+ *  @brief PMFG REQ-TGT-SYS-011 wild_item_drop (refs/pokehns-expansion/src/battle_script_commands.c:15119): after a won
+ *  wild battle the first opposing mon still holding an item drops it into the bag; one item at most, as H&S.
+ *  Buffers the message and sets calc_work when there is one to print.
+ */
+BOOL btl_scr_cmd_12E_TryWildItemDrop(void *bw, struct BattleStruct *sp)
+{
+    IncrementBattleScriptPtr(sp, 1);
+    sp->calc_work = 0;
+    if (PMFG_GetSetting(SETTING_WILD_ITEM_DROP) != SETTING_WILD_ITEM_DROP_ON || (BattleTypeGet(bw) & BATTLE_TYPE_TRAINER)) {
+        return FALSE;
+    }
+    for (int battler = BATTLER_ENEMY; battler < BattleWorkClientSetMaxGet(bw); battler += 2) {
+        u16 item = sp->battlemon[battler].item;
+        if (item == ITEM_NONE) {
+            continue;
+        }
+        sp->battlemon[battler].item = ITEM_NONE;
+        sp->mp.id = Bag_AddItem(((struct BattleSystem *)bw)->bag, item, 1, 5) ? BATTLE_MSG_PMFG_WILD_DROPPED_ITEM : BATTLE_MSG_PMFG_WILD_DROPPED_ITEM_BAG_FULL;
+        sp->mp.tag = TAG_NICKNAME_ITEM;
+        sp->mp.param[0] = (sp->sel_mons_no[battler] << 8) | battler;
+        sp->mp.param[1] = item;
+        sp->calc_work = 1;
+        break;
+    }
     return FALSE;
 }

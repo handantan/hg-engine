@@ -80,6 +80,14 @@ _144:
     WaitButtonABTime 60
 
 _147:
+    TryWildItemDrop
+    CompareVarToValue OPCODE_EQU, BSCRIPT_VAR_CALC_TEMP, 0, _pmfgPickup
+    // The wild {0} dropped its {1}! (PMFG REQ-TGT-SYS-011)
+    PrintBufferedMessage
+    Wait
+    WaitButtonABTime 60
+
+_pmfgPickup:
     GenerateEndOfBattleItem
     CompareVarToValue OPCODE_EQU, BSCRIPT_VAR_CALC_TEMP, 0, _checkPayday
     // {0} picked up 1 ${1}!

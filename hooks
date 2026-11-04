@@ -172,6 +172,8 @@ arm9 CreateStarterMon_hook 020960E6 1
 #trainer data expansion
 arm9 MakeTrainerPokemonParty 08073604 3
 arm9 TT_TrainerTypeSexGet 020735F8 1
+# REQ-TGT-SYS-011 frontier_bans
+arm9 PMFG_IsPokemonBannedFromBattleFrontier 020726F8 2
 
 #fix money calculation -
 0012 fix_money_calc 0800829E 0

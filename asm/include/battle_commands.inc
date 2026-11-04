@@ -1653,6 +1653,11 @@
 
     .equ BASE_ENGINE_BTL_SCR_CMDS_MAX, 301
 
+    // PMFG REQ-TGT-SYS-011: sets calc_work and buffers a message when a wild mon dropped its item
+    .macro TryWildItemDrop
+    .long 302
+    .endm
+
     // .macro YourCustomCommand
     // .long (BASE_ENGINE_BTL_SCR_CMDS_MAX + 1)
     // .endm

@@ -2229,3 +2229,60 @@ void LONG_CALL LoadLevelUpLearnset_HandleAlternateForm(int species, int form, u3
     }
 #endif
 }
+
+// REQ-TGT-SYS-011 frontier_bans (refs/pokehns-expansion/src/frontier_util.c:2103): ON bans H&S's restricted species
+// (`.isFrontierBanned` in refs/pokehns-expansion/src/data/pokemon/species_info, 37 species, a superset of HGSS's 18) and
+// spiky-eared Pichu as HGSS; OFF bans nothing. hooks: replaces vanilla IsPokemonBannedFromBattleFrontier (0x020726F8).
+// shortcut: the Frontier's banned-list text still names HGSS's 18 (GetBannedBattleFrontierPokemon); patch it if anyone asks
+static const u16 sPmfgFrontierBans[] = {
+    SPECIES_MEWTWO,
+    SPECIES_MEW,
+    SPECIES_LUGIA,
+    SPECIES_HO_OH,
+    SPECIES_CELEBI,
+    SPECIES_KYOGRE,
+    SPECIES_GROUDON,
+    SPECIES_RAYQUAZA,
+    SPECIES_JIRACHI,
+    SPECIES_DIALGA,
+    SPECIES_PALKIA,
+    SPECIES_PHIONE,
+    SPECIES_MANAPHY,
+    SPECIES_DARKRAI,
+    SPECIES_VICTINI,
+    SPECIES_RESHIRAM,
+    SPECIES_ZEKROM,
+    SPECIES_KYUREM,
+    SPECIES_YVELTAL,
+    SPECIES_DIANCIE,
+    SPECIES_VOLCANION,
+    SPECIES_COSMOG,
+    SPECIES_COSMOEM,
+    SPECIES_SOLGALEO,
+    SPECIES_LUNALA,
+    SPECIES_NECROZMA,
+    SPECIES_MAGEARNA,
+    SPECIES_MARSHADOW,
+    SPECIES_ZERAORA,
+    SPECIES_MELTAN,
+    SPECIES_MELMETAL,
+    SPECIES_ETERNATUS,
+    SPECIES_ZARUDE,
+    SPECIES_CALYREX,
+    SPECIES_KORAIDON,
+    SPECIES_MIRAIDON,
+    SPECIES_PECHARUNT,
+};
+
+BOOL LONG_CALL PMFG_IsPokemonBannedFromBattleFrontier(u16 species, u16 form)
+{
+    if (PMFG_GetSetting(SETTING_FRONTIER_BANS) == SETTING_FRONTIER_BANS_OFF) {
+        return FALSE;
+    }
+    for (u32 i = 0; i < NELEMS(sPmfgFrontierBans); i++) {
+        if (species == sPmfgFrontierBans[i]) {
+            return TRUE;
+        }
+    }
+    return species == SPECIES_PICHU && form == 1; // PICHU_SPIKY_EAR
+}
