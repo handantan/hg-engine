@@ -12,7 +12,9 @@ static const u8 sDefaults[NUM_PMFG_SETTINGS] = PMFG_SETTING_DEFAULTS;
 u8 LONG_CALL PMFG_GetSetting(u8 setting)
 {
 #ifdef DEBUG_BATTLE_SCENARIOS
-    return TestBattle_GetCurrentScenario()->settings[setting] ^ sDefaults[setting]; // no field system, so no script vars
+    // no field system, so no script vars; field hooks (clock, autorun) also run before a scenario is loaded: defaults
+    struct TestBattleScenario *scenario = TestBattle_GetCurrentScenario();
+    return scenario != NULL ? scenario->settings[setting] ^ sDefaults[setting] : sDefaults[setting];
 #endif
     u16 var = GetScriptVar(PMFG_SETTINGS_VAR_BASE + setting / 4);
     return ((var >> ((setting % 4) * 4)) & 0xF) ^ sDefaults[setting];
