@@ -783,6 +783,43 @@
 /* Trainer 756 */ scrdef scr_seq_0953_normalTrainer
 /* Trainer 757 */ scrdef scr_seq_0953_normalTrainer
 /* Trainer 758 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 759 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 760 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 761 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 762 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 763 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 764 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 765 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 766 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 767 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 768 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 769 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 770 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 771 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 772 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 773 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 774 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 775 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 776 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 777 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 778 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 779 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 780 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 781 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 782 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 783 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 784 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 785 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 786 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 787 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 788 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 789 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 790 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 791 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 792 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 793 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 794 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 795 */ scrdef scr_seq_0953_normalTrainer
 // to add new trainers, just keep the list going here with more normalTrainer entries.
 
 scrdef_end

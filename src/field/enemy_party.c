@@ -20,6 +20,7 @@
 #include "trainer_data.h"
 #include "pmfg_settings.h"
 #include "pmfg_innates.h"
+#include "pmfg_hard_trainers.h"
 
 #ifdef DEBUG_BATTLE_SCENARIOS
 #include "test_battle.h"
@@ -102,12 +103,39 @@ static u32 TrainerPartyHighestLevel(const u8 *buf, u8 dataType, u8 pokecount)
  *  @param num trainer index to read from both ARC_TRAINER_DATA and ARC_TRAINER_PARTY_DATA
  *  @param heapID heap to use for memory usage
  */
+#define TT_TrainerDataGet ((void (*)(u32 id, TRAINER_DATA *dest))(0x020735D8 | 1)) // pret TrainerData_ReadTrData
+
+/**
+ *  @brief REQ-TGT-TRN-003 difficulty HARD (refs/soulgold/src/difficulty.c:7-20): the trainer's SoulGold Hard party twin
+ *  (include/pmfg_hard_trainers.h, tools/sg_hard_trainers.py), else the trainer itself
+ */
+static u32 PartyTrainerId(u32 id)
+{
+    if (PMFG_GetSetting(SETTING_DIFFICULTY) == SETTING_DIFFICULTY_HARD) {
+        for (u32 i = 0; i < NELEMS(sPmfgHardTrainers); i++) {
+            if (sPmfgHardTrainers[i][0] == id) {
+                return sPmfgHardTrainers[i][1];
+            }
+        }
+    }
+    return id;
+}
+
 void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
 {
     u8 *buf;
     int i, j;
     u32 rnd_tmp, rnd, seed_tmp;
     u8 pow;
+
+    // the Hard twin's header (party size, data flags, items) and party; bp->trainer_id stays, so the defeat flag,
+    // texts and prize money are the original trainer's, and so is single/double (decided before this runs)
+    u32 partyTrainerId = PartyTrainerId(bp->trainer_id[num]);
+    if (partyTrainerId != (u32)bp->trainer_id[num]) {
+        u32 fightType = bp->trainer_data[num].fight_type;
+        TT_TrainerDataGet(partyTrainerId, &bp->trainer_data[num]);
+        bp->trainer_data[num].fight_type = fightType;
+    }
 
     // REQ-TGT-SYS-005 trainer_items OFF (refs/pokehns-expansion/src/battle_ai_items.c:36): the AI finds no items to use
     if (PMFG_GetSetting(SETTING_TRAINER_ITEMS) == SETTING_TRAINER_ITEMS_OFF) {
@@ -120,7 +148,7 @@ void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
 
     buf = (u8 *)sys_AllocMemory(heapID, sizeof(struct FULL_TRAINER_MON_DATA_STRUCTURE) * 6);
 
-    TT_TrainerPokeDataGet(bp->trainer_id[num], buf);
+    TT_TrainerPokeDataGet(partyTrainerId, buf);
 
     if (TT_TrainerTypeSexGet(bp->trainer_data[num].tr_type) == 1) // if trainer is female
     {
