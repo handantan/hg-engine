@@ -1768,6 +1768,7 @@ u32 LONG_CALL GetLevelCap(void);
  *  @return TRUE if level >= level cap; FALSE otherwise
  */
 u32 LONG_CALL IsLevelAtLevelCap(u32 level);
+u32 LONG_CALL IsLevelAtRareCandyCap(u32 level);
 
 /**
  *  @brief grab the nature of a BoxPokemon factoring in the nature mint override field

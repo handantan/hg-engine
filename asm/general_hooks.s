@@ -41,7 +41,7 @@ bx r3
 // r0 is level
 .global CapRareCandies
 CapRareCandies:
-bl IsLevelAtLevelCap
+bl IsLevelAtRareCandyCap
 cmp r0, #0
 bne return_to_208FEFA
 mov r0, r4

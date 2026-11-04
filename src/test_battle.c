@@ -166,6 +166,9 @@ static void LONG_CALL TestBattle_OverridePokemon(struct PartyPokemon *mon, u16 s
             SetMonData(mon, MON_DATA_MOVE1MAXPP + i, &pp);
             SetMonData(mon, MON_DATA_MOVE1PP + i, &pp);
         } else {
+            // PMFG: clear the slot too; a learnset move left here with 0 PP is still callable by Sleep Talk (B-032)
+            u16 none = MOVE_NONE;
+            SetMonData(mon, MON_DATA_MOVE1 + i, &none);
             u32 pp = 0;
             SetMonData(mon, MON_DATA_MOVE1PP + i, &pp);
             SetMonData(mon, MON_DATA_MOVE1MAXPP + i, &pp);

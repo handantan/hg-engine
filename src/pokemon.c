@@ -1753,6 +1753,12 @@ u32 LONG_CALL IsLevelAtLevelCap(u32 level)
     return level >= GetLevelCap();
 }
 
+// PMFG REQ-TGT-SYS-002: Rare Candy stops at the cap on SOFT too, as in SoulGold (refs/soulgold/src/party_menu.c:6805-6810)
+u32 LONG_CALL IsLevelAtRareCandyCap(u32 level)
+{
+    return PMFG_GetSetting(SETTING_LEVEL_CAP) != SETTING_LEVEL_CAP_OFF && level >= PMFG_ProgressLevelCap();
+}
+
 #ifdef IMPLEMENT_LEVEL_CAP
 
 /**

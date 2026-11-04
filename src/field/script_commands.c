@@ -413,3 +413,45 @@ void SetupAndStartTotemBattle(TaskManager *taskManager, u16 species, u8 level, u
 
     CallTask_StartEncounter(taskManager, setup, BattleSetup_GetWildTransitionEffect(setup), BattleSetup_GetWildBattleMusic(setup), winFlag);
 }
+
+int LONG_CALL PokeParty_GetPokeCount(void *party); // rom.ld
+u16 ItemToMachineMoveIndex(u16 itemId);            // src/item.c
+BOOL GetMonMachineMoveCompat(struct PartyPokemon *pp, u16 machineMoveIndex); // src/pokemon.c
+
+/**
+ *  @brief PMFG REQ-TGT-QOL-001: the party slot that can use a field move (scr_seq 146: Cut, Rock Smash, Strength, Surf,
+ *  Waterfall, Whirlpool, Rock Climb, Headbutt). Vanilla: the first non-egg mon that knows it (pret scrcmd_party.c
+ *  ScrCmd_GetPartySlotWithMove). PMFG, as H&S (refs/pokehns-expansion/src/scrcmd.c:3040-3070): else, with the move's HM in
+ *  the bag, the first non-egg mon that can learn it. Badges stay in the script. 6 = none.
+ */
+BOOL ScrCmd_GetPartySlotWithMove(SCRIPTCONTEXT *ctx)
+{
+    u16 *slot = ScriptGetVarPointer(ctx);
+    u16 move = ScriptGetVar(ctx);
+    void *party = SaveData_GetPlayerPartyPtr(ctx->fsys->savedata);
+    int count = PokeParty_GetPokeCount(party);
+    u16 hm = ITEM_NONE;
+
+    for (u16 item = ITEM_HM01; item <= ITEM_HM08; item++) {
+        if (ItemToMachineMove(item) == move && Bag_HasItem(Sav2_Bag_get(ctx->fsys->savedata), item, 1, HEAPID_WORLD)) {
+            hm = item;
+        }
+    }
+    *slot = 6;
+    for (int pass = 0; pass < 2 && *slot == 6; pass++) {
+        for (int i = 0; i < count; i++) {
+            struct PartyPokemon *mon = Party_GetMonByIndex(party, i);
+            if (GetMonData(mon, MON_DATA_IS_EGG, NULL)) {
+                continue;
+            }
+            BOOL ok = pass == 0 ? (GetMonData(mon, MON_DATA_MOVE1, NULL) == move || GetMonData(mon, MON_DATA_MOVE2, NULL) == move
+                                   || GetMonData(mon, MON_DATA_MOVE3, NULL) == move || GetMonData(mon, MON_DATA_MOVE4, NULL) == move)
+                                : hm != ITEM_NONE && GetMonMachineMoveCompat(mon, ItemToMachineMoveIndex(hm));
+            if (ok) {
+                *slot = i;
+                break;
+            }
+        }
+    }
+    return FALSE;
+}
