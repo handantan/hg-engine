@@ -138,3 +138,19 @@ ldr r2, =0x021FF662 | 1
 bx  r2
 
 .pool
+
+
+// PMFG REQ-TGT-QOL-002 fast_surf: hooked at 0x0205D59C (lsr r1, #0x18; mov r2, #0x10; bl sub_0205D44C), r2 free
+.global PMFG_FastSurf_hook
+PMFG_FastSurf_hook:
+lsr r1, r1, #0x18
+push {r0-r1}
+bl PMFG_SurfStepMovement
+mov r2, r0
+pop {r0-r1}
+ldr r3, =0x0205D44C | 1
+bl bx_r3
+ldr r1, =0x0205D5A4 | 1
+bx r1
+
+.pool

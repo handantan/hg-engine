@@ -172,6 +172,10 @@ arm9 CreateStarterMon_hook 020960E6 1
 #trainer data expansion
 arm9 MakeTrainerPokemonParty 08073604 3
 arm9 TT_TrainerTypeSexGet 020735F8 1
+# REQ-TGT-QOL-002 autorun
+arm9 PMFG_PlayerAvatar_IsRunHeld 0205DE88 2
+# REQ-TGT-QOL-002 fast_surf (mid-function, asm/general_hooks.s)
+arm9 PMFG_FastSurf_hook 0205D59C 2
 # REQ-TGT-SYS-011 frontier_bans
 arm9 PMFG_IsPokemonBannedFromBattleFrontier 020726F8 2
 
