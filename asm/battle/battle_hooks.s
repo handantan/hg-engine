@@ -777,3 +777,16 @@ ldr r0, =0x0224DB3C | 1 // Immediately after the switch case. No registers are i
 bx r0
 
 .pool
+
+
+// PMFG REQ-TGT-QOL-002: hooked at 0x0225DF20 in vanilla's battle command task (bl BattleInput_CheckTouch;
+// mov r1, #0; mvn r1, r1), r1 free; r0 = BattleInput
+.global PMFG_BattleInput_CheckTouch_hook
+PMFG_BattleInput_CheckTouch_hook:
+bl PMFG_BattleInput_CheckTouch
+mov r1, #0
+mvn r1, r1
+ldr r2, =0x0225DF28 | 1
+bx r2
+
+.pool

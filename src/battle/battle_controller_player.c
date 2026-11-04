@@ -12,6 +12,8 @@
 #include "battle.h"
 #include "pmfg_settings.h"
 
+void PMFG_TryQuickBallThrow(struct BattleStruct *ctx);
+
 #ifdef DEBUG_BATTLE_SCENARIOS
 #include "test_battle.h"
 #endif // DEBUG_BATTLE_SCENARIOS
@@ -114,6 +116,7 @@ BOOL LONG_CALL BattleContext_Main(struct BattleSystem *bsys, struct BattleStruct
 #ifdef DEBUG_BATTLE_SCENARIOS
     TestBattle_autoSelectPlayerMoves(bsys, ctx);
 #endif
+    PMFG_TryQuickBallThrow(ctx); // REQ-TGT-QOL-002, src/battle/pmfg_battle_input.c
     overrideItemUsage(bsys, ctx);
     overrideRunButton(bsys, ctx);
 

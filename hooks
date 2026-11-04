@@ -172,6 +172,8 @@ arm9 CreateStarterMon_hook 020960E6 1
 #trainer data expansion
 arm9 MakeTrainerPokemonParty 08073604 3
 arm9 TT_TrainerTypeSexGet 020735F8 1
+# REQ-TGT-QOL-002 quick run / quick ball (battle command menu, asm/battle/battle_hooks.s)
+0012 PMFG_BattleInput_CheckTouch_hook 0225DF20 1
 # REQ-TGT-QOL-002 autorun
 arm9 PMFG_PlayerAvatar_IsRunHeld 0205DE88 2
 # REQ-TGT-QOL-002 fast_surf (mid-function, asm/general_hooks.s)

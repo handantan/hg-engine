@@ -23,6 +23,7 @@
 u32 get_shake_chance(int input_value);
 
 extern u8 gSafariBallRateTable[13][2];
+extern u8 gPmfgBallScoreOnly; // PMFG REQ-TGT-QOL-002 BEST quick ball, src/battle/pmfg_battle_input.c
 
 u16 MoonBallSpecies[] = {
     SPECIES_NIDORINA,
@@ -275,6 +276,11 @@ u32 __attribute__((section(".init"))) CalculateBallShakesInternal(void *bw, stru
         if (sp->item_work == ITEM_BEAST_BALL) {
             ballCaptureRatio = 0x19A;
         }
+    }
+
+    // PMFG: everything after this is the same for every ball, so this ranks them (step 4 below: d = c * ratio)
+    if (gPmfgBallScoreOnly) {
+        return (speciesCatchRate + heavyBallMod) * ballCaptureRatio;
     }
 
     // https://xcancel.com/Sibuna_Switch/status/1610341810655608833
