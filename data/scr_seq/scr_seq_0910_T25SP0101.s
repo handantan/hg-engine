@@ -173,12 +173,18 @@ _PMFG_ItemMenu:
 	menu_item_add 55, 255, 0
 	menu_item_add 56, 255, 1
 	menu_item_add 57, 255, 2
-	menu_item_add 11, 255, 3
+	goto_if_unset FLAG_BEAT_RADIO_TOWER_ROCKETS, _PMFG_ItemMenuEnd
+	menu_item_add 79, 255, 3
+	menu_item_add 80, 255, 4
+_PMFG_ItemMenuEnd:
+	menu_item_add 11, 255, 5
 	menu_exec
 	switch VAR_TEMP_x4000
 	case 0, _PMFG_Item0
 	case 1, _PMFG_Item1
 	case 2, _PMFG_Item2
+	case 3, _PMFG_Item3
+	case 4, _PMFG_Item4
 	goto _01EC
 
 _PMFG_Item0:
@@ -198,6 +204,184 @@ _PMFG_Item2:
 	setvar VAR_SPECIAL_x8007, 3000
 	call _PMFG_BuyPrize
 	goto _PMFG_ItemMenu
+
+_PMFG_Item3:
+	setvar VAR_SPECIAL_x8004, ITEM_SCROLL_OF_DARKNESS
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ItemMenu
+
+_PMFG_Item4:
+	setvar VAR_SPECIAL_x8004, ITEM_SCROLL_OF_WATERS
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ItemMenu
+
+// pmfg: D-055: the 18 type Mega stones (REQ-TGT-ITM-001), the only Mega stones the player can get, 9,999 Coins each
+_PMFG_MegaMenu0:
+	menu_init 1, 1, 0, 1, VAR_TEMP_x4000
+	menu_item_add 61, 255, 0
+	menu_item_add 62, 255, 1
+	menu_item_add 63, 255, 2
+	menu_item_add 64, 255, 3
+	menu_item_add 65, 255, 4
+	menu_item_add 66, 255, 5
+	menu_item_add 11, 255, 6
+	menu_exec
+	switch VAR_TEMP_x4000
+	case 0, _PMFG_Mega0
+	case 1, _PMFG_Mega1
+	case 2, _PMFG_Mega2
+	case 3, _PMFG_Mega3
+	case 4, _PMFG_Mega4
+	case 5, _PMFG_Mega5
+	goto _01EC
+
+_PMFG_MegaMenu1:
+	menu_init 1, 1, 0, 1, VAR_TEMP_x4000
+	menu_item_add 67, 255, 0
+	menu_item_add 68, 255, 1
+	menu_item_add 69, 255, 2
+	menu_item_add 70, 255, 3
+	menu_item_add 71, 255, 4
+	menu_item_add 72, 255, 5
+	menu_item_add 11, 255, 6
+	menu_exec
+	switch VAR_TEMP_x4000
+	case 0, _PMFG_Mega6
+	case 1, _PMFG_Mega7
+	case 2, _PMFG_Mega8
+	case 3, _PMFG_Mega9
+	case 4, _PMFG_Mega10
+	case 5, _PMFG_Mega11
+	goto _01EC
+
+_PMFG_MegaMenu2:
+	menu_init 1, 1, 0, 1, VAR_TEMP_x4000
+	menu_item_add 73, 255, 0
+	menu_item_add 74, 255, 1
+	menu_item_add 75, 255, 2
+	menu_item_add 76, 255, 3
+	menu_item_add 77, 255, 4
+	menu_item_add 78, 255, 5
+	menu_item_add 11, 255, 6
+	menu_exec
+	switch VAR_TEMP_x4000
+	case 0, _PMFG_Mega12
+	case 1, _PMFG_Mega13
+	case 2, _PMFG_Mega14
+	case 3, _PMFG_Mega15
+	case 4, _PMFG_Mega16
+	case 5, _PMFG_Mega17
+	goto _01EC
+
+_PMFG_Mega0:
+	setvar VAR_SPECIAL_x8004, ITEM_BUGTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu0
+
+_PMFG_Mega1:
+	setvar VAR_SPECIAL_x8004, ITEM_DARKTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu0
+
+_PMFG_Mega2:
+	setvar VAR_SPECIAL_x8004, ITEM_DRAGOTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu0
+
+_PMFG_Mega3:
+	setvar VAR_SPECIAL_x8004, ITEM_ELECTRITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu0
+
+_PMFG_Mega4:
+	setvar VAR_SPECIAL_x8004, ITEM_FAIRYTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu0
+
+_PMFG_Mega5:
+	setvar VAR_SPECIAL_x8004, ITEM_FIGHTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu0
+
+_PMFG_Mega6:
+	setvar VAR_SPECIAL_x8004, ITEM_FIRETITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu1
+
+_PMFG_Mega7:
+	setvar VAR_SPECIAL_x8004, ITEM_FLYINGITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu1
+
+_PMFG_Mega8:
+	setvar VAR_SPECIAL_x8004, ITEM_GHOSTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu1
+
+_PMFG_Mega9:
+	setvar VAR_SPECIAL_x8004, ITEM_GRASSTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu1
+
+_PMFG_Mega10:
+	setvar VAR_SPECIAL_x8004, ITEM_GROUNDITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu1
+
+_PMFG_Mega11:
+	setvar VAR_SPECIAL_x8004, ITEM_ICETITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu1
+
+_PMFG_Mega12:
+	setvar VAR_SPECIAL_x8004, ITEM_NORMALITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu2
+
+_PMFG_Mega13:
+	setvar VAR_SPECIAL_x8004, ITEM_POISONTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu2
+
+_PMFG_Mega14:
+	setvar VAR_SPECIAL_x8004, ITEM_PSYCHITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu2
+
+_PMFG_Mega15:
+	setvar VAR_SPECIAL_x8004, ITEM_ROCKTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu2
+
+_PMFG_Mega16:
+	setvar VAR_SPECIAL_x8004, ITEM_STEELTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu2
+
+_PMFG_Mega17:
+	setvar VAR_SPECIAL_x8004, ITEM_WATERTITE
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_MegaMenu2
 
 // in: VAR_SPECIAL_x8004 item, VAR_SPECIAL_x8007 price in coins; the vanilla per-prize block (_0342) as one routine
 _PMFG_BuyPrize:
@@ -356,12 +540,20 @@ _01EC:
 	menu_item_add 12, 255, 0
 	menu_item_add 42, 255, 1
 	menu_item_add 43, 255, 2
-	menu_item_add 11, 255, 3
+	goto_if_unset FLAG_BEAT_RADIO_TOWER_ROCKETS, _PMFG_TopMenuEnd
+	menu_item_add 58, 255, 3
+	menu_item_add 59, 255, 4
+	menu_item_add 60, 255, 5
+_PMFG_TopMenuEnd:
+	menu_item_add 11, 255, 6
 	menu_exec
 	switch VAR_TEMP_x4000
 	case 0, _PMFG_TmMenu
 	case 1, _PMFG_StoneMenu
 	case 2, _PMFG_ItemMenu
+	case 3, _PMFG_MegaMenu0
+	case 4, _PMFG_MegaMenu1
+	case 5, _PMFG_MegaMenu2
 	goto _0C17
 
 _0234:
@@ -681,12 +873,15 @@ _08EB:
 	menu_item_add 24, 255, 0
 	menu_item_add 25, 255, 1
 	menu_item_add 26, 255, 2
-	menu_item_add 11, 255, 3
+	call _PMFG_MonPrizes
+	menu_item_add 11, 255, 5
 	menu_exec
 	switch VAR_TEMP_x4000
 	case 0, _09A5
 	case 1, _09B1
 	case 2, _09BD
+	case 3, _PMFG_Darkrai
+	case 4, _PMFG_Kubfu
 	goto _0C17
 
 _0948:
@@ -694,13 +889,74 @@ _0948:
 	menu_item_add 24, 255, 0
 	menu_item_add 27, 255, 1
 	menu_item_add 26, 255, 2
-	menu_item_add 11, 255, 3
+	call _PMFG_MonPrizes
+	menu_item_add 11, 255, 5
 	menu_exec
 	switch VAR_TEMP_x4000
 	case 0, _09A5
 	case 1, _09C9
 	case 2, _09BD
+	case 3, _PMFG_Darkrai
+	case 4, _PMFG_Kubfu
 	goto _0C17
+
+// pmfg: D-055: Darkrai (SoulGold's Darkrai Inn, Lv 70) and Kubfu (SoulGold's Blackthorn Cave gift, Lv 5) until those
+// maps are ported: 9,999 Coins, once each, after the Radio Tower invasion
+_PMFG_MonPrizes:
+	goto_if_unset FLAG_BEAT_RADIO_TOWER_ROCKETS, _PMFG_MonPrizesEnd
+	goto_if_set FLAG_PMFG_GOT_DARKRAI, _PMFG_MonPrizesKubfu
+	menu_item_add 81, 255, 3
+_PMFG_MonPrizesKubfu:
+	goto_if_set FLAG_PMFG_GOT_KUBFU, _PMFG_MonPrizesEnd
+	menu_item_add 82, 255, 4
+_PMFG_MonPrizesEnd:
+	return
+
+_PMFG_Darkrai:
+	setorcopyvar VAR_TEMP_x4002, SPECIES_DARKRAI
+	setvar VAR_TEMP_x4003, 70
+	goto _PMFG_BuyMon
+
+_PMFG_Kubfu:
+	setorcopyvar VAR_TEMP_x4002, SPECIES_KUBFU
+	setvar VAR_TEMP_x4003, 5
+_PMFG_BuyMon:
+	get_party_count VAR_SPECIAL_x8005
+	compare VAR_SPECIAL_x8005, 6
+	goto_if_ne _PMFG_BuyMonAsk
+	npc_msg 6
+	wait_button
+	closemsg
+	goto _0C26
+
+_PMFG_BuyMonAsk:
+	buffer_species_name 1, VAR_TEMP_x4002, 0, 0
+	npc_msg 7
+	getmenuchoice VAR_SPECIAL_RESULT
+	compare VAR_SPECIAL_RESULT, 0
+	goto_if_eq _PMFG_BuyMonPay
+	closemsg
+	goto _0B1D
+
+_PMFG_BuyMonPay:
+	get_coin_amount VAR_SPECIAL_x8006
+	compare VAR_SPECIAL_x8006, 9999
+	goto_if_lt _0BF1
+	npc_msg 4
+	play_se SEQ_SE_DP_REGI
+	give_mon VAR_TEMP_x4002, VAR_TEMP_x4003, 0, 0, 0, VAR_SPECIAL_RESULT
+	buffer_players_name 0
+	buffer_species_name 1, VAR_TEMP_x4002, 0, 0
+	npc_msg 8
+	take_coins 9999
+	compare VAR_TEMP_x4002, SPECIES_DARKRAI
+	goto_if_ne _PMFG_BuyMonKubfu
+	setflag FLAG_PMFG_GOT_DARKRAI
+	goto _0B1D
+
+_PMFG_BuyMonKubfu:
+	setflag FLAG_PMFG_GOT_KUBFU
+	goto _0B1D
 
 _09A5:
 	setorcopyvar VAR_TEMP_x4002, 63

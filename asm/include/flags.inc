@@ -2305,6 +2305,8 @@
 // pmfg: flags PMFG scripts and map events own. Each id is one no pret script, event or source uses
 // (tools/free_flags.py lists them; tests/data/test_free_flags.py keeps this block honest).
 .equ FLAG_PMFG_HIDE_RADIO_TOWER_OAK, 0x40 // REQ-TGT-MAP-001
+.equ FLAG_PMFG_GOT_DARKRAI, 0x4b // REQ-TGT-MAP-008
+.equ FLAG_PMFG_GOT_KUBFU, 0x4c // REQ-TGT-MAP-008
 // pmfg: tools/sg_item_sheet.py begin (REQ-TGT-MAP-007)
 .equ FLAG_PMFG_ITEMBALL_R27_CARBOS, 0x41 // REQ-TGT-MAP-007
 .equ FLAG_PMFG_ITEMBALL_R27_MOON_STONE, 0x42 // REQ-TGT-MAP-007
