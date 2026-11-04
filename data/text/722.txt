@@ -318,3 +318,218 @@ Powers up fire moves.
 Placeholder
 Burns the attacker upon\ntaking damage.
 Halves the damage from\ncontact moves.
+Weaknesses and resists\nswap.
+Normal moves turn\nFighting.
+Normal moves turn Poison.
+Normal moves turn Ground.
+Normal moves turn Rock.
+Normal moves turn Bug.
+Normal moves turn Ghost.
+Normal moves turn Steel.
+Normal moves turn Fire.
+Normal moves turn Water.
+Normal moves turn Grass.
+Normal moves turn Psychic.
+Normal moves turn Dragon.
+Normal moves turn Dark.
+Boosts kicking moves.
+Moves hit twice.
+Prevents fatigue confuse.
+Lowers foes’ Sp. Atk.
+Doubles Speed while\nPsychic Terrain is active.
+Damaging moves at or under\n60 power gain +1 priority.
+At 1/3 HP or less, Speed\nis raised by 30%.
+Moves deal 5% more damage\nfor each living ally.
+Reacts to super hits.
+Powers up Normal moves.
+Powers up Fighting moves.
+Powers up Flying moves.
+Powers up Poison moves.
+Powers up Ground moves.
+Powers up Bug moves.
+Powers up Ghost moves.
+Powers up Water moves.
+Powers up Grass moves.
+Powers up Psychic moves.
+Powers up Ice moves.
+Powers up Dark moves.
+Powers up Fairy moves.
+Attacks may seed foes.
+Sound moves may flinch.
+Skips recharge turns.
+Blocks one attack.
+Adds Normal typing.
+Adds Fighting typing.
+Adds Flying typing.
+Adds Poison typing.
+Adds Ground typing.
+Adds Rock typing.
+Adds Bug typing.
+Adds Ghost typing.
+Adds Steel typing.
+Adds Fire typing.
+Adds Water typing.
+Adds Grass typing.
+Adds Electric typing.
+Adds Psychic typing.
+Adds Ice typing.
+Adds Dragon typing.
+Adds Dark typing.
+Adds Fairy typing.
+Sets Trick Room on entry.
+Gains Ingrain when this\nPokémon enters battle.
+Gains Aqua Ring when this\nPokémon enters battle.
+At full HP, Normal-type\nmoves gain +1 priority.
+At full HP, Fighting-type\nmoves gain +1 priority.
+At full HP, Poison-type\nmoves gain +1 priority.
+At full HP, Ground-type\nmoves gain +1 priority.
+At full HP, Rock-type\nmoves gain +1 priority.
+At full HP, Bug-type moves\ngain +1 priority.
+At full HP, Ghost-type\nmoves gain +1 priority.
+At full HP, Steel-type\nmoves gain +1 priority.
+At full HP, Fire-type\nmoves gain +1 priority.
+At full HP, Water-type\nmoves gain +1 priority.
+At full HP, Grass-type\nmoves gain +1 priority.
+At full HP, Electric-type\nmoves gain +1 priority.
+At full HP, Psychic-type\nmoves gain +1 priority.
+At full HP, Ice-type moves\ngain +1 priority.
+At full HP, Dragon-type\nmoves gain +1 priority.
+At full HP, Dark-type\nmoves gain +1 priority.
+At full HP, Fairy-type\nmoves gain +1 priority.
+Punching moves use Sp. Atk\ninstead of Attack.
+Physical moves use Sp. Atk\ninstead of Attack.
+May lull foes to sleep.
+Rollout hits raise Speed.
+Boosts varied types.
+Sets Tailwind on entry.
+On entry, raises Attack by\n1 stage.
+On entry, raises Defense\nby 1 stage.
+On entry, raises Sp. Atk\nby 1 stage.
+On entry, raises Sp. Def\nby 1 stage.
+On entry, raises Speed by\n1 stage.
+Lowers foes’ Defense.
+Lowers foes’ Sp. Def.
+Lowers foes’ Speed.
+Psychic hits boost Speed.
+Water raises Sp. Def.
+Heals after a KO.
+Damaging moves heal 1/8 of\nthe damage dealt.
+Ghost moves may flinch.
+Bolsters Flying/Tailwind.
+Attacks use Defense.
+Doubles Defense during a\nsandstorm.
+Heals and blooms each\nturn.
+Fire bypasses immunities.
+Act first vs. sleep.
+Always superior typing.
+Resists burns and Atk\nloss.
+Sturdy, blocks stat loss.
+Ignores defensive screens.
+Sp. Def rises, heals in\nhail.
+Attacks raise Speed.
+Freezes on being KO’d.
+On entry, gives this\nPokémon the charged state.
+Absorbs Ghost, boosts Hex.
+Shift Gear boosts Steel.
+Ground/Ghost drains HP.
+Fire attacks always burn.
+Ignores defense items.
+KOs raise Def and Sp. Atk.
+Attacks may confuse.
+Special hits raise Sp.\nDef.
+Shell Smash ups all stats.
+Copies foe stat boosts.
+Sun guides Electric moves.
+Lowers foes’ Atk and Def.
+Heals out, blocks healing.
+Blocks status moves used\nagainst this Pokémon.
+Blocks status at high HP.
+Terrain attacks paralyze.
+Halves physical damage.
+Halves special move damage\ntaken by this Pokémon.
+Doubles Sp. Def while\nharsh sunlight is active.
+Scorches field on entry.
+Doubles Defense while a\nScorched Field is active.
+Doubles Speed while a\nScorched Field is active.
+Thrives in scorched\nfields.
+Reflects attack damage.
+Moves with Power in their\nname deal double damage.
+Dig executes in 1 turn and\ndeals 50% more damage.
+Dive executes in 1 turn\nand deals 50% more damage.
+Boosts attacks, costs HP.
+Preys on paralysis.
+Sturdy, fast when low.
+Drains foe PP faster.
+Turns recoil drops on\nfoes.
+Two-turn moves execute in\na single turn.
+Revives itself once.
+Heals if unhurt.
+Full HP pierces defenses.
+Rock moves hit in sand.
+Lowers foes’ Sp. Def.
+Lowers foes’ Defense.
+Lowers foes’ Attack.
+Crits raise Atk and Speed.
+Preys on hurt foes.
+Repeated moves power up.
+Priority raises Speed.
+SE hits raise offenses.
+Stronger but frailer.
+Caps one hit per turn.
+Fainting heals allies.
+No flinch, dodges status.
+Blocks weak attacks.
+Focuses through hits.
+Poisons contact KOs.
+Plate weakens over battle.
+Counts as statused.
+May heal at turn end.
+Contact may inflict\nstatus.
+Rain empowers Water.
+Sun may confuse foes.
+Snow may freeze foes.
+Sand absorbs Water.
+Terrain heals HP.
+Extends weather/terrain.
+Next hit is stronger.
+Draws and softens attacks.
+Switching lowers foe\nSpeed.
+Boosts ally’s best stat.
+Sound moves echo.
+Burned foes fuel Fire.
+At turn’s end, damaged\nfoes lose 1/16 max HP.
+Crits heal the user.
+Gains Steel resistances.
+Moves last, cannot be\nforced.
+Weakens first attack.
+Twins boost together.
+Bends type matchups.
+Warps priority and fields.
+Pierces protection.
+Protects cosmic twins.
+Hits stronger foes harder.
+KOs set Stealth Rock.
+On entry, swaps Speed with\nthe opposing Pokémon.
+Horses boost attacks.
+Entry swaps foe offenses.
+On entry, casts Wish for\nitself.
+Fly executes in 1 turn and\ndeals 50% more damage.
+Burns foes on fainting.
+Hits lower Accuracy.
+Contact may torment.
+Ups Sp. Atk if hit by\nwind.
+Sets Gravity on entry.
+Levitate + Gravity ups\nDef.
+Poison melts Steel.
+Gain Dragon benefits.
+Avoids Ground-moves.
+Boosts Ghost moves.
+Moves with added effects\ndeal 15% more damage.
+Raises team’s critical\nhits.
+Ups and resists sound.
+Sound hits raise Speed.
+Boosts Fire recoil\nattacks.
+Alternating types hit\nharder.
+Shields replacement.
+Powers up its first\nattack.
+Not hit by Ground attacks.

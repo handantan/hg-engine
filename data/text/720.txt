@@ -318,3 +318,218 @@ Fire Mane
 Placeholder
 Spicy Spray
 Aura Guard
+Inversion
+Fightilate
+Venomate
+Terrate
+Rockate
+Swarmate
+Spectrate
+Steelate
+Flamilate
+Aquate
+Florate
+Psychate
+Draconate
+Dreadate
+Steel Feet
+Dual Strike
+Unstoppable
+Uncanny
+Mystic Force
+Maneuverability
+Adrenaline
+Pack Leader
+Reactive
+True Grit
+Warrior Spirit
+Wind Force
+Toxic Core
+Earthbound
+Hive Force
+Spectral Force
+Seabound
+Verdant Soul
+Mind Force
+Frost Force
+Nightfall
+Fae Heart
+Plantation
+Echoing
+Tireless
+Aura Shield
+Plain Soul
+Fighter Soul
+Wind Soul
+Venom Soul
+Earth Soul
+Stone Soul
+Hive Soul
+Phantom Soul
+Steel Soul
+Flame Soul
+Sea Soul
+Lifetree Soul
+Thunder Soul
+Mind Soul
+Frost Soul
+Dragon Soul
+Night Soul
+Fae Soul
+Showtime
+Rooted
+Restoring
+Ready Stance
+First Strike
+Toxic Reflex
+Earthen Rush
+Stone Sentinel
+Swarm Instinct
+Phantom Step
+Quick Forge
+Heat Rush
+Tidal Reflex
+Verdant Gale
+Static Burst
+Think Ahead
+Frost Snap
+Draconic Sense
+Nightstalker
+Sprite shift
+Elemental Fist
+Elementalist
+Soothing
+Rolling Stones
+Generalist
+Windburst
+Battle Fervor
+Guard Stance
+Mental Surge
+Resolute Guard
+Skip Step
+Breaking
+Disquiet
+Tangling
+Seer
+Smouldering
+Consume
+Lifesteal
+Haunting
+Windcaller
+Siegebreaker
+Sandshield
+Jade Bloom
+Brimstone
+Stygian
+Omega
+Permafrost
+Stone Face
+Voidtouch
+Glacial
+Lunar Cycle
+Frost Nova
+Shockwiring
+Ritualist
+Overclock
+Spectral Drain
+Blazing Sun
+Overload
+Fill Void
+Dust Devil
+Solidify
+Unleashed
+Tether
+Solar Panel
+Infernal
+Reef Warden
+Solar Armor
+Abyssal Veil
+Plasma Surge
+Phalanx
+Spectral
+Sunhardened
+Heatstorm
+Coalwalker
+Lava Surfer
+Ash Assets
+Force Return
+Enigma
+Burrower
+Diver
+Last Stand
+Hunter
+Nine Lives
+Debilitate
+Titan Grip
+Prepared
+Reborn
+Rejuvenation
+Tidal Deity
+Rockstorm
+Stormrider
+Volcano Howl
+Arctic Aura
+Bloodlust
+Gang Up
+Pendulum
+Momentum
+Desperado
+Glass Cannon
+Aegis
+Martyr
+Indomitable
+Colossal
+Parrying
+Faintrattle
+Shardplate
+Haunted
+Mending
+Plaguetouch
+Monsoon
+Mirage
+Blizzard Heart
+Mudslide
+Channel Earth
+Magnify Field
+Blitz
+Guardian
+Backdraft
+Rally
+Echo Chamber
+Flare
+Splinter
+Maim and Mend
+Valkyrie
+Immovable
+Transmute
+Twin Stars
+Cosmic Form
+Time Spiral
+Null Space
+Spacetime Rift
+Underdog
+Rock and Stone
+Polarity Shift
+Horse Council
+Power Shift
+Wishmaker
+Flier
+Flameburst
+Inky
+Brand of Torment
+Wind Chime
+Gravity Well
+Allseeing Idol
+Acidic
+Like a Dragon
+Electromagnetism
+Malice Aura
+Ogre Force
+Trueshot Aura
+Resonance
+Tempo
+Controlled Burn
+Crossfire
+Hot Tag
+Bull Rush
+Mind Float

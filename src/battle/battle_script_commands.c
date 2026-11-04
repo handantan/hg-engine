@@ -595,6 +595,40 @@ const btl_scr_cmd_func NewBattleScriptCmdTable[] = {
  *  @param sp global battle structure
  *  @return not sure.  mostly FALSE except if ending the battle script?
  */
+#define BTL_SCR_CMD_CHECK_ABILITY 55
+
+/**
+ *  @brief REQ-TGT-MON-001: vanilla CheckAbility (pret BtlCmd_CheckAbility) with BattlerHasAbility, so battle scripts see innates
+ *  mode 0 jumps when the battler has the ability, otherwise when it doesn't; BATTLER_CATEGORY_ALL checks every battler
+ */
+static BOOL PMFG_BtlCmd_CheckAbility(void *bw, struct BattleStruct *sp)
+{
+    IncrementBattleScriptPtr(sp, 1);
+    int mode = read_battle_script_param(sp);
+    int side = read_battle_script_param(sp);
+    int ability = read_battle_script_param(sp);
+    int adrs = read_battle_script_param(sp);
+
+    if (side == BATTLER_CATEGORY_ALL) {
+        for (int battlerId = 0; battlerId < BattleWorkClientSetMaxGet(bw); battlerId++) {
+            if (BattlerHasAbility(sp, battlerId, ability)) {
+                if (mode == 0) {
+                    IncrementBattleScriptPtr(sp, adrs);
+                    sp->ability_client = battlerId;
+                }
+                break;
+            }
+        }
+    } else {
+        int battlerId = GrabClientFromBattleScriptParam(bw, sp, side);
+        if (BattlerHasAbility(sp, battlerId, ability) == (mode == 0)) {
+            IncrementBattleScriptPtr(sp, adrs);
+            sp->ability_client = battlerId;
+        }
+    }
+    return FALSE;
+}
+
 BOOL BattleScriptCommandHandler(void *bw, struct BattleStruct *sp)
 {
     BOOL ret;
@@ -620,7 +654,9 @@ BOOL BattleScriptCommandHandler(void *bw, struct BattleStruct *sp)
         }
 #endif // DEBUG_BATTLE_SCRIPT_COMMANDS
 
-        if (command < START_OF_NEW_BTL_SCR_CMDS) {
+        if (command == BTL_SCR_CMD_CHECK_ABILITY) {
+            ret = PMFG_BtlCmd_CheckAbility(bw, sp);
+        } else if (command < START_OF_NEW_BTL_SCR_CMDS) {
             ret = BattleScriptCmdTable[command](bw, sp);
         } else {
             ret = NewBattleScriptCmdTable[command - START_OF_NEW_BTL_SCR_CMDS](bw, sp);
@@ -2258,7 +2294,8 @@ BOOL LONG_CALL IsClientGrounded(struct BattleStruct *sp, u32 client_no)
 {
     u8 holdeffect = HeldItemHoldEffectGet(sp, client_no);
 
-    if ((sp->battlemon[client_no].ability != ABILITY_LEVITATE
+    if ((!BattlerHasInnate(sp, client_no, ABILITY_LEVITATE) && !BattlerHasInnate(sp, client_no, ABILITY_EELEVATE)
+            && sp->battlemon[client_no].ability != ABILITY_LEVITATE
             && sp->battlemon[client_no].ability != ABILITY_EELEVATE
             && holdeffect != HOLD_EFFECT_UNGROUND_DESTROYED_ON_HIT // not holding Air Balloon
             && (sp->battlemon[client_no].moveeffect.magnetRiseTurns) == 0 && !HasType(sp, client_no, TYPE_FLYING))
@@ -2485,7 +2522,7 @@ BOOL btl_scr_cmd_EF_iffirsthitofparentalbond(void *bw UNUSED, struct BattleStruc
 
     int address = read_battle_script_param(sp);
 
-    if (sp->oneTurnFlag[sp->attack_client].parental_bond_flag == 1 && sp->battlemon[sp->attack_client].ability == ABILITY_PARENTAL_BOND) {
+    if (sp->oneTurnFlag[sp->attack_client].parental_bond_flag == 1 && BattlerHasAbility(sp, sp->attack_client, ABILITY_PARENTAL_BOND)) {
         IncrementBattleScriptPtr(sp, address);
     }
 
@@ -3019,7 +3056,7 @@ BOOL btl_scr_cmd_FF_checkcanactivatedefiantorcompetitive(void *bsys UNUSED, stru
         && ((ctx->waza_status_flag & WAZA_STATUS_FLAG_NO_OUT) == 0)
         && ((ctx->server_status_flag & SERVER_STATUS_FLAG_x20) == 0)) {
         ctx->oneSelfFlag[ctx->state_client].defiant_flag = 0;
-        switch (GetBattlerAbility(ctx, ctx->state_client)) {
+        switch (BATTLER_ABILITY_IN(ctx, ctx->state_client, ABILITY_DEFIANT, ABILITY_COMPETITIVE)) {
         case ABILITY_DEFIANT:
             if (ctx->battlemon[ctx->state_client].states[STAT_ATTACK] < 12) {
                 ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
@@ -3967,8 +4004,8 @@ extern const u8 sHoneyGatherChanceTable[10];
 BOOL BtlCmd_GenerateEndOfBattleItem(struct BattleSystem *bw, struct BattleStruct *sp)
 {
     int rnd, i, j, k;
-    u16 species, item;
-    u8 ability, lvl;
+    u16 species, item, ability; // PMFG REQ-TGT-ABL-001: u16, IDs past 255 no longer alias Pickup/Honey Gather
+    u8 lvl;
     struct PartyPokemon *mon;
     u32 quantityPickedUp = 0, partyIndex = 0, itemPickedUp = ITEM_NONE;
 

@@ -348,7 +348,7 @@ u16 LONG_CALL ActivateParadoxAbility(void *bsys, struct BattleStruct *ctx, u8 cl
         && (ctx->battlemon[client].hp)
         // Transformed Paradox Pokémon cannot activate their Paradox ability
         && !(ctx->battlemon[client].condition2 & STATUS2_TRANSFORM)) {
-        switch (GetBattlerAbility(ctx, client)) {
+        switch (BATTLER_ABILITY_IN(ctx, client, ABILITY_PROTOSYNTHESIS, ABILITY_QUARK_DRIVE)) {
         case ABILITY_PROTOSYNTHESIS:
             // Desolate Land doesn't activate Protosynthesis, but whether or not this is intentional or desired is another question.
             // Just change to FIELD_CONDITION_SUN_ALL if you want Desolate Land to activate this
@@ -442,14 +442,14 @@ BOOL LONG_CALL MoveHitAttackerAbilityCheck(void *bw UNUSED, struct BattleStruct 
         return ret;
     }
 
-    switch (GetBattlerAbility(sp, sp->attack_client)) {
+    switch (BATTLER_ABILITY_IN(sp, sp->attack_client, ABILITY_POISON_TOUCH, ABILITY_UNSEEN_FIST)) {
     case ABILITY_POISON_TOUCH:
         if ((sp->battlemon[sp->defence_client].hp)
             && (sp->battlemon[sp->defence_client].condition == 0)
             && ((sp->waza_status_flag & WAZA_STATUS_FLAG_NO_OUT) == 0)
             && ((sp->server_status_flag & SERVER_STATUS_FLAG_x20) == 0)
             && ((sp->oneSelfFlag[sp->defence_client].physical_damage) || (sp->oneSelfFlag[sp->defence_client].special_damage))
-            && (IsContactBeingMade(GetBattlerAbility(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag))
+            && (IsContactBeingMade(ContactAbility(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag))
             && (HeldItemHoldEffectGet(sp, sp->defence_client) != HOLD_EFFECT_PREVENT_SECONDARY_EFFECTS)
             && (CheckSubstitute(sp, sp->defence_client) == FALSE)
 #ifndef DEBUG_BATTLE_SCENARIOS
@@ -466,7 +466,7 @@ BOOL LONG_CALL MoveHitAttackerAbilityCheck(void *bw UNUSED, struct BattleStruct 
     case ABILITY_UNSEEN_FIST:
         if (sp->oneTurnFlag[sp->defence_client].protectFlag
             && (sp->oneSelfFlag[sp->defence_client].physical_damage || sp->oneSelfFlag[sp->defence_client].special_damage)
-            && (IsContactBeingMade(GetBattlerAbility(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag))) {
+            && (IsContactBeingMade(ContactAbility(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->attack_client), HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag))) {
             sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
             seq_no[0] = BATTLE_SUBSCRIPT_UNSEEN_FIST;
             ret = TRUE;

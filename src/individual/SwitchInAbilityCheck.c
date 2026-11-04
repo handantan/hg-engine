@@ -115,7 +115,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
             for (i = 0; i < client_set_max; i++) {
                 client_no = switchInOrder[i];
 
-                switch (GetBattlerAbility(sp, client_no)) {
+                switch (BATTLER_ABILITY_IN(sp, client_no, ABILITY_NEUTRALIZING_GAS, ABILITY_TERA_SHIFT)) {
                 case ABILITY_NEUTRALIZING_GAS:
                     break;
                 case ABILITY_TERA_SHIFT:
@@ -335,7 +335,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                 // Weather Ability
                 {
                     if (!(CanUndergoPrimalReversion(sp, client_no)) && (sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp)) {
-                        switch (GetBattlerAbility(sp, client_no)) {
+                        switch (BATTLER_ABILITY_IN(sp, client_no, ABILITY_DRIZZLE, ABILITY_SAND_STREAM, ABILITY_DROUGHT, ABILITY_SNOW_WARNING, ABILITY_DESOLATE_LAND, ABILITY_PRIMORDIAL_SEA, ABILITY_DELTA_STREAM)) {
                         case ABILITY_DRIZZLE:
                             sp->battlemon[client_no].ability_activated_flag = 1;
                             if ((sp->field_condition & FIELD_CONDITION_RAIN_ALL) == 0) {
@@ -709,7 +709,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                 // Surge Abilities
                 {
                     if (sp->battlemon[client_no].ability_activated_flag == 0 && (sp->battlemon[client_no].hp)) {
-                        switch (GetBattlerAbility(sp, client_no)) {
+                        switch (BATTLER_ABILITY_IN(sp, client_no, ABILITY_GRASSY_SURGE, ABILITY_MISTY_SURGE, ABILITY_ELECTRIC_SURGE, ABILITY_PSYCHIC_SURGE)) {
                         case ABILITY_GRASSY_SURGE:
                             sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
                             UpdateTerrainOverlay(sp, client_no, GRASSY_TERRAIN);

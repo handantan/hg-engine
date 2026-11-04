@@ -421,6 +421,7 @@ BOOL SetBoxMonData_EditedCases(struct BoxMonSubstructs *blocks, u32 field, void 
         u16 ability = *((u16 *)data);
         blockA->ability = ability & 0xFF;
         blockA->abilityMSB = (ability >> 8) & 0x01;
+        blockA->abilityBit9 = (ability >> 9) & 0x01;
 #ifdef DEBUG_BOXMONDATA_EDITED_CASES
         debug_printf("[SetBoxMonData] Ability to set %d, LSB %d, MSb %d\n", ability, blockA->ability, blockA->abilityMSB);
 #endif
@@ -473,7 +474,7 @@ u32 GetBoxMonData_EditedCases(struct BoxMonSubstructs *blocks, u32 field, void *
 #ifdef DEBUG_BOXMONDATA_EDITED_CASES
         debug_printf("Ability returned: %d\n", (blockA->abilityMSB << 8) | (blockA->ability));
 #endif
-        ret = (blockA->abilityMSB << 8) | (blockA->ability);
+        ret = (blockA->abilityBit9 << 9) | (blockA->abilityMSB << 8) | (blockA->ability);
         *retBool = TRUE;
         break;
     }
@@ -545,6 +546,7 @@ BOOL AddBoxMonData_EditedCases(struct BoxMonSubstructs *blocks, u32 field, int d
         u16 ability = (u16)data;
         blockA->ability = ability & 0xFF;
         blockA->abilityMSB = (ability >> 8) & 0x01;
+        blockA->abilityBit9 = (ability >> 9) & 0x01;
         ret = TRUE;
 #ifdef DEBUG_BOXMONDATA_EDITED_CASES
         debug_printf("[AddBoxMonData] Ability to set %d, LSB %d, MSb %d\n", ability, blockA->ability, blockA->abilityMSB);

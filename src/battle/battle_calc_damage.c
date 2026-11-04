@@ -102,6 +102,7 @@ int CalcBaseDamage(void *bw, struct BattleStruct *sp, int moveno, u32 side_cond 
         client.condition = BattlePokemonParamGet(sp, i, BATTLE_MON_DATA_MAX_CONDITION, NULL);
         client.condition2 = sp->battlemon[i].condition2;
         client.ability = GetBattlerAbility(sp, i);
+        GetBattlerInnates(sp, i, client.innates);
         client.sex = BattlePokemonParamGet(sp, i, BATTLE_MON_DATA_SEX, NULL);
         client.speed = sp->effectiveSpeed[i];
         client.weight = GetPokemonWeight(bw, sp, attacker, i);
@@ -148,6 +149,7 @@ int CalcBaseDamage(void *bw, struct BattleStruct *sp, int moveno, u32 side_cond 
         damageCalc.clients[attacker].condition = 0;
         damageCalc.clients[attacker].condition2 = 0;
         damageCalc.clients[attacker].ability = 0;
+        memset(damageCalc.clients[attacker].innates, 0, sizeof(damageCalc.clients[attacker].innates));
         damageCalc.clients[attacker].sex = GetMonData(pp, MON_DATA_GENDER, 0);
         damageCalc.clients[attacker].speed = GetMonData(pp, MON_DATA_SPEED, 0);
         damageCalc.clients[attacker].weight = 1; // we dont really care for weight in this case
@@ -252,12 +254,14 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         attackerItemHeldEffect = HeldItemHoldEffectGet(sp, attacker);
     }
     u32 defenderAbility = GetBattlerAbility(sp, defender);
+// REQ-TGT-MON-001: main ability or unlocked innate; a Future Sight attacker that left has neither
+#define ATK_HAS(a) (attackerAbility == (a) || (IsAttackerOnField(sp) && BattlerHasInnate(sp, attacker, (a))))
     BOOL defenderHasUtilityUmbrella = HeldItemHoldEffectGet(sp, defender) == HOLD_EFFECT_UNAFFECTED_BY_RAIN_OR_SUN;
     u32 weather = GetWeather(bw, sp, attacker);
 
     u32 damage = 0;
 
-    if ((MoldBreakerAbilityCheckInternal(attacker, defender, attackerAbility, defenderAbility, sp->current_move_index, movesplit, ABILITY_DISGUISE) == TRUE)
+    if (((MoldBreakerAbilityCheckInternal(attacker, defender, attackerAbility, defenderAbility, sp->current_move_index, movesplit, ABILITY_DISGUISE) == TRUE || BattlerHasInnate(sp, defender, ABILITY_DISGUISE)))
         && (sp->battlemon[defender].species == SPECIES_MIMIKYU)
         // Mimikyu or Mimikyu-Large
         && (sp->battlemon[defender].form_no == 0 || sp->battlemon[defender].form_no == 2)
@@ -269,7 +273,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         return;
     }
 
-    if ((MoldBreakerAbilityCheckInternal(attacker, defender, attackerAbility, defenderAbility, sp->current_move_index, movesplit, ABILITY_ICE_FACE) == TRUE)
+    if (((MoldBreakerAbilityCheckInternal(attacker, defender, attackerAbility, defenderAbility, sp->current_move_index, movesplit, ABILITY_ICE_FACE) == TRUE || BattlerHasInnate(sp, defender, ABILITY_ICE_FACE)))
         && (sp->battlemon[defender].species == SPECIES_EISCUE)
         && (sp->battlemon[defender].form_no == 0)
         // Not transformed
@@ -466,7 +470,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
             damage = QMul_RoundDown(damage, UQ412__1_5);
         }
     } else if (((sp->server_status_flag & SERVER_STATUS_FLAG_TYPE_FLAT) == 0) && HasType(sp, attacker, type)) {
-        if (attackerAbility == ABILITY_ADAPTABILITY) {
+        if (ATK_HAS(ABILITY_ADAPTABILITY)) {
 #ifdef DEBUG_DAMAGE_ROLLS
             for (int u = 0; u < 16; u++) {
                 predamage[u] = QMul_RoundDown(predamage[u], UQ412__2_0);
@@ -569,7 +573,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
 
     if (movesplit == SPLIT_PHYSICAL) {
         // burns halve physical damage.  this is ignored by guts and facade (as of gen 6)
-        if ((sp->battlemon[attacker].condition & STATUS_BURN) && (attackerAbility != ABILITY_GUTS) && (moveno != MOVE_FACADE)) {
+        if ((sp->battlemon[attacker].condition & STATUS_BURN) && (!ATK_HAS(ABILITY_GUTS)) && (moveno != MOVE_FACADE)) {
             damage = QMul_RoundDown(damage, UQ412__0_5);
 #ifdef DEBUG_DAMAGE_ROLLS
             for (int u = 0; u < 16; u++) {
@@ -647,7 +651,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         && ((side_cond & SIDE_STATUS_REFLECT) != 0 || (side_cond & SIDE_STATUS_AURORA_VEIL) != 0)
         && (sp->critical == 1)
         && (sp->moveTbl[moveno].effect != MOVE_EFFECT_REMOVE_SCREENS)
-        && (attackerAbility != ABILITY_INFILTRATOR)) {
+        && (!ATK_HAS(ABILITY_INFILTRATOR))) {
         if (battle_type & BATTLE_TYPE_DOUBLES) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__0_6666);
         } else {
@@ -659,7 +663,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         && ((side_cond & SIDE_STATUS_LIGHT_SCREEN) != 0 || (side_cond & SIDE_STATUS_AURORA_VEIL) != 0)
         && (sp->critical == 1)
         && (sp->moveTbl[moveno].effect != MOVE_EFFECT_REMOVE_SCREENS)
-        && (attackerAbility != ABILITY_INFILTRATOR)) {
+        && (!ATK_HAS(ABILITY_INFILTRATOR))) {
         if (battle_type & BATTLE_TYPE_DOUBLES) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__0_6666);
         } else {
@@ -683,7 +687,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
             case TYPE_MUL_NOT_EFFECTIVE:
                 // 6.9.4 Tinted Lens
                 if ((sp->rawSpeedNonRNGClientOrder[i] == attacker)
-                    && attackerAbility == ABILITY_TINTED_LENS) {
+                    && ATK_HAS(ABILITY_TINTED_LENS)) {
                     finalModifier = QMul_RoundUp(finalModifier, UQ412__1_25);
 #ifdef DEBUG_DAMAGE_CALC
                     debug_printf("\n=================\n");
@@ -697,7 +701,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
             case TYPE_MUL_TRIPLE_SUPER_EFFECTIVE:
                 // 6.9.2 Neuroforce
                 if ((sp->rawSpeedNonRNGClientOrder[i] == attacker)
-                    && (attackerAbility == ABILITY_NEUROFORCE)) {
+                    && (ATK_HAS(ABILITY_NEUROFORCE))) {
                     finalModifier = QMul_RoundUp(finalModifier, UQ412__1_25);
 #ifdef DEBUG_DAMAGE_CALC
                     debug_printf("\n=================\n");
@@ -708,7 +712,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
 
                 // 6.9.8 Solid Rock / Filter / Prism Armor
                 if ((sp->rawSpeedNonRNGClientOrder[i] == defender)
-                    && (MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_SOLID_ROCK) || MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_FILTER) || defenderAbility == ABILITY_PRISM_ARMOR)) {
+                    && (MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_SOLID_ROCK) || MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_FILTER) || BattlerHasAbility(sp, defender, ABILITY_PRISM_ARMOR))) {
                     finalModifier = QMul_RoundUp(finalModifier, UQ412__0_75);
 #ifdef DEBUG_DAMAGE_CALC
                     debug_printf("\n=================\n");
@@ -724,7 +728,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
 
         // 6.9.3 Sniper
         if ((sp->rawSpeedNonRNGClientOrder[i] == attacker)
-            && (attackerAbility == ABILITY_SNIPER) && (sp->critical > 1)) {
+            && (ATK_HAS(ABILITY_SNIPER)) && (sp->critical > 1)) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__1_5);
 #ifdef DEBUG_DAMAGE_CALC
             debug_printf("\n=================\n");
@@ -736,7 +740,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         if ((sp->rawSpeedNonRNGClientOrder[i] == defender)
             && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_FLUFFY)) {
             // 6.9.6 Fluffy (contact moves)
-            if (IsContactBeingMade(GetBattlerAbility(sp, sp->attack_client), attackerItemHeldEffect, HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag)) {
+            if (IsContactBeingMade(ContactAbility(sp, sp->attack_client), attackerItemHeldEffect, HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag)) {
                 finalModifier = QMul_RoundUp(finalModifier, UQ412__0_5);
 #ifdef DEBUG_DAMAGE_CALC
                 debug_printf("\n=================\n");
@@ -758,7 +762,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         // 6.9.5 Multiscale / Shadow Shield
         if ((sp->rawSpeedNonRNGClientOrder[i] == defender)
             && ((MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_MULTISCALE))
-                || (defenderAbility == ABILITY_SHADOW_SHIELD))
+                || (BattlerHasAbility(sp, defender, ABILITY_SHADOW_SHIELD)))
             && (sp->battlemon[defender].hp == (s32)sp->battlemon[defender].maxhp)) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__0_5);
 #ifdef DEBUG_DAMAGE_CALC
@@ -808,7 +812,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         if ((sp->rawSpeedNonRNGClientOrder[i] == defender)
             && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_AURA_GUARD)) {
             // 6.9.17 Aura Guard (contact moves) //TODO: confirm location
-            if (IsContactBeingMade(GetBattlerAbility(sp, sp->attack_client), attackerItemHeldEffect, HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag)) {
+            if (IsContactBeingMade(ContactAbility(sp, sp->attack_client), attackerItemHeldEffect, HeldItemHoldEffectGet(sp, sp->defence_client), sp->current_move_index, sp->moveTbl[sp->current_move_index].flag)) {
                 finalModifier = QMul_RoundUp(finalModifier, UQ412__0_5);
 #ifdef DEBUG_DAMAGE_CALC
                 debug_printf("\n=================\n");
@@ -929,9 +933,9 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
     // Todo Z-Move + Unseen Fist?
     // Step 10.1 Unseen Fist / Piercing Drill
     // 0.25x damage into protect
-    if (((attackerAbility == ABILITY_PIERCING_DRILL)
+    if (((ATK_HAS(ABILITY_PIERCING_DRILL))
 #if UNSEEN_FIST_GENERATION >= GEN_CHAMPIONS
-            || (attackerAbility == ABILITY_UNSEEN_FIST)
+            || (ATK_HAS(ABILITY_UNSEEN_FIST))
 #endif
                 )
         && sp->oneTurnFlag[defender].protectFlag) {
@@ -1007,6 +1011,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
 #endif // DEBUG_DAMAGE_ROLLS
 #endif
 }
+#undef ATK_HAS
 
 /**
  *  @brief do the final 85-100% damage roll to the damage.  output of this is the exact damage done to the opponent

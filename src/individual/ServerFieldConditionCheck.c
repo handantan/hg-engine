@@ -514,7 +514,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
 
 #endif
 
-                    switch (GetBattlerAbility(sp, battlerId)) {
+                    switch (BATTLER_ABILITY_IN(sp, battlerId, ABILITY_SHED_SKIN, ABILITY_HYDRATION, ABILITY_HEALER)) {
                     case ABILITY_SHED_SKIN:
                     case ABILITY_HYDRATION:
                         if ((BattlerHasAbility(sp, battlerId, ABILITY_SHED_SKIN)
@@ -1667,7 +1667,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                     debug_printf("In THIRD_EVENT_BLOCK_ABILITIES\n", NULL);
 #endif
 
-                    switch (GetBattlerAbility(sp, battlerId)) {
+                    switch (BATTLER_ABILITY_IN(sp, battlerId, ABILITY_SPEED_BOOST, ABILITY_HARVEST, ABILITY_MOODY, ABILITY_SLOW_START, ABILITY_BAD_DREAMS)) {
                     case ABILITY_SPEED_BOOST: {
                         if ((sp->battlemon[battlerId].hp) && (sp->battlemon[battlerId].states[STAT_SPEED] < 12) && (sp->battlemon[battlerId].moveeffect.fakeOutCount != (sp->total_turn + 1))) {
                             sp->addeffect_param = MOVE_SUBSCRIPT_PTR_SPEED_UP_1_STAGE;

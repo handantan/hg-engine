@@ -817,7 +817,6 @@ BOOL LONG_CALL CalcAccuracy(void *bw, struct BattleStruct *sp, int attacker, int
     int hold_effect, hold_effect_atk;
     u8 move_type UNUSED; // unused but will be needed
     u8 move_split;
-    u16 atk_ability = GetBattlerAbility(sp, attacker);
     int i;
     int maxBattlers = BattleWorkClientSetMaxGet(bw);
     int accuracyModifier = UQ412__1_0;
@@ -902,7 +901,7 @@ BOOL LONG_CALL CalcAccuracy(void *bw, struct BattleStruct *sp, int attacker, int
         // Hustle - 3277/4096
 
         if ((attacker == sp->rawSpeedNonRNGClientOrder[i])
-            && (atk_ability == ABILITY_HUSTLE)
+            && (BattlerHasAbility(sp, attacker, ABILITY_HUSTLE))
             && (move_split == SPLIT_PHYSICAL)) {
             accuracyModifier = QMul_RoundUp(accuracyModifier, UQ412__0_8);
             continue;
@@ -928,13 +927,13 @@ BOOL LONG_CALL CalcAccuracy(void *bw, struct BattleStruct *sp, int attacker, int
         // Compound Eyes - 5325/4096
 
         if ((attacker == sp->rawSpeedNonRNGClientOrder[i])
-            && (atk_ability == ABILITY_COMPOUND_EYES)) {
+            && (BattlerHasAbility(sp, attacker, ABILITY_COMPOUND_EYES))) {
             accuracyModifier = QMul_RoundUp(accuracyModifier, UQ412__1_3);
         }
 
         // Victory Star - 4506/4096 for each Victory Star
 
-        if (((attacker == sp->rawSpeedNonRNGClientOrder[i]) && atk_ability == ABILITY_VICTORY_STAR)
+        if (((attacker == sp->rawSpeedNonRNGClientOrder[i]) && BattlerHasAbility(sp, attacker, ABILITY_VICTORY_STAR))
             || ((BATTLER_ALLY(attacker) == sp->rawSpeedNonRNGClientOrder[i]) && BattlerHasAbility(sp, BATTLER_ALLY(attacker), ABILITY_VICTORY_STAR))) {
             accuracyModifier = QMul_RoundUp(accuracyModifier, UQ412__1_1_BUT_HIGHER);
         }
@@ -1094,8 +1093,6 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
     u8 quick_claw1 = sp->battlemon[client1].moveeffect.quickClawFlag || sp->battlemon[client1].moveeffect.custapBerryFlag;
     u8 quick_claw2 = sp->battlemon[client2].moveeffect.quickClawFlag || sp->battlemon[client2].moveeffect.custapBerryFlag;
     u8 move_last1 = 0, move_last2 = 0;
-    int ability1;
-    int ability2;
     int stat_stage_spd1;
     int stat_stage_spd2;
     u32 i;
@@ -1103,8 +1100,6 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
     u32 speedModifier1 = UQ412__1_0;
     u32 speedModifier2 = UQ412__1_0;
 
-    ability1 = GetBattlerAbility(sp, client1);
-    ability2 = GetBattlerAbility(sp, client2);
 
     hold_effect1 = HeldItemHoldEffectGet(sp, client1);
     hold_effect2 = HeldItemHoldEffectGet(sp, client2);
@@ -1147,36 +1142,36 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
 
     // Step 1: 2x Abilities
 
-    if (((ability1 == ABILITY_SWIFT_SWIM) && (weather & FIELD_CONDITION_RAIN_ALL))
-        || ((ability1 == ABILITY_CHLOROPHYLL) && (weather & FIELD_CONDITION_SUN_ALL))
-        || ((ability1 == ABILITY_SAND_RUSH) && (weather & FIELD_CONDITION_SANDSTORM_ALL))
-        || ((ability1 == ABILITY_SLUSH_RUSH) && (weather & (FIELD_CONDITION_HAIL_ALL | FIELD_CONDITION_SNOW_ALL)))) {
+    if (((BattlerHasAbility(sp, client1, ABILITY_SWIFT_SWIM)) && (weather & FIELD_CONDITION_RAIN_ALL))
+        || ((BattlerHasAbility(sp, client1, ABILITY_CHLOROPHYLL)) && (weather & FIELD_CONDITION_SUN_ALL))
+        || ((BattlerHasAbility(sp, client1, ABILITY_SAND_RUSH)) && (weather & FIELD_CONDITION_SANDSTORM_ALL))
+        || ((BattlerHasAbility(sp, client1, ABILITY_SLUSH_RUSH)) && (weather & (FIELD_CONDITION_HAIL_ALL | FIELD_CONDITION_SNOW_ALL)))) {
         speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__2_0);
     }
-    if (((ability2 == ABILITY_SWIFT_SWIM) && (weather & FIELD_CONDITION_RAIN_ALL))
-        || ((ability2 == ABILITY_CHLOROPHYLL) && (weather & FIELD_CONDITION_SUN_ALL))
-        || ((ability2 == ABILITY_SAND_RUSH) && (weather & FIELD_CONDITION_SANDSTORM_ALL))
-        || ((ability2 == ABILITY_SLUSH_RUSH) && (weather & (FIELD_CONDITION_HAIL_ALL | FIELD_CONDITION_SNOW_ALL)))) {
+    if (((BattlerHasAbility(sp, client2, ABILITY_SWIFT_SWIM)) && (weather & FIELD_CONDITION_RAIN_ALL))
+        || ((BattlerHasAbility(sp, client2, ABILITY_CHLOROPHYLL)) && (weather & FIELD_CONDITION_SUN_ALL))
+        || ((BattlerHasAbility(sp, client2, ABILITY_SAND_RUSH)) && (weather & FIELD_CONDITION_SANDSTORM_ALL))
+        || ((BattlerHasAbility(sp, client2, ABILITY_SLUSH_RUSH)) && (weather & (FIELD_CONDITION_HAIL_ALL | FIELD_CONDITION_SNOW_ALL)))) {
         speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__2_0);
     }
 
     if (sp->terrainOverlay.type == ELECTRIC_TERRAIN && sp->terrainOverlay.numberOfTurnsLeft > 0) {
-        if (ability1 == ABILITY_SURGE_SURFER) {
+        if (BattlerHasAbility(sp, client1, ABILITY_SURGE_SURFER)) {
             speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__2_0);
         }
 
-        if (ability2 == ABILITY_SURGE_SURFER) {
+        if (BattlerHasAbility(sp, client2, ABILITY_SURGE_SURFER)) {
             speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__2_0);
         }
     }
 
-    if ((ability1 == ABILITY_UNBURDEN)
+    if ((BattlerHasAbility(sp, client1, ABILITY_UNBURDEN))
         && (sp->battlemon[client1].moveeffect.knockOffFlag)
         && (sp->battlemon[client1].item == 0)) {
         speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__2_0);
     }
 
-    if ((ability2 == ABILITY_UNBURDEN)
+    if ((BattlerHasAbility(sp, client2, ABILITY_UNBURDEN))
         && (sp->battlemon[client2].moveeffect.knockOffFlag)
         && (sp->battlemon[client2].item == 0)) {
         speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__2_0);
@@ -1191,11 +1186,11 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
 
     // Step 2: Quick Feet
 
-    if ((ability1 == ABILITY_QUICK_FEET) && (sp->battlemon[client1].condition & STATUS_ANY_PERSISTENT)) {
+    if ((BattlerHasAbility(sp, client1, ABILITY_QUICK_FEET)) && (sp->battlemon[client1].condition & STATUS_ANY_PERSISTENT)) {
         speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__1_5);
     }
 
-    if ((ability2 == ABILITY_QUICK_FEET) && (sp->battlemon[client2].condition & STATUS_ANY_PERSISTENT)) {
+    if ((BattlerHasAbility(sp, client2, ABILITY_QUICK_FEET)) && (sp->battlemon[client2].condition & STATUS_ANY_PERSISTENT)) {
         speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__1_5);
     }
 
@@ -1208,12 +1203,12 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
 
     // Step 3: Slow Start
 
-    if ((ability1 == ABILITY_SLOW_START)
+    if ((BattlerHasAbility(sp, client1, ABILITY_SLOW_START))
         && ((sp->total_turn - sp->battlemon[client1].moveeffect.slowStartTurns) < 5)) {
         speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__0_5);
     }
 
-    if ((ability2 == ABILITY_SLOW_START)
+    if ((BattlerHasAbility(sp, client2, ABILITY_SLOW_START))
         && ((sp->total_turn - sp->battlemon[client2].moveeffect.slowStartTurns) < 5)) {
         speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__0_5);
     }
@@ -1227,12 +1222,12 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
     // Step 3.1: Protosynthesis and Quark Drive
     // TODO: Check location
 
-    if ((ability1 == ABILITY_PROTOSYNTHESIS || ability1 == ABILITY_QUARK_DRIVE)
+    if ((BattlerHasAbility(sp, client1, ABILITY_PROTOSYNTHESIS) || BattlerHasAbility(sp, client1, ABILITY_QUARK_DRIVE))
         && (sp->paradoxBoostedStat[client1] == STAT_SPEED)) {
         speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__1_5);
     }
 
-    if ((ability2 == ABILITY_PROTOSYNTHESIS || ability2 == ABILITY_QUARK_DRIVE)
+    if ((BattlerHasAbility(sp, client2, ABILITY_PROTOSYNTHESIS) || BattlerHasAbility(sp, client2, ABILITY_QUARK_DRIVE))
         && (sp->paradoxBoostedStat[client2] == STAT_SPEED)) {
         speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__1_5);
     }
@@ -1371,12 +1366,12 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
 
     // Step 11: Paralysis
 
-    if ((ability1 != ABILITY_QUICK_FEET)
+    if ((!BattlerHasAbility(sp, client1, ABILITY_QUICK_FEET))
         && sp->battlemon[client1].condition & STATUS_PARALYSIS) {
         speed1 = QMul_RoundUp(speed1, UQ412__0_5); // gen 7 on only halves speed for paralysis
     }
 
-    if ((ability2 != ABILITY_QUICK_FEET)
+    if ((!BattlerHasAbility(sp, client2, ABILITY_QUICK_FEET))
         && sp->battlemon[client2].condition & STATUS_PARALYSIS) {
         speed2 = QMul_RoundUp(speed2, UQ412__0_5); // gen 7 on only halves speed for paralysis
     }
@@ -1518,15 +1513,15 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
         } else if ((move_last1 == 0) && (move_last2)) // client2 has lagging tail
         {
             ret = 0;
-        } else if ((ability1 == ABILITY_STALL) && (ability2 == ABILITY_STALL)) {
+        } else if ((BattlerHasAbility(sp, client1, ABILITY_STALL)) && (BattlerHasAbility(sp, client2, ABILITY_STALL))) {
             if (speed1 > speed2) {
                 ret = 1;
             } else if ((speed1 == speed2) && (BattleRand(bw) & 1)) {
                 ret = 2;
             }
-        } else if ((ability1 == ABILITY_STALL) && (ability2 != ABILITY_STALL)) {
+        } else if ((BattlerHasAbility(sp, client1, ABILITY_STALL)) && (!BattlerHasAbility(sp, client2, ABILITY_STALL))) {
             ret = 1;
-        } else if ((ability1 != ABILITY_STALL) && (ability2 == ABILITY_STALL)) {
+        } else if ((!BattlerHasAbility(sp, client1, ABILITY_STALL)) && (BattlerHasAbility(sp, client2, ABILITY_STALL))) {
             ret = 0;
         } else {
             if (speed1 < speed2) {
@@ -1738,21 +1733,19 @@ int CalcCritical(void *bw, struct BattleStruct *sp, int attacker, int defender, 
     u32 condition2 = 0;
     u32 move_effect;
     int multiplier = 1;
-    int ability = ABILITY_NONE;
     int attackerHasLaserFocus = 0;
 
     if (IsAttackerOnField(sp)) {
         item = GetBattleMonItem(sp, attacker);
         species = sp->battlemon[attacker].species;
         condition2 = sp->battlemon[attacker].condition2;
-        ability = sp->battlemon[attacker].ability;
         attackerHasLaserFocus = sp->moveConditionsFlags[attacker].laserFocusTimer;
     }
     hold_effect = BattleItemDataGet(sp, item, 1);
     defender_condition = sp->battlemon[defender].condition;
     move_effect = sp->battlemon[defender].effect_of_moves;
 
-    temp = (((condition2 & STATUS2_FOCUS_ENERGY) != 0) * 2) + (hold_effect == HOLD_EFFECT_CRITRATE_UP) + critical_count + (ability == ABILITY_SUPER_LUCK)
+    temp = (((condition2 & STATUS2_FOCUS_ENERGY) != 0) * 2) + (hold_effect == HOLD_EFFECT_CRITRATE_UP) + critical_count + (IsAttackerOnField(sp) && BattlerHasAbility(sp, attacker, ABILITY_SUPER_LUCK))
         + (2 * ((hold_effect == HOLD_EFFECT_CHANSEY_CRITRATE_UP) && (species == SPECIES_CHANSEY)))
         + (2 * ((hold_effect == HOLD_EFFECT_FARFETCHD_CRITRATE_UP) && (species == SPECIES_FARFETCHD)))
         + (2 * ((hold_effect == HOLD_EFFECT_FARFETCHD_CRITRATE_UP) && (species == SPECIES_SIRFETCHD)));
@@ -1767,7 +1760,7 @@ int CalcCritical(void *bw, struct BattleStruct *sp, int attacker, int defender, 
 #else
         BattleRand(bw) % CriticalRateTable[temp] == 0
 #endif
-        || (ability == ABILITY_MERCILESS && (defender_condition & STATUS_POISON_ALL))
+        || (IsAttackerOnField(sp) && BattlerHasAbility(sp, attacker, ABILITY_MERCILESS) && (defender_condition & STATUS_POISON_ALL))
         || (sp->moveTbl[sp->current_move_index].effect == MOVE_EFFECT_ALWAYS_CRITICAL)
         || (sp->moveTbl[sp->current_move_index].effect == MOVE_EFFECT_HIT_THREE_TIMES_ALWAYS_CRITICAL)) {
         if ((MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_BATTLE_ARMOR) == FALSE)
@@ -2834,6 +2827,70 @@ BOOL LONG_CALL IsMoveWindMove(u16 move)
  * @param sp global battle structure
  * @return TRUE/FALSE
  */
+/// @brief REQ-TGT-MON-001: vanilla CheckSideAbility (pret CheckAbilityActive) with BattlerHasAbility, hooked over it so every caller sees innates
+int LONG_CALL CheckSideAbilityWithInnates(void *bw, struct BattleStruct *sp, int flag, int client_no, int ability)
+{
+    int cnt = 0;
+    int maxBattlers = BattleWorkClientSetMaxGet(bw);
+    for (int i = 0; i < maxBattlers; i++) {
+        BOOL sameSide = IsClientEnemy(bw, i) == IsClientEnemy(bw, client_no);
+        BOOL alive = sp->battlemon[i].hp != 0;
+        BOOL match;
+        switch (flag) {
+        case CHECK_ABILITY_SAME_SIDE: match = sameSide; break;
+        case CHECK_ABILITY_SAME_SIDE_HP: match = sameSide && alive; break;
+        case CHECK_ABILITY_OPPOSING_SIDE: match = !sameSide; break;
+        case CHECK_ABILITY_OPPOSING_SIDE_HP:
+        case CHECK_ABILITY_OPPOSING_SIDE_HP_RET: match = !sameSide && alive; break;
+        case CHECK_ABILITY_ALL: match = TRUE; break;
+        case CHECK_ABILITY_ALL_NOT_USER:
+        case CHECK_ABILITY_ALL_NOT_USER_RET: match = i != client_no; break;
+        case CHECK_ABILITY_ALL_HP: match = alive; break;
+        case CHECK_ABILITY_ALL_HP_NOT_USER: match = i != client_no && alive; break;
+        default: return 0;
+        }
+        if (!match || !BattlerHasAbility(sp, i, ability)) {
+            continue;
+        }
+        if (flag == CHECK_ABILITY_OPPOSING_SIDE_HP_RET) {
+            cnt |= MaskOfFlagNo(i);
+        } else if (flag == CHECK_ABILITY_ALL_NOT_USER_RET) {
+            return i + 1;
+        } else {
+            cnt++;
+        }
+    }
+    return cnt;
+}
+
+/// @brief REQ-TGT-MON-001: the main ability if it is in `abilities`, else the first unlocked innate in it, else the main ability
+/// shortcut: one ability per switch per call, so two innates in the same switch fire only the first; split the switch if that matters
+u32 LONG_CALL BattlerAbilityIn(struct BattleStruct *sp, int battlerId, const u16 *abilities, u32 count)
+{
+    u32 main = GetBattlerAbility(sp, battlerId);
+    u16 innates[PMFG_NUM_INNATES];
+    for (u32 i = 0; i < count; i++) {
+        if (abilities[i] == main) {
+            return main;
+        }
+    }
+    GetBattlerInnates(sp, battlerId, innates);
+    for (u32 j = 0; j < PMFG_NUM_INNATES; j++) {
+        for (u32 i = 0; i < count; i++) {
+            if (innates[j] != ABILITY_NONE && abilities[i] == innates[j]) {
+                return innates[j];
+            }
+        }
+    }
+    return main;
+}
+
+/// @brief REQ-TGT-MON-001: the attacker ability IsContactBeingMade needs (Long Reach also as an innate)
+int LONG_CALL ContactAbility(struct BattleStruct *sp, int attacker)
+{
+    return BattlerHasAbility(sp, attacker, ABILITY_LONG_REACH) ? ABILITY_LONG_REACH : (int)GetBattlerAbility(sp, attacker);
+}
+
 BOOL LONG_CALL IsContactBeingMade(int attackerAbility, int attackerItemHoldEffect, int defenderItemHoldEffect, int moveno, u8 moveFlag)
 {
     // HeldItemHoldEffectGet -> attackerItemHoldEffect
@@ -3517,7 +3574,7 @@ int LONG_CALL GetDynamicMoveType(struct BattleSystem *bsys, struct BattleStruct 
         break;
     }
 
-    return GetAdjustedMoveTypeBasics(ctx, moveNo, GetBattlerAbility(ctx, battlerId), type);
+    return GetAdjustedMoveTypeBasics(ctx, moveNo, BATTLER_ABILITY_IN(ctx, battlerId, ABILITY_NORMALIZE, ABILITY_PIXILATE, ABILITY_REFRIGERATE, ABILITY_AERILATE, ABILITY_GALVANIZE, ABILITY_DRAGONIZE), type);
 }
 
 const u16 HealBlockUnusableMoves[] = {
@@ -4066,17 +4123,20 @@ BOOL LONG_CALL BattlerHasInnate(struct BattleStruct *ctx, int battlerId, u32 abi
         return FALSE;
     }
     u16 innates[PMFG_NUM_INNATES];
-    u32 unlocked = PMFG_UnlockedInnateCount();
-    if (!unlocked) {
-        return FALSE;
+    GetBattlerInnates(ctx, battlerId, innates);
+    return innates[0] == ability || innates[1] == ability || innates[2] == ability;
+}
+
+/// @brief the battler's unlocked innates; locked slots read ABILITY_NONE
+void LONG_CALL GetBattlerInnates(struct BattleStruct *ctx, int battlerId, u16 *out)
+{
+    u32 unlocked = battlerId == BATTLER_NONE ? 0 : PMFG_UnlockedInnateCount();
+    if (unlocked) {
+        PMFG_GetSpeciesInnates(ctx->battlemon[battlerId].species, ctx->battlemon[battlerId].form_no, out);
     }
-    PMFG_GetSpeciesInnates(ctx->battlemon[battlerId].species, ctx->battlemon[battlerId].form_no, innates);
-    for (u32 i = 0; i < unlocked; i++) {
-        if (innates[i] == ability) {
-            return TRUE;
-        }
+    for (u32 i = unlocked; i < PMFG_NUM_INNATES; i++) {
+        out[i] = ABILITY_NONE;
     }
-    return FALSE;
 }
 
 /// @brief main ability (as GetBattlerAbility resolves it) or an unlocked innate

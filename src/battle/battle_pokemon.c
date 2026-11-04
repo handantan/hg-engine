@@ -1331,7 +1331,7 @@ u32 LONG_CALL GetAdjustedMoveType(struct BattleStruct *sp, u32 client, u32 move)
         && (move == MOVE_TERA_BLAST || move == MOVE_TERA_STARSTORM)) {
         return GetDynamicMoveType(gBattleSystem, sp, client, move);
     }
-    return GetAdjustedMoveTypeBasics(sp, move, GetBattlerAbility(sp, client), GetDynamicMoveType(gBattleSystem, sp, client, move));
+    return GetAdjustedMoveTypeBasics(sp, move, BATTLER_ABILITY_IN(sp, client, ABILITY_NORMALIZE, ABILITY_PIXILATE, ABILITY_REFRIGERATE, ABILITY_AERILATE, ABILITY_GALVANIZE, ABILITY_DRAGONIZE), GetDynamicMoveType(gBattleSystem, sp, client, move));
 }
 
 /**

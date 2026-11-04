@@ -624,7 +624,7 @@ void __attribute__((section(".init"))) BattleController_BeforeMove(struct Battle
 
         u32 type = GetAdjustedMoveType(ctx, ctx->attack_client, ctx->current_move_index);
         if (!ctx->futureSightHitTurn
-            && (ctx->battlemon[ctx->attack_client].ability == ABILITY_PROTEAN || ctx->battlemon[ctx->attack_client].ability == ABILITY_LIBERO)
+            && (BattlerHasAbility(ctx, ctx->attack_client, ABILITY_PROTEAN) || BattlerHasAbility(ctx, ctx->attack_client, ABILITY_LIBERO))
             // If the type is not typeless (Struggle)
             && (type != TYPE_TYPELESS)
             && (!IsPureType(ctx, ctx->attack_client, type))
@@ -2205,7 +2205,7 @@ BOOL CanSetFirstBattlerWithAbilityInSlotOrder(struct BattleStruct *ctx, u32 abil
 
 BOOL BattlerHasArmorTailQueenlyMajestyOrDazzling(struct BattleStruct *ctx, int battlerId)
 {
-    switch (GetBattlerAbility(ctx, battlerId)) {
+    switch (BATTLER_ABILITY_IN(ctx, battlerId, ABILITY_QUEENLY_MAJESTY, ABILITY_DAZZLING, ABILITY_ARMOR_TAIL)) {
     case ABILITY_QUEENLY_MAJESTY:
     case ABILITY_DAZZLING:
     case ABILITY_ARMOR_TAIL:

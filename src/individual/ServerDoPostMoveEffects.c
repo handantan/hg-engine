@@ -1600,7 +1600,7 @@ int LONG_CALL Activate_Moxie_BeastBoost_Others(void *bsys, struct BattleStruct *
         return FALSE;
     }
 
-    switch (GetBattlerAbility(ctx, ctx->attack_client)) {
+    switch (BATTLER_ABILITY_IN(ctx, ctx->attack_client, ABILITY_MAGICIAN, ABILITY_EELEVATE, ABILITY_BEAST_BOOST, ABILITY_CHILLING_NEIGH, ABILITY_AS_ONE_GLASTRIER, ABILITY_MOXIE, ABILITY_GRIM_NEIGH, ABILITY_AS_ONE_SPECTRIER, ABILITY_BATTLE_BOND)) {
     case ABILITY_MAGICIAN:
         // https://discord.com/channels/419213663107416084/1368163973366681712/1484346665090678854
         // https://discord.com/channels/419213663107416084/1368163973366681712/1502337159007441079
@@ -1613,7 +1613,7 @@ int LONG_CALL Activate_Moxie_BeastBoost_Others(void *bsys, struct BattleStruct *
                 int client_no = ctx->turnOrder[battler];
 
                 if (client_no == ctx->attack_client
-                    || (ctx->battlemon[client_no].ability == ABILITY_STICKY_HOLD
+                    || (BattlerHasAbility(ctx, client_no, ABILITY_STICKY_HOLD)
                         && ctx->battlemon[client_no].hp)
                     || (CheckSubstitute(ctx, client_no) == TRUE)
                     || (ctx->battlemon[client_no].item == ITEM_NONE)
@@ -2232,7 +2232,7 @@ void LONG_CALL Activate_KO_Count(void *bsys UNUSED, struct BattleStruct *ctx)
         && ((ctx->waza_status_flag & WAZA_STATUS_FLAG_NO_OUT) == 0)
         && ((ctx->oneSelfFlag[ctx->fainting_client].special_damager == ctx->attack_client)
             || (ctx->oneSelfFlag[ctx->fainting_client].physical_damager == ctx->attack_client))) {
-        switch (GetBattlerAbility(ctx, ctx->attack_client)) {
+        switch (BATTLER_ABILITY_IN(ctx, ctx->attack_client, ABILITY_BATTLE_BOND, ABILITY_EELEVATE, ABILITY_BEAST_BOOST, ABILITY_CHILLING_NEIGH, ABILITY_AS_ONE_GLASTRIER, ABILITY_MOXIE, ABILITY_GRIM_NEIGH, ABILITY_AS_ONE_SPECTRIER)) {
         case ABILITY_BATTLE_BOND: {
             if (ctx->battlemon[ctx->attack_client].species != SPECIES_GRENINJA || ctx->battlemon[ctx->attack_client].form_no != 1) {
                 break;
@@ -2584,7 +2584,7 @@ int LONG_CALL MovePerformance_HitSubstitute(void *bsys, struct BattleStruct *ctx
 u32 LONG_CALL Activate_AbilityHealingStatusCondition(void *bsys, struct BattleStruct *ctx, int battlerId, int act_flag)
 {
     int ret = FALSE;
-    switch (GetBattlerAbility(ctx, battlerId)) {
+    switch (BATTLER_ABILITY_IN(ctx, battlerId, ABILITY_WATER_BUBBLE, ABILITY_THERMAL_EXCHANGE, ABILITY_PASTEL_VEIL, ABILITY_OBLIVIOUS)) {
     case ABILITY_WATER_BUBBLE:
     case ABILITY_THERMAL_EXCHANGE:
         if (ctx->battlemon[battlerId].condition & STATUS_BURN) {

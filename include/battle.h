@@ -1765,6 +1765,7 @@ struct PACKED sDamageCalc {
     u32 condition2;
 
     u16 ability;
+    u16 innates[3]; // REQ-TGT-MON-001: unlocked innates (PMFG_NUM_INNATES), ABILITY_NONE when locked
     u8 sex;
 
     u32 speed;
@@ -1944,6 +1945,23 @@ void LONG_CALL DistributeEffortValues(struct Party *party, u32 slot, u32 species
  */
 u32 LONG_CALL GetBattlerAbility(struct BattleStruct *ctx, int battlerId);
 BOOL LONG_CALL BattlerHasInnate(struct BattleStruct *ctx, int battlerId, u32 ability);
+void LONG_CALL GetBattlerInnates(struct BattleStruct *ctx, int battlerId, u16 *out);
+int LONG_CALL ContactAbility(struct BattleStruct *sp, int attacker);
+u32 LONG_CALL BattlerAbilityIn(struct BattleStruct *sp, int battlerId, const u16 *abilities, u32 count);
+/// REQ-TGT-MON-001: for `switch` over a battler's ability; the case labels are the list, so innates reach the cases too
+#define BATTLER_ABILITY_IN(sp, battlerId, ...) BattlerAbilityIn((sp), (battlerId), (const u16[]){ __VA_ARGS__ }, sizeof((const u16[]){ __VA_ARGS__ }) / sizeof(u16))
+
+// always_inline: src/individual/ overlays enter at the first byte of .text, so no out-of-line helper may land before the entry function
+/// @brief REQ-TGT-MON-001: damage-calc client has `ability` as its main ability or an unlocked innate
+static inline __attribute__((always_inline)) BOOL ClientHasInnate(const struct sDamageCalc *client, u32 ability)
+{
+    return ability != ABILITY_NONE && (client->innates[0] == ability || client->innates[1] == ability || client->innates[2] == ability);
+}
+
+static inline __attribute__((always_inline)) BOOL ClientHasAbility(const struct sDamageCalc *client, u32 ability)
+{
+    return client->ability == ability || ClientHasInnate(client, ability);
+}
 BOOL LONG_CALL BattlerHasAbility(struct BattleStruct *ctx, int battlerId, u32 ability);
 
 /**

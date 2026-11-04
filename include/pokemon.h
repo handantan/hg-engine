@@ -229,7 +229,8 @@ typedef struct {
     /* 0x02 */ u16 heldItem;
     /* 0x04 */ u32 otID; // low 16: visible; high 16: secret
     /* 0x08 */ u32 exp : 21; // low 21 are all that is used!
-    u32 unused : 10;
+    u32 unused : 9;
+    u32 abilityBit9 : 1; // PMFG REQ-TGT-ABL-001: ability bit 9 (IDs up to 1023); bit 30, so abilityMSB stays at bit 31 and old saves read the same
     u32 abilityMSB : 1; // msb of previous experience field is the exp
     /* 0x0C */ u8 friendship;
     /* 0x0D */ u8 ability; // taking a bit from exp

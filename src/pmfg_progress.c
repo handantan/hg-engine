@@ -75,10 +75,25 @@ u32 LONG_CALL PMFG_UnlockedInnateCount(void)
 #endif
 }
 
+// every ability check reads innates, so the last few (species, form) rows stay in RAM instead of a NARC read each time
+#define PMFG_INNATE_CACHE_SIZE 8
+static struct { u32 key; u16 innates[PMFG_NUM_INNATES]; } sInnateCache[PMFG_INNATE_CACHE_SIZE];
+static u8 sInnateCacheNext;
+
 void LONG_CALL PMFG_GetSpeciesInnates(u16 species, u8 form, u16 *out)
 {
-    // shortcut: reads the NARC on every ability check; cache per battler if battles feel slow
-    ReadFromNarcMemberByIdPair(out, ARC_CODE_ADDONS, CODE_ADDON_PMFG_INNATES, sizeof(u16) * PMFG_NUM_INNATES * PokeOtherFormMonsNoGet(species, form), sizeof(u16) * PMFG_NUM_INNATES);
+    u32 key = ((u32)form << 16 | species) + 1; // + 1: a zeroed slot never matches
+    u32 i;
+    for (i = 0; i < PMFG_INNATE_CACHE_SIZE && sInnateCache[i].key != key; i++) {}
+    if (i == PMFG_INNATE_CACHE_SIZE) {
+        i = sInnateCacheNext;
+        sInnateCacheNext = (sInnateCacheNext + 1) % PMFG_INNATE_CACHE_SIZE;
+        ReadFromNarcMemberByIdPair(sInnateCache[i].innates, ARC_CODE_ADDONS, CODE_ADDON_PMFG_INNATES, sizeof(u16) * PMFG_NUM_INNATES * PokeOtherFormMonsNoGet(species, form), sizeof(u16) * PMFG_NUM_INNATES);
+        sInnateCache[i].key = key;
+    }
+    for (u32 j = 0; j < PMFG_NUM_INNATES; j++) {
+        out[j] = sInnateCache[i].innates[j];
+    }
 }
 
 // REQ-TGT-TRN-002 (refs/soulgold/src/level_scaling.c:32-76): the party's average level, skipping mons 7+ levels below the top
