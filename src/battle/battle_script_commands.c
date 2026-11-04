@@ -1392,6 +1392,16 @@ void Task_DistributeExp_Extend(void *arg0, void *work)
     int exp_client_no = 0;
     struct BattleStruct *sp = expcalc->sp;
 
+    // REQ-TGT-SYS-004 player_evs OFF (refs/pokehns-expansion/src/pokemon.c:7814): vanilla's step 0 (Task_DistributeExp)
+    // and the level-cap branch below give EVs; put every party mon's EVs back afterwards
+    u8 keptEVs[6][6];
+    BOOL keepEVs = expcalc->seq_no == 0 && PMFG_GetSetting(SETTING_PLAYER_EVS) == SETTING_PLAYER_EVS_OFF;
+    for (int i = 0; keepEVs && i < BattleWorkPokeCountGet(expcalc->bw, exp_client_no); i++) {
+        for (int j = 0; j < 6; j++) {
+            keptEVs[i][j] = GetMonData(BattleWorkPokemonParamGet(expcalc->bw, exp_client_no, i), MON_DATA_HP_EV + j, NULL);
+        }
+    }
+
     client_no = (sp->fainting_client >> 1) & 1;
 
     if (expcalc->seq_no < 37) {
@@ -1564,6 +1574,11 @@ void Task_DistributeExp_Extend(void *arg0, void *work)
 
 _skipAllThis:
     Task_DistributeExp(arg0, work);
+    for (int i = 0; keepEVs && i < BattleWorkPokeCountGet(expcalc->bw, exp_client_no); i++) {
+        for (int j = 0; j < 6; j++) {
+            SetMonData(BattleWorkPokemonParamGet(expcalc->bw, exp_client_no, i), MON_DATA_HP_EV + j, &keptEVs[i][j]);
+        }
+    }
 }
 
 #ifdef IMPLEMENT_CAPTURE_EXPERIENCE

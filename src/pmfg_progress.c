@@ -101,3 +101,31 @@ u32 LONG_CALL PMFG_PartyScalingLevel(void)
     }
     return count ? total / count : 1;
 }
+
+// REQ-TGT-SYS-004 trainer_ivs / trainer_evs (refs/pokehns-expansion/src/battle_main.c:2145-2175,
+// challenge_menu.c:2382-2426): OFF keeps the authored values; SCALE rises with the badges (at most 8, as H&S)
+static const u8 sTrainerScaledIVs[] = { 7, 10, 13, 16, 19, 22, 25, 28, 31 };
+static const u8 sTrainerScaledEVs[] = { 12, 24, 36, 48, 60, 72, 80, 100, 128 };
+
+void LONG_CALL PMFG_ApplyTrainerIVsEVs(struct PartyPokemon *mon)
+{
+    u32 badges = BadgeCount() > 8 ? 8 : BadgeCount();
+    u32 ivSetting = PMFG_GetSetting(SETTING_TRAINER_IVS), evSetting = PMFG_GetSetting(SETTING_TRAINER_EVS);
+    if (ivSetting != SETTING_TRAINER_IVS_OFF) {
+        u8 iv = ivSetting == SETTING_TRAINER_IVS_SCALE ? sTrainerScaledIVs[badges] : 31;
+        for (int i = 0; i < 6; i++) {
+            SetMonData(mon, MON_DATA_HP_IV + i, &iv);
+        }
+    }
+    if (evSetting == SETTING_TRAINER_EVS_OFF) {
+        return;
+    }
+    u8 ev = evSetting == SETTING_TRAINER_EVS_SCALE ? sTrainerScaledEVs[badges] : evSetting == SETTING_TRAINER_EVS_HARD ? 128 : 252;
+    RecalcPartyPokemonStats(mon); // the spread follows the mon's stats with its final IVs
+    BOOL physical = GetMonData(mon, MON_DATA_ATTACK, NULL) > GetMonData(mon, MON_DATA_SPECIAL_ATTACK, NULL);
+    BOOL defensive = GetMonData(mon, MON_DATA_DEFENSE, NULL) > GetMonData(mon, MON_DATA_SPECIAL_DEFENSE, NULL);
+    SetMonData(mon, MON_DATA_HP_EV, &ev);
+    SetMonData(mon, MON_DATA_SPEED_EV, &ev);
+    SetMonData(mon, physical ? MON_DATA_ATK_EV : MON_DATA_SPATK_EV, &ev);
+    SetMonData(mon, defensive ? MON_DATA_DEF_EV : MON_DATA_SPDEF_EV, &ev);
+}

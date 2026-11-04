@@ -408,6 +408,8 @@ void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
             }
         }
 
+        PMFG_ApplyTrainerIVsEVs(mons[i]); // REQ-TGT-SYS-004
+
         ChangeToBattleForm(mons[i]);
 
         RecalcPartyPokemonStats(mons[i]); // recalculate stats here

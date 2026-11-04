@@ -55,7 +55,8 @@ enum ExpectationType {
     EXPECTATION_TYPE_NOT_MESSAGE,
     EXPECTATION_TYPE_PARTY_FORM,
     EXPECTATION_TYPE_BATTLER_TYPES,
-    EXPECTATION_TYPE_SIDE_CONDITION_ABSENT
+    EXPECTATION_TYPE_SIDE_CONDITION_ABSENT,
+    EXPECTATION_TYPE_PARTY_EV_TOTAL, // PMFG (REQ-TGT-SYS-004): the player's party slot holds this many EVs
 };
 
 union ExpectationValue {
@@ -66,6 +67,7 @@ union ExpectationValue {
     s32 currentHP;
     u8 types[2];
     u32 sideConditionMask;
+    u16 evTotal;
 };
 
 struct Expectations {

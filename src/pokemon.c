@@ -1326,6 +1326,12 @@ void LONG_CALL CreateBoxMonData(struct BoxPokemon *boxmon, int species, int leve
         SetBoxMonData(boxmon, MON_DATA_SPEED_IV, (u8 *)&pow);
         SetBoxMonData(boxmon, MON_DATA_SPATK_IV, (u8 *)&pow);
         SetBoxMonData(boxmon, MON_DATA_SPDEF_IV, (u8 *)&pow);
+    } else if (PMFG_GetSetting(SETTING_PLAYER_IVS) != SETTING_PLAYER_IVS_NORMAL) {
+        // REQ-TGT-SYS-004 (refs/pokehns-expansion/src/pokemon.c:3236-3253): every random-IV mon (wild, gift, egg)
+        for (i = 0; i < 6; i++) {
+            j = PMFG_GetSetting(SETTING_PLAYER_IVS) == SETTING_PLAYER_IVS_ALL_31 ? 31 : 30 + gf_rand() % 2;
+            SetBoxMonData(boxmon, MON_DATA_HP_IV + i, (u8 *)&j);
+        }
     } else { // why the fuck is it done like this
         i = gf_rand();
         j = (i & (0x001f << 0)) >> 0;

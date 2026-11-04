@@ -73,6 +73,15 @@ void LONG_CALL BattleMessage_ExpandPlaceholders(struct BattleSystem *battleSyste
                 || mon->type2 != expectation->expectationValue.types[1]) {
                 break;
             }
+        } else if (expectation->expectationType == EXPECTATION_TYPE_PARTY_EV_TOTAL) {
+            struct PartyPokemon *mon = BattleWorkPokemonParamGet(battleSystem, BATTLER_PLAYER_FIRST, expectation->battlerIDOrPartySlot);
+            u32 total = 0;
+            for (int i = 0; i < 6; i++) {
+                total += GetMonData(mon, MON_DATA_HP_EV + i, NULL);
+            }
+            if (total != expectation->expectationValue.evTotal) {
+                break;
+            }
         } else if (expectation->expectationType == EXPECTATION_TYPE_SIDE_CONDITION_ABSENT) {
             if (battleSystem->sp->side_condition[expectation->battlerIDOrPartySlot]
                 & expectation->expectationValue.sideConditionMask) {
