@@ -5,6 +5,7 @@
 #include "../include/constants/item.h"
 #include "../include/constants/moves.h"
 #include "../include/message.h"
+#include "../include/pmfg_settings.h"
 #include "../include/script.h"
 #include "../include/types.h"
 
@@ -38,6 +39,22 @@ const struct ItemUseFuncDat sNewItemFieldUseFuncs[] = {
 
 extern const struct ItemUseFuncDat sItemFieldUseFuncs[NUM_VANILLA_FIELD_USE_FUNCS];
 
+// REQ-TGT-SYS-005 escape_rope_dig OFF (refs/pokehns-expansion/src/item_use.c:1123-1128): neither leaves a dungeon
+static u32 LONG_CALL PMFG_ItemCheckUseFunc_EscapeRopeOff(const struct ItemCheckUseData *data)
+{
+    (void)data;
+    return (u32)-1; // ITEMUSEERROR_OAKSWORDS, vanilla's answer outside a cave
+}
+
+// routinepointers: Dig's check in sFieldMoveFuncTable (0x020FE7BC, entry 9); vanilla FieldMove_CheckDig is 0x02068665
+u32 LONG_CALL PMFG_FieldMove_CheckDig(const void *checkData)
+{
+    if (PMFG_GetSetting(SETTING_ESCAPE_ROPE_DIG) == SETTING_ESCAPE_ROPE_DIG_OFF) {
+        return 1; // FIELD_MOVE_RESPONSE_NOT_HERE
+    }
+    return ((u32 (*)(const void *))0x02068665)(checkData);
+}
+
 void *LONG_CALL GetItemFieldUseFunc(int funcType, u16 itemType)
 {
     const struct ItemUseFuncDat *useFunc;
@@ -55,6 +72,9 @@ void *LONG_CALL GetItemFieldUseFunc(int funcType, u16 itemType)
     } else if (funcType == USE_ITEM_TASK_FIELD) {
         return useFunc->field;
     } else {
+        if (useFunc->check == ItemCheckUseFunc_EscapeRope && PMFG_GetSetting(SETTING_ESCAPE_ROPE_DIG) == SETTING_ESCAPE_ROPE_DIG_OFF) {
+            return PMFG_ItemCheckUseFunc_EscapeRopeOff;
+        }
         return useFunc->check;
     }
 }

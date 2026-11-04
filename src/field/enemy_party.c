@@ -109,6 +109,11 @@ void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
     u32 rnd_tmp, rnd, seed_tmp;
     u8 pow;
 
+    // REQ-TGT-SYS-005 trainer_items OFF (refs/pokehns-expansion/src/battle_ai_items.c:36): the AI finds no items to use
+    if (PMFG_GetSetting(SETTING_TRAINER_ITEMS) == SETTING_TRAINER_ITEMS_OFF) {
+        memset(bp->trainer_data[num].use_item, 0, sizeof(bp->trainer_data[num].use_item));
+    }
+
     seed_tmp = gf_get_seed();
 
     PokeParty_Init(bp->poke_party[num], 6);
