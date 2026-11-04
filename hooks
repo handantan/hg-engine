@@ -176,6 +176,8 @@ arm9 TT_TrainerTypeSexGet 020735F8 1
 arm9 PMFG_PlayerAvatar_IsRunHeld 0205DE88 2
 # REQ-TGT-QOL-002 fast_surf (mid-function, asm/general_hooks.s)
 arm9 PMFG_FastSurf_hook 0205D59C 2
+# REQ-TGT-SYS-007 clock (not the callback itself: the boot read finishes before this code is loaded)
+arm9 PMFG_RTC_UpdateOnFrame 0201466C 1
 # REQ-TGT-SYS-011 frontier_bans
 arm9 PMFG_IsPokemonBannedFromBattleFrontier 020726F8 2
 
