@@ -34,7 +34,7 @@ u32 LONG_CALL PlayerAvatar_GetZCoord(FIELD_PLAYER_AVATAR *playerAvatar);
 u16 LONG_CALL HiddenItemScriptNoToFlagId(u16 script);
 u16 LONG_CALL HiddenItemScriptNoToHiddenItemIdx(u16 script);
 
-#define HIDDEN_ITEM_PARAM_COUNT 256
+#define HIDDEN_ITEM_PARAM_COUNT 231
 
 static BOOL HiddenItemFindByIndex(u16 index, HiddenItemData *out)
 {
