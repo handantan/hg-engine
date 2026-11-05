@@ -31,6 +31,9 @@ void ServerHPCalc(struct BattleSystem *bw, struct BattleStruct *sp)
 
     if (sp->damage) {
         eqp = HeldItemHoldEffectGet(sp, sp->defence_client);
+        if (BattlerHasAbility(sp, sp->attack_client, ABILITY_OVERLOAD) && (eqp == HOLD_EFFECT_MAYBE_ENDURE || eqp == HOLD_EFFECT_ENDURE)) {
+            eqp = 0; // PMFG (REQ-TGT-ABL-001): Overload ignores Focus Band / Focus Sash
+        }
         atk = HeldItemAtkGet(sp, sp->defence_client, ATK_CHECK_NORMAL);
 
         if (IsClientEnemy(bw, sp->attack_client) == IsClientEnemy(bw, sp->defence_client)) {

@@ -2953,7 +2953,7 @@ int LONG_CALL Activate_PmfgHitAbilities(void *bsys, struct BattleStruct *ctx)
 // after a KO: Rock and Stone, Consume). One pmfgMoveDone bit each, reset at the Moxie step.
 const u16 sPmfgMoveAbilities[] = {
     ABILITY_MOMENTUM, ABILITY_TEMPO, ABILITY_ROLLING_STONE, ABILITY_SPECTRAL_DRAIN, ABILITY_LIFESTEAL,
-    ABILITY_ROCK_AND_STONE, ABILITY_CONSUME, ABILITY_ASH_ASSETS,
+    ABILITY_ROCK_AND_STONE, ABILITY_CONSUME, ABILITY_ASH_ASSETS, ABILITY_HUNTER,
 };
 
 static BOOL PMFG_TryMoveAbility(struct BattleStruct *ctx, u32 ability)
@@ -3006,6 +3006,15 @@ static BOOL PMFG_TryMoveAbility(struct BattleStruct *ctx, u32 ability)
             ctx->state_client = atk;
             ctx->battlerIdTemp = atk;
             return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_CREATE_TERRAIN_OVERLAY);
+        }
+        break;
+    case ABILITY_HUNTER: // a Glare that paralyzed also confuses (no roll)
+        if (move == MOVE_GLARE && ctx->defence_client != BATTLER_NONE && (ctx->battlemon[ctx->defence_client].condition & STATUS_PARALYSIS)
+            && !(ctx->waza_status_flag & MOVE_STATUS_FLAG_FAILURE_ANY) && PMFG_CanConfuse(gBattleSystem, ctx, ctx->defence_client)) {
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = ctx->defence_client;
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_ABILITY_CONFUSE);
         }
         break;
     case ABILITY_CONSUME:

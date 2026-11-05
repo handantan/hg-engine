@@ -3421,6 +3421,7 @@ BOOL LONG_CALL BattleSystem_CheckMoveEffect(void *bw, struct BattleStruct *sp, i
 /// @param type
 /// @return whether the client has the type
 BOOL LONG_CALL HasType(struct BattleStruct *ctx, int battlerId, int type);
+BOOL LONG_CALL PMFG_HasLevitateAlias(struct BattleStruct *sp, int attacker, int battler);
 int LONG_CALL PMFG_AbilityPriority(struct BattleStruct *ctx, int battlerId, int move);
 BOOL LONG_CALL PMFG_WeatherSureHit(void *bsys, struct BattleStruct *ctx, int attacker, int move);
 // PMFG (REQ-TGT-ABL-001): Immovable moves last within its priority bracket, like Stall

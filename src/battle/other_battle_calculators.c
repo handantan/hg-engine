@@ -1897,6 +1897,17 @@ u16 gf_p_rand(const u16 denominator)
     }
 }
 
+// PMFG (REQ-TGT-ABL-001): UpdateTypeEffectiveness plus Acidic (a Poison move's x0 vs Steel becomes x2)
+static u8 PMFG_TypeEffectiveness(struct BattleStruct *sp, int attacker, int moveType, u8 defenderType, u8 effectiveness)
+{
+    effectiveness = UpdateTypeEffectiveness(sp->current_move_index, defenderType, effectiveness);
+    if (moveType == TYPE_POISON && defenderType == TYPE_STEEL && effectiveness == TYPE_MUL_NO_EFFECT
+        && GetMoveSplit(sp, sp->current_move_index) != SPLIT_STATUS && BattlerHasAbility(sp, attacker, ABILITY_ACIDIC)) {
+        effectiveness = TYPE_MUL_SUPER_EFFECTIVE;
+    }
+    return effectiveness;
+}
+
 u8 LONG_CALL UpdateTypeEffectiveness(u32 move_no, u8 defender_type, u8 defaultEffectiveness)
 {
     if (move_no == MOVE_FREEZE_DRY && defender_type == TYPE_WATER) {
@@ -1969,7 +1980,7 @@ int LONG_CALL GetTypeEffectiveness(struct BattleSystem *bw, struct BattleStruct 
                 if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_tera_type) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_tera_type)) {
-                        type1Effectiveness = UpdateTypeEffectiveness(sp->current_move_index, defender_tera_type, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type1Effectiveness = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_tera_type, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type1Effectiveness, 42, 42, flag);
                     }
                 }
@@ -1977,19 +1988,19 @@ int LONG_CALL GetTypeEffectiveness(struct BattleSystem *bw, struct BattleStruct 
                 if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_type_1) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_type_1)) {
-                        type1Effectiveness = UpdateTypeEffectiveness(sp->current_move_index, defender_type_1, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type1Effectiveness = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_type_1, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type1Effectiveness, 42, 42, flag);
                     }
                 } else if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_type_2) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_type_2)) {
-                        type2Effectiveness = UpdateTypeEffectiveness(sp->current_move_index, defender_type_2, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type2Effectiveness = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_type_2, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type2Effectiveness, 42, 42, flag);
                     }
                 } else if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_type_3) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_type_3)) {
-                        type3Effectiveness = UpdateTypeEffectiveness(sp->current_move_index, defender_type_3, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type3Effectiveness = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_type_3, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type3Effectiveness, 42, 42, flag);
                     }
                 }
@@ -2000,7 +2011,7 @@ int LONG_CALL GetTypeEffectiveness(struct BattleSystem *bw, struct BattleStruct 
                 if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_tera_type) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_tera_type)) {
-                        type1Effectiveness_Dual = UpdateTypeEffectiveness(sp->current_move_index, defender_tera_type, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type1Effectiveness_Dual = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_tera_type, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type1Effectiveness_Dual, 42, 42, flag);
                     }
                 }
@@ -2008,19 +2019,19 @@ int LONG_CALL GetTypeEffectiveness(struct BattleSystem *bw, struct BattleStruct 
                 if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_type_1) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_type_1)) {
-                        type1Effectiveness_Dual = UpdateTypeEffectiveness(sp->current_move_index, defender_type_1, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type1Effectiveness_Dual = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_type_1, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type1Effectiveness_Dual, 42, 42, flag);
                     }
                 } else if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_type_2) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_type_2)) {
-                        type2Effectiveness_Dual = UpdateTypeEffectiveness(sp->current_move_index, defender_type_2, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type2Effectiveness_Dual = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_type_2, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type2Effectiveness_Dual, 42, 42, flag);
                     }
                 } else if (TypeEffectivenessTable[typeTableEntryNo][1] == defender_type_3) {
                     if (ShouldUseNormalTypeEffCalc(sp, attack_client, defence_client, typeTableEntryNo)
                         && !StrongWindsShouldWeaken(bw, sp, typeTableEntryNo, defender_type_3)) {
-                        type3Effectiveness_Dual = UpdateTypeEffectiveness(sp->current_move_index, defender_type_3, TypeEffectivenessTable[typeTableEntryNo][2]);
+                        type3Effectiveness_Dual = PMFG_TypeEffectiveness(sp, attack_client, move_type, defender_type_3, TypeEffectivenessTable[typeTableEntryNo][2]);
                         TypeCheckCalc(sp, attack_client, type3Effectiveness_Dual, 42, 42, flag);
                     }
                 }
@@ -2098,6 +2109,7 @@ BOOL LONG_CALL CantEscape(void *bw, struct BattleStruct *sp, int battlerId, Batt
         if (!(sp->field_condition & FIELD_CONDITION_GRAVITY) && item != HOLD_EFFECT_SPEED_DOWN_GROUNDED) {
             if (!BattlerHasAbility(sp, battlerId, ABILITY_LEVITATE)
                 && !BattlerHasAbility(sp, battlerId, ABILITY_EELEVATE)
+                && !PMFG_HasLevitateAlias(sp, battlerId, battlerId)
                 && !sp->battlemon[battlerId].moveeffect.magnetRiseTurns && !HasType(sp, battlerId, TYPE_FLYING)) {
                 if (msg == NULL) {
                     return TRUE;
@@ -2172,6 +2184,7 @@ BOOL BattlerCantSwitch(void *bw, struct BattleStruct *sp, int battlerId)
 
     if (((!BattlerHasAbility(sp, battlerId, ABILITY_LEVITATE)
              && !BattlerHasAbility(sp, battlerId, ABILITY_EELEVATE)
+             && !PMFG_HasLevitateAlias(sp, battlerId, battlerId)
              && sp->battlemon[battlerId].moveeffect.magnetRiseTurns == 0
              && !HasType(sp, battlerId, TYPE_FLYING))
             || HeldItemHoldEffectGet(sp, battlerId) == HOLD_EFFECT_SPEED_DOWN_GROUNDED
@@ -4940,4 +4953,14 @@ BOOL LONG_CALL PMFG_WeatherSureHit(void *bsys, struct BattleStruct *ctx, int att
     u32 weather = GetWeather(bsys, ctx, attacker);
     return (type == TYPE_ROCK && (weather & FIELD_CONDITION_SANDSTORM_ALL) && BattlerHasAbility(ctx, attacker, ABILITY_ROCKSTORM))
         || (type == TYPE_WATER && (weather & FIELD_CONDITION_RAIN_ALL) && BattlerHasAbility(ctx, attacker, ABILITY_MONSOON));
+}
+
+/// @brief PMFG (REQ-TGT-ABL-001): Mind Float, Electromagnetism and All-Seeing Idol act as Levitate (Mold Breaker aware
+/// when `attacker` differs from `battler`). shortcut: All-Seeing Idol is grounded by Gravity like the others, and the
+/// first two don't count as terrain-affected in their terrain; port those if a mon relies on them.
+BOOL LONG_CALL PMFG_HasLevitateAlias(struct BattleStruct *sp, int attacker, int battler)
+{
+    return MoldBreakerAbilityCheck(sp, attacker, battler, ABILITY_MIND_FLOAT)
+        || MoldBreakerAbilityCheck(sp, attacker, battler, ABILITY_ELECTROLEVITATE)
+        || MoldBreakerAbilityCheck(sp, attacker, battler, ABILITY_ALLSEEING_IDOL);
 }

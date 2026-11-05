@@ -182,6 +182,41 @@ int MoveCheckDamageNegatingAbilities(struct BattleStruct *sp, int attacker, int 
         }
     }
 
+    // PMFG (REQ-TGT-ABL-001): SoulGold absorbs. Mudslide and Smouldering come after Water Absorb & co. so they win.
+    if (attacker != defender && (sp->server_status_flag & SERVER_STATUS_FLAG_x20) == 0) {
+        if (MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_RITUAL) && movetype == TYPE_GHOST) { // Water Absorb for Ghost
+            sp->hp_calc_work = BattleDamageDivide(sp->battlemon[defender].maxhp, 4);
+            scriptnum = BATTLE_SUBSCRIPT_ABILITY_RESTORES_HP;
+        }
+        if (MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_WIND_CHIME) && IsMoveWindMove(sp->current_move_index)) { // Wind Rider, Sp. Atk
+            scriptnum = BATTLE_SUBSCRIPT_HANDLE_WIND_RIDER;
+            sp->addeffect_param = MOVE_SUBSCRIPT_PTR_SP_ATTACK_UP_1_STAGE;
+            sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            sp->state_client = defender;
+            sp->battlerIdTemp = defender;
+        }
+        if (movetype == TYPE_WATER
+            && ((MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_MUDSLIDE) && (GetWeather(gBattleSystem, sp, defender) & FIELD_CONDITION_SANDSTORM_ALL))
+                || MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_SMOULDERING))) {
+            sp->addeffect_param = MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_MUDSLIDE) && (GetWeather(gBattleSystem, sp, defender) & FIELD_CONDITION_SANDSTORM_ALL)
+                ? MOVE_SUBSCRIPT_PTR_DEFENSE_UP_2_STAGES : MOVE_SUBSCRIPT_PTR_SP_DEFENSE_UP_1_STAGE;
+            sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            sp->state_client = defender;
+            sp->battlerIdTemp = defender;
+            scriptnum = BATTLE_SUBSCRIPT_PMFG_ABSORB_AND_RAISE_STAT;
+        }
+        // Colossal: moves of 44 base power or less do nothing. shortcut: listed power (variable-power moves, 0/1, pass); SoulGold shows no popup
+        if (MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_COLOSSAL) && GetMoveSplit(sp, sp->current_move_index) != SPLIT_STATUS
+            && sp->moveTbl[sp->current_move_index].power > 1 && sp->moveTbl[sp->current_move_index].power <= 44) {
+            scriptnum = BATTLE_SUBSCRIPT_DOESNT_AFFECT_ABILITY;
+        }
+        // Brimstone's Fire moves skip Flash Fire and Well-Baked Body
+        if (movetype == TYPE_FIRE && BattlerHasAbility(sp, attacker, ABILITY_BRIMSTONE)
+            && (scriptnum == BATTLE_SUBSCRIPT_ABSORB_AND_BOOST_FIRE_TYPE_MOVES || scriptnum == BATTLE_SUBSCRIPT_ABSORB_AND_DEF_UP_2_STAGE)) {
+            scriptnum = 0;
+        }
+    }
+
     // PMFG (REQ-TGT-ABL-001): Monsoon's Water moves in rain go through Water Absorb, Dry Skin and Storm Drain
     if (movetype == TYPE_WATER && attacker != defender && PMFG_WeatherSureHit(gBattleSystem, sp, attacker, sp->current_move_index)) {
         scriptnum = 0;

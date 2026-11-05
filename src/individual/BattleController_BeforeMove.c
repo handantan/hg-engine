@@ -2903,7 +2903,8 @@ BOOL BattleController_CheckTypeImmunity(struct BattleSystem *bsys, struct Battle
 BOOL BattleController_CheckLevitate(struct BattleSystem *bsys UNUSED, struct BattleStruct *ctx, int defender)
 {
     if ((MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_LEVITATE) == TRUE
-            || MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_EELEVATE) == TRUE)
+            || MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_EELEVATE) == TRUE
+            || PMFG_HasLevitateAlias(ctx, ctx->attack_client, defender))
         && (IS_GENERAL_GROUND_TYPE_ATTACK(ctx))
         // iron ball halves speed and grounds
         && (HeldItemHoldEffectGet(ctx, defender) != HOLD_EFFECT_SPEED_DOWN_GROUNDED)
@@ -3141,7 +3142,7 @@ BOOL BattleController_CheckUproarStoppingSleepMoves(struct BattleSystem *bsys UN
 BOOL BattleController_CheckSafeguard(struct BattleSystem *bsys UNUSED, struct BattleStruct *ctx, int defender)
 {
     if (ctx->side_condition[IsClientEnemy(bsys, defender)] & SIDE_STATUS_SAFEGUARD
-        && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR))) {
+        && (!BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR)) && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_VOIDTOUCH)) {
         switch (ctx->moveTbl[ctx->current_move_index].effect) {
         case MOVE_EFFECT_STATUS_SLEEP:
         case MOVE_EFFECT_STATUS_SLEEP_NEXT_TURN:
@@ -3274,7 +3275,7 @@ int BattlerController_CheckMist(struct BattleSystem *bsys, struct BattleStruct *
         case MOVE_EFFECT_SP_ATK_DOWN_3:
         case MOVE_EFFECT_SP_DEF_DOWN_3:
             // infiltrator bypasses mist
-            if (ctx->scw[IsClientEnemy(bsys, defender)].mistCount && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR)) {
+            if (ctx->scw[IsClientEnemy(bsys, defender)].mistCount && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_INFILTRATOR) && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_VOIDTOUCH)) {
                 BattleController_ResetGeneralMoveFailureFlags(ctx, ctx->attack_client, TRUE);
                 return BATTLE_MSG_PROTECTED_BY_MIST;
             }

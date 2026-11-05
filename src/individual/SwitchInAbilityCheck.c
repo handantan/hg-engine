@@ -896,10 +896,10 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                     if ((sp->battlemon[client_no].hp)
                         // tailwind is active -- should catch if tailwind was just used as well
                         && (sp->tailwindCount[IsClientEnemy(bw, client_no)] != 0)
-                        && (BattlerHasAbility(sp, client_no, ABILITY_WIND_RIDER))
+                        && (BattlerHasAbility(sp, client_no, ABILITY_WIND_RIDER) || BattlerHasAbility(sp, client_no, ABILITY_WIND_CHIME)) // PMFG: Wind Chime raises Sp. Atk
                         && (sp->battlemon[client_no].ability_activated_flag == 0)) {
                         sp->battlemon[client_no].ability_activated_flag = TRUE; // make sure to reset when clearing tailwind
-                        sp->addeffect_param = MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE;
+                        sp->addeffect_param = BattlerHasAbility(sp, client_no, ABILITY_WIND_RIDER) ? MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE : MOVE_SUBSCRIPT_PTR_SP_ATTACK_UP_1_STAGE;
                         sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
                         sp->state_client = client_no;
                         sp->battlerIdTemp = client_no;

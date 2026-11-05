@@ -2297,6 +2297,7 @@ BOOL LONG_CALL IsClientGrounded(struct BattleStruct *sp, u32 client_no)
     if ((!BattlerHasInnate(sp, client_no, ABILITY_LEVITATE) && !BattlerHasInnate(sp, client_no, ABILITY_EELEVATE)
             && sp->battlemon[client_no].ability != ABILITY_LEVITATE
             && sp->battlemon[client_no].ability != ABILITY_EELEVATE
+            && !PMFG_HasLevitateAlias(sp, client_no, client_no) // PMFG
             && holdeffect != HOLD_EFFECT_UNGROUND_DESTROYED_ON_HIT // not holding Air Balloon
             && (sp->battlemon[client_no].moveeffect.magnetRiseTurns) == 0 && !HasType(sp, client_no, TYPE_FLYING))
         || (holdeffect == HOLD_EFFECT_SPEED_DOWN_GROUNDED // holding Iron Ball
@@ -2325,6 +2326,7 @@ BOOL LONG_CALL MoldBreakerIsClientGrounded(struct BattleStruct *sp, u32 attacker
 
     BOOL hasLevitate = attacker == defender ? (u32)BattlerHasAbility(sp, defender, ABILITY_LEVITATE) : MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_LEVITATE);
     BOOL hasEelevate = attacker == defender ? (u32)BattlerHasAbility(sp, defender, ABILITY_EELEVATE) : MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_EELEVATE);
+    hasEelevate |= PMFG_HasLevitateAlias(sp, attacker, defender); // PMFG
 
     if ((!hasLevitate && !hasEelevate && holdeffect != HOLD_EFFECT_UNGROUND_DESTROYED_ON_HIT // not holding Air Balloon
             && (sp->battlemon[defender].moveeffect.magnetRiseTurns) == 0 && !HasType(sp, defender, TYPE_FLYING))

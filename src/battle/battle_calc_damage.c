@@ -178,6 +178,13 @@ int CalcBaseDamage(void *bw, struct BattleStruct *sp, int moveno, u32 side_cond 
         damageCalc.clients[attacker].boosterEnergyActivated = 0;
     }
 
+    // PMFG (REQ-TGT-ABL-001): Overload ignores the defender's held item in damage calc (Eviolite, Assault Vest, Metal Powder,
+    // Deep Sea Scale...). shortcut: Air Balloon and evasion items still work against it
+    if (IsAttackerOnField(sp) && BattlerHasAbility(sp, attacker, ABILITY_OVERLOAD) && defender < CLIENT_MAX) {
+        damageCalc.clients[defender].item_held_effect = 0;
+        damageCalc.clients[defender].item_power = 0;
+    }
+
     u32 ovyId, offset;
     int ret;
     int (*internalFunc)(struct BattleSystem *bw, struct BattleStruct *sp, struct DamageCalcStruct *damageCalc);
@@ -651,7 +658,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         && ((side_cond & SIDE_STATUS_REFLECT) != 0 || (side_cond & SIDE_STATUS_AURORA_VEIL) != 0)
         && (sp->critical == 1)
         && (sp->moveTbl[moveno].effect != MOVE_EFFECT_REMOVE_SCREENS)
-        && (!ATK_HAS(ABILITY_INFILTRATOR))) {
+        && (!ATK_HAS(ABILITY_INFILTRATOR)) && (!ATK_HAS(ABILITY_VOIDTOUCH))) {
         if (battle_type & BATTLE_TYPE_DOUBLES) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__0_6666);
         } else {
@@ -663,7 +670,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         && ((side_cond & SIDE_STATUS_LIGHT_SCREEN) != 0 || (side_cond & SIDE_STATUS_AURORA_VEIL) != 0)
         && (sp->critical == 1)
         && (sp->moveTbl[moveno].effect != MOVE_EFFECT_REMOVE_SCREENS)
-        && (!ATK_HAS(ABILITY_INFILTRATOR))) {
+        && (!ATK_HAS(ABILITY_INFILTRATOR)) && (!ATK_HAS(ABILITY_VOIDTOUCH))) {
         if (battle_type & BATTLE_TYPE_DOUBLES) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__0_6666);
         } else {
@@ -800,6 +807,10 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
             && ((movesplit == SPLIT_PHYSICAL && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_PHALANX))
                 || (movesplit == SPLIT_SPECIAL && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_SPECTRAL)))) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__0_5);
+        }
+        // PMFG (REQ-TGT-ABL-001): Guardian takes x0.85. shortcut: its doubles redirection isn't ported
+        if ((sp->rawSpeedNonRNGClientOrder[i] == defender) && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_GUARDIAN)) {
+            finalModifier = QMul_RoundUp(finalModifier, 3482); // 0.85
         }
 
         // 6.9.16 Ice Scales

@@ -224,7 +224,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                 && sp->addeffect_type != SIDE_EFFECT_TYPE_ABILITY
                 && sp->addeffect_type != SIDE_EFFECT_TYPE_PRINT_WORK_ABILITY) {
                 // infiltrator bypasses mist
-                if (sp->scw[IsClientEnemy(bw, sp->state_client)].mistCount && !BattlerHasAbility(sp, sp->attack_client, ABILITY_INFILTRATOR)) {
+                if (sp->scw[IsClientEnemy(bw, sp->state_client)].mistCount && !BattlerHasAbility(sp, sp->attack_client, ABILITY_INFILTRATOR) && !BattlerHasAbility(sp, sp->attack_client, ABILITY_VOIDTOUCH)) {
                     sp->mp.id = BATTLE_MSG_PROTECTED_BY_MIST;
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);

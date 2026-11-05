@@ -292,6 +292,9 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
         }
         break;
     case MOVE_HEX:
+        if (ClientHasAbility(&damageCalc->clients[attacker], ABILITY_RITUAL)) { // PMFG (REQ-TGT-ABL-001): Ritualist's Hex is 75
+            movepower = 75;
+        }
         if (DefendingMon.condition & STATUS_ALL || MoldBreakerAbilityCheck(sp, defender, defender, ABILITY_COMATOSE)) { // not affected by Mold Breaker
             movepower *= 2;
         }
@@ -986,6 +989,10 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
         if (ClientHasAbility(atk, ABILITY_CROSSFIRE) && sp->pmfgHasAttacked[attacker] && sp->pmfgLastAttackType[attacker] != movetype) {
             basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_25);
         }
+        if ((ClientHasAbility(atk, ABILITY_BURROWER) && moveno == MOVE_DIG) || (ClientHasAbility(atk, ABILITY_DIVER) && moveno == MOVE_DIVE)
+            || (ClientHasAbility(atk, ABILITY_FLIER) && moveno == MOVE_FLY)) {
+            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_5);
+        }
         if (ClientHasAbility(atk, ABILITY_BULL_RUSH) && !sp->pmfgHasAttacked[attacker]) {
             basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
         }
@@ -1084,6 +1091,15 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
     // Step 3.5. Hustle
     if (ClientHasAbility(&damageCalc->clients[attacker], ABILITY_HUSTLE)) {
         attack = QMul_RoundDown(attack, UQ412__1_5);
+    }
+    // PMFG (REQ-TGT-ABL-001): Hunter x1.5 Attack while a living foe is paralyzed
+    if (ClientHasAbility(&damageCalc->clients[attacker], ABILITY_HUNTER) && movesplit == SPLIT_PHYSICAL) {
+        for (int i = 0; i < CLIENT_MAX; i++) {
+            if ((i & 1) != (attacker & 1) && sp->battlemon[i].hp && (sp->battlemon[i].condition & STATUS_PARALYSIS)) {
+                attack = QMul_RoundDown(attack, UQ412__1_5);
+                break;
+            }
+        }
     }
 
 #ifdef DEBUG_DAMAGE_CALC
@@ -1535,6 +1551,12 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
             if ((MoldBreakerAbilityCheckInternal(attacker, defender, AttackingMon.ability, DefendingMon.ability, moveno, movesplit, ABILITY_SUNHARDENED) || ClientHasInnate(&damageCalc->clients[defender], ABILITY_SUNHARDENED))
                 && (weather & FIELD_CONDITION_SUN_ALL) && (defensiveSplit == SPLIT_SPECIAL)) {
                 defenseModifier = QMul_RoundUp(defenseModifier, UQ412__2_0);
+            }
+
+            // PMFG (REQ-TGT-ABL-001): All-Seeing Idol x1.3 Defense under Gravity
+            if ((MoldBreakerAbilityCheckInternal(attacker, defender, AttackingMon.ability, DefendingMon.ability, moveno, movesplit, ABILITY_ALLSEEING_IDOL) || ClientHasInnate(&damageCalc->clients[defender], ABILITY_ALLSEEING_IDOL))
+                && (sp->field_condition & FIELD_CONDITION_GRAVITY) && (defensiveSplit == SPLIT_PHYSICAL)) {
+                defenseModifier = QMul_RoundUp(defenseModifier, UQ412__1_3);
             }
 
             // PMFG (REQ-TGT-ABL-001): Coalwalker doubles Defense in Scorched Field
