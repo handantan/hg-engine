@@ -256,7 +256,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                     sp->mp.param[1] = CreateNicknameTag(sp, GetBattleMonItem(sp, sp->state_client));
                     sp->mp.param[2] = STAT_ATTACK + stattochange;
                     flag = 1;
-                } else if ((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->state_client, ABILITY_HYPER_CUTTER) == TRUE) && ((STAT_ATTACK + stattochange) == STAT_ATTACK)) {
+                } else if ((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->state_client, ABILITY_HYPER_CUTTER) == TRUE || BattlerHasAbility(sp, sp->state_client, ABILITY_PERMAFROST)) && ((STAT_ATTACK + stattochange) == STAT_ATTACK)) { // PMFG: Permafrost
                     sp->mp.id = BATTLE_MSG_ATTACK_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);
@@ -369,7 +369,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                     sp->mp.param[1] = CreateNicknameTag(sp, GetBattleMonItem(sp, sp->state_client));
                     sp->mp.param[2] = STAT_ATTACK + stattochange;
                     prevented = TRUE;
-                } else if ((BattlerHasAbility(sp, sp->state_client, ABILITY_HYPER_CUTTER)) && ((STAT_ATTACK + stattochange) == STAT_ATTACK)) {
+                } else if ((BattlerHasAbility(sp, sp->state_client, ABILITY_HYPER_CUTTER) || BattlerHasAbility(sp, sp->state_client, ABILITY_PERMAFROST)) && ((STAT_ATTACK + stattochange) == STAT_ATTACK)) {
                     sp->mp.id = BATTLE_MSG_ATTACK_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;
                     sp->mp.param[0] = CreateNicknameTag(sp, sp->state_client);

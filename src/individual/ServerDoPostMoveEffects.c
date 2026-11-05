@@ -2792,7 +2792,7 @@ const u16 sPmfgHitAbilities[] = {
     ABILITY_SOOTHING, ABILITY_HAUNTING, ABILITY_ECHOING, ABILITY_DUST_DEVIL, ABILITY_PLANTATION, ABILITY_MIRAGE,
     ABILITY_LUNAR_CYCLE, ABILITY_SEER, ABILITY_BLOODLUST,
     ABILITY_SOLIDIFY, ABILITY_DESPERADO, ABILITY_INKY, ABILITY_FLAMEBURST, ABILITY_BRAND_OF_TORMENT, ABILITY_FORCE_RETURN,
-    ABILITY_REEF_WARDEN, ABILITY_PARRYING,
+    ABILITY_REEF_WARDEN, ABILITY_PARRYING, ABILITY_PERMAFROST, ABILITY_BLIZZARD_HEART,
 };
 
 #ifdef DEBUG_BATTLE_SCENARIOS
@@ -2872,6 +2872,18 @@ static BOOL PMFG_TryHitAbility(void *bsys, struct BattleStruct *ctx, u32 ability
             d->effect_of_moves |= MOVE_EFFECT_FLAG_LEECH_SEED | atk; // low bits: the seeder (as the Leech Seed script sets them)
             ctx->battlerIdTemp = atk;
             return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_PLANTATION);
+        }
+        break;
+    case ABILITY_PERMAFROST: // 20% Frostbite after a damaging hit
+    case ABILITY_BLIZZARD_HEART: // 20% Frostbite from an Ice move in hail or snow
+        if (d->condition == 0 && !HasType(ctx, def, TYPE_ICE) && !MoldBreakerAbilityCheck(ctx, atk, def, ABILITY_MAGMA_ARMOR)
+            && !MoldBreakerAbilityCheck(ctx, atk, def, ABILITY_PERMAFROST) && !(ctx->side_condition[IsClientEnemy(bsys, def)] & SIDE_STATUS_SAFEGUARD)
+            && (ability == ABILITY_PERMAFROST || (moveType == TYPE_ICE && (GetWeather(bsys, ctx, atk) & (FIELD_CONDITION_HAIL_ALL | FIELD_CONDITION_SNOW_ALL))))
+            && PMFG_CHANCE(bsys, 20)) {
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = def;
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_ABILITY_FROSTBITE);
         }
         break;
     case ABILITY_LUNAR_CYCLE:

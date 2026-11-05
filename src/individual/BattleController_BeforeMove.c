@@ -1258,7 +1258,8 @@ void BattleController_CheckSleepOrFrozen(struct BattleSystem *bsys, struct Battl
         }
     }
 
-    if (ctx->battlemon[ctx->attack_client].condition & STATUS_FREEZE) {
+    // PMFG (REQ-TGT-BTL-008): the freeze bit is Frostbite, which never stops a move (no "frozen solid", no random thaw)
+    if (FALSE && (ctx->battlemon[ctx->attack_client].condition & STATUS_FREEZE)) {
         if (BattleRand(bsys) % 5 != 0) {
             if (effect != MOVE_EFFECT_THAW_AND_BURN_HIT && effect != MOVE_EFFECT_RECOIL_BURN_HIT && effect != MOVE_EFFECT_RECOVER_HALF_DAMAGE_DEALT_BURN_HIT) {
                 LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_FROZEN);

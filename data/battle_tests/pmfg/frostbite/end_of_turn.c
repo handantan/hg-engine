@@ -66,6 +66,5 @@ BEGIN_TEST
     .expectations = {
         { .expectationType = EXPECTATION_TYPE_MESSAGE_CONTAINS, .expectationValue.message = "hurt by its frostbite" },
     },
-    .knownFailing = TRUE, // red until Phase 4 implements the REQ
 }
 END_TEST
