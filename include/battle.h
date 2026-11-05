@@ -1115,6 +1115,9 @@ struct BattleStruct {
     u8 pmfgLastAttackType[CLIENT_MAX]; // valid only when pmfgHasAttacked (the struct starts zeroed, and 0 is TYPE_NORMAL)
     u8 pmfgHasAttacked[CLIENT_MAX];
     u16 pmfgEntryDone[CLIENT_MAX]; // bit k: sPmfgEntryAbilities[k] fired this switch-in (SwitchInAbilityCheck.c)
+    u32 pmfgHitDone;  // bit k: sPmfgHitAbilities[k] fired on this hit; bits 24+: Flameburst per foe (ServerDoPostMoveEffects.c)
+    u16 pmfgMoveDone; // bit k: sPmfgMoveAbilities[k] fired after this move
+    u8 pmfgKOs;       // foes the attacker KO'd with this move (Consume, Rock and Stone)
 };
 
 enum {
@@ -1505,6 +1508,7 @@ enum {
     MOVE_PERFORMANCE_SUB_STEP_10_4_BEAK_BLAST_BURN,
     MOVE_PERFORMANCE_SUB_STEP_10_5_POISON_TOUCH,
     MOVE_PERFORMANCE_SUB_STEP_10_6_DEFENDER_ABILITY,
+    MOVE_PERFORMANCE_SUB_STEP_10_6_1_PMFG_HIT_ABILITIES,
     MOVE_PERFORMANCE_SUB_STEP_10_7_DAMAGE_REDUCTION_BERRY,
     MOVE_PERFORMANCE_SUB_STEP_10_8_DEFENDER_ITEMS_1,
     MOVE_PERFORMANCE_SUB_STEP_10_9_INCINERATE,
@@ -1557,6 +1561,7 @@ enum {
     MOVE_PERFORMANCE_STEP_15_3_THAW_FROM_FIRE_MOVE,
     MOVE_PERFORMANCE_STEP_15_4_SMACK_DOWN,
     MOVE_PERFORMANCE_STEP_16_0_MAGICIAN_MOXIE,
+    MOVE_PERFORMANCE_STEP_16_0_1_PMFG_MOVE_ABILITIES,
     MOVE_PERFORMANCE_STEP_16_1_BERSERK_COLOR_CHANGE,
     MOVE_PERFORMANCE_STEP_17_0_DEFENDER_ITEMS_3,
     MOVE_PERFORMANCE_STEP_18_0_PLEDGE_MOVES_COMBINATION,

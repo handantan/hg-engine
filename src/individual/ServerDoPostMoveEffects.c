@@ -51,6 +51,8 @@ int LONG_CALL Activate_SkillEffects(void *bsys UNUSED, struct BattleStruct *ctx)
 int LONG_CALL Activate_Moxie_BeastBoost_Others(void *bsys, struct BattleStruct *ctx);
 u32 LONG_CALL Activate_AbilityHealingStatusCondition(void *bsys, struct BattleStruct *ctx, int battlerId, int act_flag);
 int LONG_CALL Activate_WimpOut_EmergencyExit(void *bsys, struct BattleStruct *ctx);
+int LONG_CALL Activate_PmfgHitAbilities(void *bsys, struct BattleStruct *ctx);
+int LONG_CALL Activate_PmfgMoveAbilities(void *bsys UNUSED, struct BattleStruct *ctx);
 
 int LONG_CALL MovePerformance_Step_9(void *bsys, struct BattleStruct *ctx, int *defenders, int defenderCount);
 int LONG_CALL MovePerformance_Step_10(void *bsys, struct BattleStruct *ctx, int *defenders, int defenderCount);
@@ -521,9 +523,16 @@ void __attribute__((section(".init"))) ServerDoPostMoveEffectsInternal(void *bsy
         debug_printf("in MOVE_PERFORMANCE_STEP_16_0_MAGICIAN_MOXIE %d\n", ctx->swoam_seq_no);
 #endif
         ctx->swoam_seq_no++;
+        ctx->pmfgMoveDone = 0; // PMFG: this step runs once per move
         if (Activate_Moxie_BeastBoost_Others(bsys, ctx) == TRUE) {
             return;
         }
+        FALLTHROUGH;
+    case MOVE_PERFORMANCE_STEP_16_0_1_PMFG_MOVE_ABILITIES: // stays on this step until no ability fires
+        if (Activate_PmfgMoveAbilities(bsys, ctx) == TRUE) {
+            return;
+        }
+        ctx->swoam_seq_no++;
         FALLTHROUGH;
     case MOVE_PERFORMANCE_STEP_16_1_BERSERK_COLOR_CHANGE:
 #ifdef DEBUG_MOVE_PERFORMANCE_LOGIC
@@ -2237,6 +2246,7 @@ void LONG_CALL Activate_KO_Count(void *bsys UNUSED, struct BattleStruct *ctx)
         && ((ctx->waza_status_flag & WAZA_STATUS_FLAG_NO_OUT) == 0)
         && ((ctx->oneSelfFlag[ctx->fainting_client].special_damager == ctx->attack_client)
             || (ctx->oneSelfFlag[ctx->fainting_client].physical_damager == ctx->attack_client))) {
+        ctx->pmfgKOs++; // PMFG: Consume, Rock and Stone
         switch (BATTLER_ABILITY_IN(ctx, ctx->attack_client, ABILITY_BATTLE_BOND, ABILITY_EELEVATE, ABILITY_BEAST_BOOST, ABILITY_CHILLING_NEIGH, ABILITY_AS_ONE_GLASTRIER, ABILITY_MOXIE, ABILITY_GRIM_NEIGH, ABILITY_AS_ONE_SPECTRIER)) {
         case ABILITY_BATTLE_BOND: {
             if (ctx->battlemon[ctx->attack_client].species != SPECIES_GRENINJA || ctx->battlemon[ctx->attack_client].form_no != 1) {
@@ -2357,6 +2367,7 @@ int LONG_CALL MovePerformance_Step_10(void *bsys, struct BattleStruct *ctx, int 
         switch (ctx->movePerformanceSubstep) {
         case MOVE_PERFORMANCE_SUB_STEP_10_0_CORE_ENFORCER:
             // TODO
+            ctx->pmfgHitDone = 0; // PMFG: once per hit and target
             ctx->movePerformanceSubstep++;
             FALLTHROUGH;
         case MOVE_PERFORMANCE_SUB_STEP_10_1_RAGE:
@@ -2414,6 +2425,12 @@ int LONG_CALL MovePerformance_Step_10(void *bsys, struct BattleStruct *ctx, int 
             }
             FALLTHROUGH;
         }
+        case MOVE_PERFORMANCE_SUB_STEP_10_6_1_PMFG_HIT_ABILITIES: // stays on this substep until no ability fires
+            if (Activate_PmfgHitAbilities(bsys, ctx) == TRUE) {
+                return TRUE;
+            }
+            ctx->movePerformanceSubstep++;
+            FALLTHROUGH;
         case MOVE_PERFORMANCE_SUB_STEP_10_7_DAMAGE_REDUCTION_BERRY:
 #ifdef DEBUG_MOVE_PERFORMANCE_LOGIC
             debug_printf("in MOVE_PERFORMANCE_SUB_STEP_10_7_DAMAGE_REDUCTION_BERRY %d\n", ctx->movePerformanceSubstep);
@@ -2736,5 +2753,276 @@ int LONG_CALL Activate_WimpOut_EmergencyExit(void *bsys, struct BattleStruct *ct
         }
     }
 
+    return FALSE;
+}
+
+// PMFG (REQ-TGT-ABL-001): load a battle subscript and run it, then come back to the current step
+static BOOL PMFG_RunSubscript(struct BattleStruct *ctx, int seq_no)
+{
+    LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, seq_no);
+    ctx->next_server_seq_no = ctx->server_seq_no;
+    ctx->server_seq_no = CONTROLLER_COMMAND_RUN_SCRIPT;
+    return TRUE;
+}
+
+// PMFG (REQ-TGT-ABL-001): an ability-caused stat change on `target`, popup on `holder` (HANDLE_ABILITY_STAT_CHANGE)
+static BOOL PMFG_AbilityStatChange(struct BattleStruct *ctx, int holder, int target, int param)
+{
+    ctx->addeffect_param = param;
+    ctx->addeffect_type = holder == target ? SIDE_EFFECT_TYPE_ABILITY : SIDE_EFFECT_TYPE_PRINT_WORK_ABILITY;
+    ctx->state_client = target;
+    ctx->battlerIdTemp = holder;
+    return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE);
+}
+
+static BOOL PMFG_CanConfuse(void *bsys, struct BattleStruct *ctx, int target)
+{
+    return ctx->battlemon[target].hp
+        && !(ctx->battlemon[target].condition2 & STATUS2_CONFUSION)
+        && !MoldBreakerAbilityCheck(ctx, ctx->attack_client, target, ABILITY_OWN_TEMPO)
+        && !(ctx->side_condition[IsClientEnemy(bsys, target)] & SIDE_STATUS_SAFEGUARD);
+}
+
+// PMFG (REQ-TGT-ABL-001): SoulGold's after-hit abilities (ABILITYEFFECT_MOVE_END / _MOVE_END_ATTACKER). Rows up to
+// Bloodlust belong to the attacker, the rest to the defender. Each row has its own pmfgHitDone bit (reset per hit and
+// target), so several innates can fire on one hit. Chance rolls are skipped in battle tests, like Static's.
+const u16 sPmfgHitAbilities[] = {
+    ABILITY_SOOTHING, ABILITY_HAUNTING, ABILITY_ECHOING, ABILITY_DUST_DEVIL, ABILITY_PLANTATION, ABILITY_MIRAGE,
+    ABILITY_LUNAR_CYCLE, ABILITY_SEER, ABILITY_BLOODLUST,
+    ABILITY_SOLIDIFY, ABILITY_DESPERADO, ABILITY_INKY, ABILITY_FLAMEBURST, ABILITY_BRAND_OF_TORMENT, ABILITY_FORCE_RETURN,
+};
+
+#ifdef DEBUG_BATTLE_SCENARIOS
+#define PMFG_CHANCE(bsys, pct) TRUE
+#else
+#define PMFG_CHANCE(bsys, pct) (BattleRand(bsys) % 100 < (pct))
+#endif
+
+static BOOL PMFG_TryHitAbility(void *bsys, struct BattleStruct *ctx, u32 ability)
+{
+    int atk = ctx->attack_client, def = ctx->defence_client;
+    struct BattlePokemon *a = &ctx->battlemon[atk], *d = &ctx->battlemon[def];
+    BOOL defenderSide = ability == ABILITY_SOLIDIFY || ability == ABILITY_DESPERADO || ability == ABILITY_INKY
+        || ability == ABILITY_FLAMEBURST || ability == ABILITY_BRAND_OF_TORMENT || ability == ABILITY_FORCE_RETURN;
+    if (defenderSide ? !MoldBreakerAbilityCheck(ctx, atk, def, ability) : !BattlerHasAbility(ctx, atk, ability)) {
+        return FALSE;
+    }
+    u32 moveType = GetAdjustedMoveType(ctx, atk, ctx->current_move_index);
+    u32 status = ctx->moveStatusFlagForSpreadMoves[def];
+    int dealt = -(ctx->oneSelfFlag[def].physical_damage + ctx->oneSelfFlag[def].special_damage); // stored negative
+
+    if (ability == ABILITY_FLAMEBURST) { // the holder fainted from the hit: burn every foe that can be burned
+        for (int i = 0; i < BattleWorkClientSetMaxGet(bsys); i++) {
+            u32 bit = 1 << (24 + i);
+            if (IsClientEnemy(bsys, i) == IsClientEnemy(bsys, def) || (ctx->pmfgHitDone & bit) || d->hp
+                || !ctx->battlemon[i].hp || ctx->battlemon[i].condition || HasType(ctx, i, TYPE_FIRE)) {
+                continue;
+            }
+            ctx->pmfgHitDone |= bit;
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = i;
+            ctx->battlerIdTemp = def;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_BURN);
+        }
+        return FALSE;
+    }
+    if (!d->hp) {
+        return FALSE;
+    }
+
+    switch (ability) {
+    case ABILITY_SOOTHING:
+        if (d->condition == 0 && PMFG_CHANCE(bsys, 10)) {
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = def;
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_FALL_ASLEEP);
+        }
+        break;
+    case ABILITY_HAUNTING:
+    case ABILITY_ECHOING:
+        if ((ability == ABILITY_HAUNTING ? moveType == TYPE_GHOST && PMFG_CHANCE(bsys, 20)
+                                         : IsMoveSoundBased(ctx->current_move_index) && PMFG_CHANCE(bsys, 30))) {
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_INDIRECT; // silent, like King's Rock
+            ctx->state_client = def;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_FLINCH_MON);
+        }
+        break;
+    case ABILITY_DUST_DEVIL:
+    case ABILITY_MIRAGE:
+        if (PMFG_CanConfuse(bsys, ctx, def)
+            && (ability == ABILITY_DUST_DEVIL ? PMFG_CHANCE(bsys, 15)
+                                              : (ctx->field_condition & FIELD_CONDITION_SUN_ALL)
+                        && !CheckSideAbility(bsys, ctx, CHECK_ABILITY_ALL_HP, 0, ABILITY_CLOUD_NINE)
+                        && !CheckSideAbility(bsys, ctx, CHECK_ABILITY_ALL_HP, 0, ABILITY_AIR_LOCK)
+                        && PMFG_CHANCE(bsys, 25))) {
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = def;
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_ABILITY_CONFUSE);
+        }
+        break;
+    case ABILITY_PLANTATION:
+        if (ctx->current_move_index != MOVE_FALSE_SWIPE && !(d->effect_of_moves & MOVE_EFFECT_FLAG_LEECH_SEED)
+            && !HasType(ctx, def, TYPE_GRASS) && !BattlerHasAbility(ctx, def, ABILITY_SPECTRAL_DRAIN) && PMFG_CHANCE(bsys, 30)) {
+            d->effect_of_moves |= MOVE_EFFECT_FLAG_LEECH_SEED | atk; // low bits: the seeder (as the Leech Seed script sets them)
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_PLANTATION);
+        }
+        break;
+    case ABILITY_LUNAR_CYCLE:
+    case ABILITY_SEER:
+        if (a->hp && a->states[STAT_SPEED] < 12 && (ability == ABILITY_LUNAR_CYCLE || moveType == TYPE_PSYCHIC)) {
+            return PMFG_AbilityStatChange(ctx, atk, atk, MOVE_SUBSCRIPT_PTR_SPEED_UP_1_STAGE);
+        }
+        break;
+    case ABILITY_BLOODLUST:
+        if (a->hp && (status & MOVE_STATUS_CRITICAL_HIT) && (a->states[STAT_ATTACK] < 12 || a->states[STAT_SPEED] < 12)) {
+            ctx->calc_work = MOVE_SUBSCRIPT_PTR_SPEED_UP_1_STAGE;
+            ctx->addeffect_param = MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE;
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = atk;
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_RAISE_TWO_STATS);
+        }
+        break;
+    case ABILITY_SOLIDIFY:
+        if (ctx->oneSelfFlag[def].special_damage && d->states[STAT_SPECIAL_DEFENSE] < 12) {
+            return PMFG_AbilityStatChange(ctx, def, def, MOVE_SUBSCRIPT_PTR_SP_DEFENSE_UP_1_STAGE);
+        }
+        break;
+    case ABILITY_DESPERADO:
+        if ((status & MOVE_STATUS_SUPER_EFFECTIVE) && (d->states[STAT_ATTACK] < 12 || d->states[STAT_SPECIAL_ATTACK] < 12)) {
+            ctx->calc_work = MOVE_SUBSCRIPT_PTR_SP_ATTACK_UP_1_STAGE;
+            ctx->addeffect_param = MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE;
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = def;
+            ctx->battlerIdTemp = def;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_RAISE_TWO_STATS);
+        }
+        break;
+    case ABILITY_INKY:
+        if (a->hp && a->states[STAT_ACCURACY] > 0) {
+            return PMFG_AbilityStatChange(ctx, def, atk, MOVE_SUBSCRIPT_PTR_ACCURACY_DOWN_1_STAGE);
+        }
+        break;
+    case ABILITY_BRAND_OF_TORMENT:
+        // shortcut: only the attacker's own Aroma Veil blocks it, not its ally's; check the ally if doubles need it
+        if (a->hp && !(a->condition2 & STATUS2_TORMENT) && !BattlerHasAbility(ctx, atk, ABILITY_AROMA_VEIL)
+            && IsContactBeingMade(ContactAbility(ctx, atk), HeldItemHoldEffectGet(ctx, atk), HeldItemHoldEffectGet(ctx, def), ctx->current_move_index, ctx->moveTbl[ctx->current_move_index].flag)
+            && PMFG_CHANCE(bsys, 30)) {
+            a->condition2 |= STATUS2_TORMENT;
+            ctx->battlerIdTemp = def;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_BRAND_OF_TORMENT);
+        }
+        break;
+    case ABILITY_FORCE_RETURN:
+        if (a->hp && dealt > 0 && !BattlerHasAbility(ctx, atk, ABILITY_MAGIC_GUARD)) {
+            ctx->hp_calc_work = -(dealt * 3 / 10 > 0 ? dealt * 3 / 10 : 1);
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_ROUGH_SKIN); // popup on the defender, then the attacker's HP
+        }
+        break;
+    }
+    return FALSE;
+}
+
+int LONG_CALL Activate_PmfgHitAbilities(void *bsys, struct BattleStruct *ctx)
+{
+    if (!IsAttackerOnField(ctx) || ctx->defence_client == BATTLER_NONE || ctx->defence_client == ctx->attack_client
+        || CheckSubstitute(ctx, ctx->defence_client)
+        || (ctx->waza_status_flag & WAZA_STATUS_FLAG_NO_OUT) || (ctx->server_status_flag & SERVER_STATUS_FLAG_x20)
+        || !(ctx->oneSelfFlag[ctx->defence_client].physical_damage || ctx->oneSelfFlag[ctx->defence_client].special_damage)) {
+        return FALSE;
+    }
+    for (u32 k = 0; k < NELEMS(sPmfgHitAbilities); k++) {
+        if (ctx->pmfgHitDone & (1 << k)) {
+            continue;
+        }
+        if (sPmfgHitAbilities[k] != ABILITY_FLAMEBURST) { // Flameburst keeps one bit per foe instead
+            ctx->pmfgHitDone |= 1 << k;
+        }
+        if (PMFG_TryHitAbility(bsys, ctx, sPmfgHitAbilities[k])) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+// PMFG (REQ-TGT-ABL-001): SoulGold's once-per-move abilities (Momentum, Tempo, Rolling Stones, Lifesteal / Spectral Drain,
+// after a KO: Rock and Stone, Consume). One pmfgMoveDone bit each, reset at the Moxie step.
+const u16 sPmfgMoveAbilities[] = {
+    ABILITY_MOMENTUM, ABILITY_TEMPO, ABILITY_ROLLING_STONE, ABILITY_SPECTRAL_DRAIN, ABILITY_LIFESTEAL,
+    ABILITY_ROCK_AND_STONE, ABILITY_CONSUME,
+};
+
+static BOOL PMFG_TryMoveAbility(struct BattleStruct *ctx, u32 ability)
+{
+    int atk = ctx->attack_client;
+    struct BattlePokemon *a = &ctx->battlemon[atk];
+    u16 move = ctx->current_move_index;
+    int dealt = -ctx->oneSelfFlag[atk].shell_bell_damage; // damage this move dealt, capped at the targets' HP
+    if (!a->hp || !BattlerHasAbility(ctx, atk, ability)) {
+        return FALSE;
+    }
+    BOOL canHeal = a->hp < (s32)a->maxhp && !a->moveeffect.healBlockTurns;
+
+    switch (ability) {
+    case ABILITY_MOMENTUM: // shortcut: base priority only (SoulGold uses the chosen move's final priority)
+        if (ctx->moveTbl[move].priority > 0 && a->states[STAT_SPEED] < 12) {
+            return PMFG_AbilityStatChange(ctx, atk, atk, MOVE_SUBSCRIPT_PTR_SPEED_UP_1_STAGE);
+        }
+        break;
+    case ABILITY_TEMPO: // shortcut: once per move, not once per turn; differs only when a mon acts twice in a turn
+    case ABILITY_ROLLING_STONE:
+        if (dealt > 0 && a->states[STAT_SPEED] < 12
+            && (ability == ABILITY_TEMPO ? IsMoveSoundBased(move) : move == MOVE_ROLLOUT)) {
+            return PMFG_AbilityStatChange(ctx, atk, atk, MOVE_SUBSCRIPT_PTR_SPEED_UP_1_STAGE);
+        }
+        break;
+    case ABILITY_SPECTRAL_DRAIN:
+    case ABILITY_LIFESTEAL: {
+        u32 type = GetAdjustedMoveType(ctx, atk, move);
+        BOOL drain = ability == ABILITY_SPECTRAL_DRAIN && (type == TYPE_GHOST || type == TYPE_GROUND);
+        if (ability == ABILITY_LIFESTEAL && BattlerHasAbility(ctx, atk, ABILITY_SPECTRAL_DRAIN) && (type == TYPE_GHOST || type == TYPE_GROUND)) {
+            break; // Spectral Drain wins on its own types
+        }
+        if (dealt > 0 && canHeal && move != MOVE_PAIN_SPLIT && (drain || ability == ABILITY_LIFESTEAL)) {
+            ctx->hp_calc_work = BattleDamageDivide(dealt, drain ? 4 : 8);
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_ABILITY_HEAL);
+        }
+        break;
+    }
+    case ABILITY_ROCK_AND_STONE: // no popup in SoulGold; the Stealth Rock script skips a side that has it
+        if (ctx->pmfgKOs && ctx->defence_client != BATTLER_NONE) {
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_SET_STEALTH_ROCK);
+        }
+        break;
+    case ABILITY_CONSUME:
+        if (ctx->pmfgKOs && canHeal) {
+            ctx->hp_calc_work = BattleDamageDivide(a->maxhp * ctx->pmfgKOs, 2);
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_ABILITY_HEAL);
+        }
+        break;
+    }
+    return FALSE;
+}
+
+int LONG_CALL Activate_PmfgMoveAbilities(void *bsys UNUSED, struct BattleStruct *ctx)
+{
+    if (IsAttackerOnField(ctx)) {
+        for (u32 k = 0; k < NELEMS(sPmfgMoveAbilities); k++) {
+            if (ctx->pmfgMoveDone & (1 << k)) {
+                continue;
+            }
+            ctx->pmfgMoveDone |= 1 << k;
+            if (PMFG_TryMoveAbility(ctx, sPmfgMoveAbilities[k])) {
+                return TRUE;
+            }
+        }
+    }
+    ctx->pmfgKOs = 0;
     return FALSE;
 }

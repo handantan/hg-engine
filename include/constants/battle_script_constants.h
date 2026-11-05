@@ -542,6 +542,12 @@
 #define BATTLE_SUBSCRIPT_PMFG_WISHMAKER                         (533)
 #define BATTLE_SUBSCRIPT_PMFG_WINDBURST                         (534)
 #define BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP                     (535)
+#define BATTLE_SUBSCRIPT_PMFG_ABILITY_CONFUSE                   (536) // PMFG: after-hit abilities (REQ-TGT-ABL-001)
+#define BATTLE_SUBSCRIPT_PMFG_PLANTATION                        (537)
+#define BATTLE_SUBSCRIPT_PMFG_BRAND_OF_TORMENT                  (538)
+#define BATTLE_SUBSCRIPT_PMFG_RAISE_TWO_STATS                   (539)
+#define BATTLE_SUBSCRIPT_PMFG_ABILITY_HEAL                      (540)
+#define BATTLE_SUBSCRIPT_PMFG_MARTYR                            (541)
 
 #define MAX_BASE_SUBSCRIPT_NUM 527
 
