@@ -100,6 +100,7 @@ enum SecondEventBlockResolutionOrder {
 enum ThirdEventBlockResolutionOrder {
     THIRD_EVENT_BLOCK_UPROAR,
     THIRD_EVENT_BLOCK_ABILITIES,
+    THIRD_EVENT_BLOCK_PMFG_ABILITIES,
     THIRD_EVENT_BLOCK_ITEMS,
     THIRD_EVENT_BLOCK_END,
 };
@@ -109,6 +110,8 @@ enum FourthEventBlockResolutionOrder {
     FOURTH_EVENT_BLOCK_EJECT_PACK,
     FOURTH_EVENT_BLOCK_END,
 };
+
+static BOOL PMFG_EndTurnAbility(void *bw, struct BattleStruct *sp, int battlerId);
 
 void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
 {
@@ -1774,6 +1777,14 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                         break;
                     }
                 }
+                case THIRD_EVENT_BLOCK_PMFG_ABILITIES: // stays here until none fires for this battler
+                    if (PMFG_EndTurnAbility(bw, sp, battlerId)) {
+                        ret = TRUE;
+                        break;
+                    }
+                    sp->pmfgEndTurnDone = 0;
+                    sp->endTurnEventBlockSequenceNumber++;
+                    break;
                 case THIRD_EVENT_BLOCK_ITEMS: {
 #ifdef DEBUG_ENDTURN_LOGIC
                     debug_printf("In THIRD_EVENT_BLOCK_ITEMS\n", NULL);
@@ -2040,4 +2051,103 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
         // skip the vanilla functions since we handle all of them here
         sp->server_seq_no = CONTROLLER_COMMAND_TURN_END;
     }
+}
+
+#ifdef DEBUG_BATTLE_SCENARIOS
+#define PMFG_CHANCE(bw, pct) TRUE
+#else
+#define PMFG_CHANCE(bw, pct) (BattleRand(bw) % 100 < (pct))
+#endif
+
+// PMFG (REQ-TGT-ABL-001): SoulGold end-of-turn abilities. Rows are steps; each has a pmfgEndTurnDone bit for the
+// current battler, so several innates fire in one turn. Mending rolls once (30%), then cures and/or heals.
+// shortcut: Jade Bloom heals and raises a stat as two popups (SoulGold shows one).
+const u16 sPmfgEndTurnAbilities[] = {
+    ABILITY_GLACIAL, ABILITY_MENDING, ABILITY_MENDING, ABILITY_CHANNEL_EARTH, ABILITY_REJUVENATION, ABILITY_JADE_BLOOM, ABILITY_JADE_BLOOM,
+};
+#define PMFG_MENDING_HEAL_PENDING 0x80
+
+static BOOL PMFG_EndTurnAbility(void *bw, struct BattleStruct *sp, int battlerId)
+{
+    struct BattlePokemon *mon = &sp->battlemon[battlerId];
+    BOOL canHeal = mon->hp && mon->hp < (s32)mon->maxhp && !mon->moveeffect.healBlockTurns;
+    for (u32 k = 0; k < NELEMS(sPmfgEndTurnAbilities); k++) {
+        u32 ability = sPmfgEndTurnAbilities[k];
+        if ((sp->pmfgEndTurnDone & (1 << k)) || !mon->hp || !BattlerHasAbility(sp, battlerId, ability)) {
+            continue;
+        }
+        sp->pmfgEndTurnDone |= 1 << k;
+        int divisor = 0;
+        switch (k) {
+        case 0: // Glacial: Ice Body x2
+            if ((GetWeather(bw, sp, 0xFF) & (FIELD_CONDITION_HAIL_ALL | FIELD_CONDITION_SNOW_ALL))
+                && !(mon->effect_of_moves & MOVE_EFFECT_FLAG_SEMI_INVULNERABLE)) {
+                divisor = 8;
+            }
+            break;
+        case 1: // Mending: the roll; cure first, heal on the next row
+            if (PMFG_CHANCE(bw, 30)) {
+                if (canHeal) {
+                    sp->pmfgEndTurnDone |= PMFG_MENDING_HEAL_PENDING;
+                }
+                if (mon->condition & STATUS_ANY_PERSISTENT) {
+                    sp->msg_work = (mon->condition & STATUS_SLEEP) ? MSG_HEAL_SLEEP
+                        : (mon->condition & STATUS_POISON_ALL)     ? MSG_HEAL_POISON
+                        : (mon->condition & STATUS_BURN)           ? MSG_HEAL_BURN
+                        : (mon->condition & STATUS_PARALYSIS)      ? MSG_HEAL_PARALYSIS
+                                                                   : MSG_HEAL_FROZEN;
+                    sp->battlerIdTemp = battlerId;
+                    LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_ABILITY_RESTORE_STATUS);
+                    sp->next_server_seq_no = sp->server_seq_no;
+                    sp->server_seq_no = 22;
+                    return TRUE;
+                }
+            }
+            break;
+        case 2:
+            if (sp->pmfgEndTurnDone & PMFG_MENDING_HEAL_PENDING) {
+                divisor = 8;
+            }
+            break;
+        case 3: // Channel Earth
+            if (sp->terrainOverlay.type != TERRAIN_NONE && sp->terrainOverlay.numberOfTurnsLeft) {
+                divisor = 16;
+            }
+            break;
+        case 4: // Rejuvenation: not hit by a move this turn
+            if (!sp->oneTurnFlag[battlerId].physical_damager_bit && !sp->oneTurnFlag[battlerId].special_damager_bit) {
+                divisor = 10;
+            }
+            break;
+        case 5: // Jade Bloom (no status): heal 1/16 ...
+            if (!(mon->condition & STATUS_ANY_PERSISTENT)) {
+                divisor = 16;
+            }
+            break;
+        case 6: // ... and +1 Sp. Atk or Sp. Def, whichever can still rise (random if both)
+            if (!(mon->condition & STATUS_ANY_PERSISTENT)) {
+                BOOL spa = mon->states[STAT_SPECIAL_ATTACK] < 12, spd = mon->states[STAT_SPECIAL_DEFENSE] < 12;
+                if (spa || spd) {
+                    sp->addeffect_param = (spa && (!spd || BattleRand(bw) % 2 == 0)) ? MOVE_SUBSCRIPT_PTR_SP_ATTACK_UP_1_STAGE : MOVE_SUBSCRIPT_PTR_SP_DEFENSE_UP_1_STAGE;
+                    sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+                    sp->state_client = battlerId;
+                    sp->battlerIdTemp = battlerId;
+                    LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE);
+                    sp->next_server_seq_no = sp->server_seq_no;
+                    sp->server_seq_no = 22;
+                    return TRUE;
+                }
+            }
+            break;
+        }
+        if (divisor && canHeal) {
+            sp->hp_calc_work = BattleDamageDivide(mon->maxhp, divisor);
+            sp->battlerIdTemp = battlerId;
+            LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_PMFG_ABILITY_HEAL);
+            sp->next_server_seq_no = sp->server_seq_no;
+            sp->server_seq_no = 22;
+            return TRUE;
+        }
+    }
+    return FALSE;
 }

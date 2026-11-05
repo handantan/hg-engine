@@ -1118,6 +1118,7 @@ struct BattleStruct {
     u32 pmfgHitDone;  // bit k: sPmfgHitAbilities[k] fired on this hit; bits 24+: Flameburst per foe (ServerDoPostMoveEffects.c)
     u16 pmfgMoveDone; // bit k: sPmfgMoveAbilities[k] fired after this move
     u8 pmfgKOs;       // foes the attacker KO'd with this move (Consume, Rock and Stone)
+    u8 pmfgEndTurnDone; // bit k: sPmfgEndTurnAbilities[k] done for the current battler (ServerFieldConditionCheck.c)
 };
 
 enum {
