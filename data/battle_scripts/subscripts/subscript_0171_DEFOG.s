@@ -24,6 +24,7 @@ Start:
     GotoIfTerrainOverlayIsType MISTY_TERRAIN, _playMoveAndAnim
     GotoIfTerrainOverlayIsType ELECTRIC_TERRAIN, _playMoveAndAnim
     GotoIfTerrainOverlayIsType PSYCHIC_TERRAIN, _playMoveAndAnim
+    GotoIfTerrainOverlayIsType SCORCHED_FIELD, _playMoveAndAnim
     GoTo _lowerEvasion
 
 _playMoveAndAnim:
@@ -131,6 +132,16 @@ _clearTerrain:
     GotoIfTerrainOverlayIsType MISTY_TERRAIN, _clearMistyTerrain
     GotoIfTerrainOverlayIsType ELECTRIC_TERRAIN, _clearElectricTerrain
     GotoIfTerrainOverlayIsType PSYCHIC_TERRAIN, _clearPsychicTerrain
+    GotoIfTerrainOverlayIsType SCORCHED_FIELD, _clearScorchedField
+    GoTo _clearFog
+
+_clearScorchedField: // PMFG (REQ-TGT-ABL-001): no terrain move to name, so the end-of-terrain message
+    UpdateTerrainOverlay TRUE, _clearFog
+    ChangePermanentBackground BATTLE_BG_CURRENT, TERRAIN_CURRENT
+    // The scorched field settled.
+    PrintMessage 1804, TAG_NONE
+    Wait
+    WaitButtonABTime 30
     GoTo _clearFog
 
 _clearGrassyTerrain:

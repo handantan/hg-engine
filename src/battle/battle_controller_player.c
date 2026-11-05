@@ -82,6 +82,7 @@ BOOL LONG_CALL BattleContext_Main(struct BattleSystem *bsys, struct BattleStruct
             terrain = TERRAIN_MISTY_TERRAIN;
             break;
         case ELECTRIC_TERRAIN:
+        case SCORCHED_FIELD: // PMFG: borrowed visuals
             bg = BATTLE_BG_ELECTRIC_TERRAIN;
             terrain = TERRAIN_ELECTRIC_TERRAIN;
             break;

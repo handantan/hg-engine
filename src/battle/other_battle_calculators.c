@@ -3492,6 +3492,9 @@ int LONG_CALL GetDynamicMoveType(struct BattleSystem *bsys, struct BattleStruct 
             case PSYCHIC_TERRAIN:
                 type = TYPE_PSYCHIC;
                 break;
+            case SCORCHED_FIELD: // PMFG
+                type = TYPE_FIRE;
+                break;
             default:
                 break;
             }

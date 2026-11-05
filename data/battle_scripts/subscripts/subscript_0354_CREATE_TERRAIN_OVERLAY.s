@@ -12,6 +12,7 @@ _skipAbilityPopup:
     GotoIfTerrainOverlayIsType MISTY_TERRAIN, _024
     GotoIfTerrainOverlayIsType ELECTRIC_TERRAIN, _029
     GotoIfTerrainOverlayIsType PSYCHIC_TERRAIN, _034
+    GotoIfTerrainOverlayIsType SCORCHED_FIELD, _scorched
     GoTo _049
 
 _HadronEngineTerrain:
@@ -51,6 +52,10 @@ _034:
     Wait
     // The battlefield got weird!
     PrintMessage 1394, TAG_NONE
+    GoTo _ResetParadoxTerrainAbility
+_scorched: // PMFG (REQ-TGT-ABL-001)
+    // The field became scorched!
+    PrintMessage 1803, TAG_NONE
 
 // TODO: something weird is happening after using Terrain move rather than Surge ability
 

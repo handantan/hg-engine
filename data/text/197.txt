@@ -1801,3 +1801,5 @@ The wild {STRVAR_1 1, 0, 0} is drowsing!
 The opposing {STRVAR_1 1, 0, 0} is drowsing!
 The wild {STRVAR_1 1, 0, 0} dropped\nits {STRVAR_1 8, 1, 0}!
 The wild {STRVAR_1 1, 0, 0} dropped an item,\nbut your Bag is full!
+The field became scorched!
+The scorched field settled.

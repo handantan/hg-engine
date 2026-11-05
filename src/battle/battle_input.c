@@ -890,6 +890,7 @@ void LONG_CALL BattleBackgroundCallback(void *unkPtr, int unk2, int unk3)
         loadNewBattleBg = TRUE;
         break;
     case ELECTRIC_TERRAIN:
+    case SCORCHED_FIELD: // PMFG: borrowed visuals
         newBg = BATTLE_BG_ELECTRIC_TERRAIN;
         newTerrain = TERRAIN_ELECTRIC_TERRAIN;
         loadNewBattleBg = TRUE;

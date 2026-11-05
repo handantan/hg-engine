@@ -2953,7 +2953,7 @@ int LONG_CALL Activate_PmfgHitAbilities(void *bsys, struct BattleStruct *ctx)
 // after a KO: Rock and Stone, Consume). One pmfgMoveDone bit each, reset at the Moxie step.
 const u16 sPmfgMoveAbilities[] = {
     ABILITY_MOMENTUM, ABILITY_TEMPO, ABILITY_ROLLING_STONE, ABILITY_SPECTRAL_DRAIN, ABILITY_LIFESTEAL,
-    ABILITY_ROCK_AND_STONE, ABILITY_CONSUME,
+    ABILITY_ROCK_AND_STONE, ABILITY_CONSUME, ABILITY_ASH_ASSETS,
 };
 
 static BOOL PMFG_TryMoveAbility(struct BattleStruct *ctx, u32 ability)
@@ -2997,6 +2997,15 @@ static BOOL PMFG_TryMoveAbility(struct BattleStruct *ctx, u32 ability)
     case ABILITY_ROCK_AND_STONE: // no popup in SoulGold; the Stealth Rock script skips a side that has it
         if (ctx->pmfgKOs && ctx->defence_client != BATTLER_NONE) {
             return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_SET_STEALTH_ROCK);
+        }
+        break;
+    case ABILITY_ASH_ASSETS: // after a KO, set Scorched Field
+        if (ctx->pmfgKOs && ctx->terrainOverlay.type != SCORCHED_FIELD) {
+            UpdateTerrainOverlay(ctx, atk, SCORCHED_FIELD);
+            ctx->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+            ctx->state_client = atk;
+            ctx->battlerIdTemp = atk;
+            return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_CREATE_TERRAIN_OVERLAY);
         }
         break;
     case ABILITY_CONSUME:

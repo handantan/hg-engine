@@ -317,6 +317,9 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                         case PSYCHIC_TERRAIN:
                             type = TYPE_PSYCHIC;
                             break;
+                        case SCORCHED_FIELD: // PMFG
+                            type = TYPE_FIRE;
+                            break;
                         default:
                             break;
                         }
@@ -740,7 +743,14 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                 // Surge Abilities
                 {
                     if (sp->battlemon[client_no].ability_activated_flag == 0 && (sp->battlemon[client_no].hp)) {
-                        switch (BATTLER_ABILITY_IN(sp, client_no, ABILITY_GRASSY_SURGE, ABILITY_MISTY_SURGE, ABILITY_ELECTRIC_SURGE, ABILITY_PSYCHIC_SURGE)) {
+                        switch (BATTLER_ABILITY_IN(sp, client_no, ABILITY_GRASSY_SURGE, ABILITY_MISTY_SURGE, ABILITY_ELECTRIC_SURGE, ABILITY_PSYCHIC_SURGE, ABILITY_HEATSTORM)) {
+                        case ABILITY_HEATSTORM: // PMFG (REQ-TGT-ABL-001): sets Scorched Field
+                            if (sp->terrainOverlay.type != SCORCHED_FIELD) {
+                                sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+                                UpdateTerrainOverlay(sp, client_no, SCORCHED_FIELD);
+                                ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
+                            }
+                            break;
                         case ABILITY_GRASSY_SURGE:
                             sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
                             UpdateTerrainOverlay(sp, client_no, GRASSY_TERRAIN);

@@ -576,6 +576,18 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
                 basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_3);
             }
             break;
+        case SCORCHED_FIELD: // PMFG (REQ-TGT-ABL-001): SoulGold GetFieldDamageModifier, grounded or not
+            if (moveno == MOVE_SCALD) {
+                basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
+            } else if (movetype == TYPE_FIRE) {
+                basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_1);
+            } else if (movetype == TYPE_WATER || movetype == TYPE_ICE) {
+                basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__0_9);
+            }
+            if (ClientHasAbility(&damageCalc->clients[attacker], ABILITY_ASH_ASSETS)) {
+                basePowerModifier = QMul_RoundUp(basePowerModifier, 4710); // 1.15
+            }
+            break;
         default:
             break;
         }
@@ -1522,6 +1534,12 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
             }
             if ((MoldBreakerAbilityCheckInternal(attacker, defender, AttackingMon.ability, DefendingMon.ability, moveno, movesplit, ABILITY_SUNHARDENED) || ClientHasInnate(&damageCalc->clients[defender], ABILITY_SUNHARDENED))
                 && (weather & FIELD_CONDITION_SUN_ALL) && (defensiveSplit == SPLIT_SPECIAL)) {
+                defenseModifier = QMul_RoundUp(defenseModifier, UQ412__2_0);
+            }
+
+            // PMFG (REQ-TGT-ABL-001): Coalwalker doubles Defense in Scorched Field
+            if ((MoldBreakerAbilityCheckInternal(attacker, defender, AttackingMon.ability, DefendingMon.ability, moveno, movesplit, ABILITY_COALWALKER) || ClientHasInnate(&damageCalc->clients[defender], ABILITY_COALWALKER))
+                && terrainOverlayType == SCORCHED_FIELD && terrainOverlayNumberOfTurnsLeft > 0 && (defensiveSplit == SPLIT_PHYSICAL)) {
                 defenseModifier = QMul_RoundUp(defenseModifier, UQ412__2_0);
             }
 

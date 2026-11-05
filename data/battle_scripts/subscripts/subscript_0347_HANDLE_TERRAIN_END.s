@@ -8,6 +8,7 @@ _000:
     GotoIfTerrainOverlayIsType MISTY_TERRAIN, _mistyTerrain
     GotoIfTerrainOverlayIsType ELECTRIC_TERRAIN, _electricTerrain
     GotoIfTerrainOverlayIsType PSYCHIC_TERRAIN, _psychicTerrain
+    GotoIfTerrainOverlayIsType SCORCHED_FIELD, _scorchedField
     GoTo _end
 
 _grassyTerrain:
@@ -38,6 +39,12 @@ _psychicTerrain:
     // The weirdness disappeared from the battlefield.
     PrintMessage 1395, TAG_NONE
 
+    GoTo _afterMessage
+_scorchedField: // PMFG (REQ-TGT-ABL-001)
+    UpdateTerrainOverlay TRUE, _end
+    ChangePermanentBackground BATTLE_BG_CURRENT, TERRAIN_CURRENT
+    // The scorched field settled.
+    PrintMessage 1804, TAG_NONE
 _afterMessage:
     Wait 
     WaitButtonABTime 30

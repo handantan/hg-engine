@@ -940,7 +940,8 @@ enum TerrainOverlayType {
     GRASSY_TERRAIN,
     MISTY_TERRAIN,
     ELECTRIC_TERRAIN,
-    PSYCHIC_TERRAIN
+    PSYCHIC_TERRAIN,
+    SCORCHED_FIELD, // PMFG (REQ-TGT-ABL-001): SoulGold terrain; borrows Electric Terrain's background
 };
 #else
 #define TERRAIN_NONE     0x0
@@ -948,6 +949,7 @@ enum TerrainOverlayType {
 #define MISTY_TERRAIN    0x2
 #define ELECTRIC_TERRAIN 0x3
 #define PSYCHIC_TERRAIN  0x4
+#define SCORCHED_FIELD   0x5
 #endif
 
 #define BTLSCR_THROW_POKE_BALL   0x0
