@@ -1143,6 +1143,7 @@ void BattleEndRevertFormChange(struct BattleSystem *bw)
     } else {
         SendValueThroughCommunicationSendHole(TEST_CASE_PASS);
     }
+    TestBattle_MarkComplete(); // PMFG: the battle is over however it ended
 
 #endif // DEBUG_BATTLE_SCENARIOS
 }

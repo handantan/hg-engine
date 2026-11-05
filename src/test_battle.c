@@ -475,6 +475,12 @@ BOOL LONG_CALL TestBattle_IsComplete()
     return IsTestComplete();
 }
 
+// PMFG: a KO win ends the battle before the next turn's completion check, which left the next test unqueued
+void LONG_CALL TestBattle_MarkComplete()
+{
+    SetTestComplete(TRUE);
+}
+
 void LONG_CALL TestBattle_QueueNextTest()
 {
     if (!overridden) {
