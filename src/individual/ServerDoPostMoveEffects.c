@@ -994,8 +994,10 @@ int LONG_CALL Activate_Sturdy_FocusSash_FocusBand_Message(void *bsys UNUSED, str
     // TODO False Swipe, Hold Back,
 
     {
+        // PMFG (REQ-TGT-ABL-001): Stone Face leaves max(1, maxHP/4) (ServerHPCalc.c)
+        s32 kept = (MoldBreakerAbilityCheck(sp, sp->attack_client, battler, ABILITY_STONE_FACE) && sp->battlemon[battler].maxhp / 4 > 1) ? (s32)sp->battlemon[battler].maxhp / 4 : 1;
         if (sp->oneTurnFlag[battler].prevent_one_hit_ko_ability // already checked by moldbreaker
-            && sp->battlemon[battler].hp == 1 && (sp->battlemon[battler].maxhp + incomingDamage /*negative value*/) == 1) {
+            && sp->battlemon[battler].hp == kept && ((s32)sp->battlemon[battler].maxhp + incomingDamage /*negative value*/) == kept) {
             sp->oneTurnFlag[battler].prevent_one_hit_ko_ability = FALSE;
             sp->waza_status_flag |= MOVE_STATUS_ENDURED;
             seq_no[0] = BATTLE_SUBSCRIPT_STURDY;
@@ -2790,6 +2792,7 @@ const u16 sPmfgHitAbilities[] = {
     ABILITY_SOOTHING, ABILITY_HAUNTING, ABILITY_ECHOING, ABILITY_DUST_DEVIL, ABILITY_PLANTATION, ABILITY_MIRAGE,
     ABILITY_LUNAR_CYCLE, ABILITY_SEER, ABILITY_BLOODLUST,
     ABILITY_SOLIDIFY, ABILITY_DESPERADO, ABILITY_INKY, ABILITY_FLAMEBURST, ABILITY_BRAND_OF_TORMENT, ABILITY_FORCE_RETURN,
+    ABILITY_REEF_WARDEN, ABILITY_PARRYING,
 };
 
 #ifdef DEBUG_BATTLE_SCENARIOS
@@ -2803,7 +2806,8 @@ static BOOL PMFG_TryHitAbility(void *bsys, struct BattleStruct *ctx, u32 ability
     int atk = ctx->attack_client, def = ctx->defence_client;
     struct BattlePokemon *a = &ctx->battlemon[atk], *d = &ctx->battlemon[def];
     BOOL defenderSide = ability == ABILITY_SOLIDIFY || ability == ABILITY_DESPERADO || ability == ABILITY_INKY
-        || ability == ABILITY_FLAMEBURST || ability == ABILITY_BRAND_OF_TORMENT || ability == ABILITY_FORCE_RETURN;
+        || ability == ABILITY_FLAMEBURST || ability == ABILITY_BRAND_OF_TORMENT || ability == ABILITY_FORCE_RETURN
+        || ability == ABILITY_REEF_WARDEN || ability == ABILITY_PARRYING;
     if (defenderSide ? !MoldBreakerAbilityCheck(ctx, atk, def, ability) : !BattlerHasAbility(ctx, atk, ability)) {
         return FALSE;
     }
@@ -2916,6 +2920,23 @@ static BOOL PMFG_TryHitAbility(void *bsys, struct BattleStruct *ctx, u32 ability
             return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_BRAND_OF_TORMENT);
         }
         break;
+    case ABILITY_REEF_WARDEN: // contact: the attacker gets Heal Block for 2 turns (silently topped up if it has less)
+        if (a->hp && a->moveeffect.healBlockTurns < 2
+            && IsContactBeingMade(ContactAbility(ctx, atk), HeldItemHoldEffectGet(ctx, atk), HeldItemHoldEffectGet(ctx, def), ctx->current_move_index, ctx->moveTbl[ctx->current_move_index].flag)) {
+            BOOL had = a->moveeffect.healBlockTurns != 0;
+            a->moveeffect.healBlockTurns = 2;
+            if (!had) {
+                ctx->battlerIdTemp = def;
+                return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_REEF_WARDEN);
+            }
+        }
+        break;
+    case ABILITY_PARRYING: // hit while charging or about to Focus Punch: Def +1
+        if (((d->condition2 & STATUS2_LOCKED_INTO_MOVE) || ctx->oneTurnFlag[def].pendingFocusPunchFlag)
+            && d->states[STAT_DEFENSE] < 12) {
+            return PMFG_AbilityStatChange(ctx, def, def, MOVE_SUBSCRIPT_PTR_DEFENSE_UP_1_STAGE);
+        }
+        break;
     case ABILITY_FORCE_RETURN:
         if (a->hp && dealt > 0 && !BattlerHasAbility(ctx, atk, ABILITY_MAGIC_GUARD)) {
             ctx->hp_calc_work = -(dealt * 3 / 10 > 0 ? dealt * 3 / 10 : 1);
@@ -2929,6 +2950,12 @@ static BOOL PMFG_TryHitAbility(void *bsys, struct BattleStruct *ctx, u32 ability
 
 int LONG_CALL Activate_PmfgHitAbilities(void *bsys, struct BattleStruct *ctx)
 {
+    // Aura Shield nulled this hit in ServerHPCalc: show its popup
+    if (ctx->defence_client != BATTLER_NONE && (ctx->pmfgAuraShieldPopup & No2Bit(ctx->defence_client))) {
+        ctx->pmfgAuraShieldPopup &= ~No2Bit(ctx->defence_client);
+        ctx->battlerIdTemp = ctx->defence_client;
+        return PMFG_RunSubscript(ctx, BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP);
+    }
     if (!IsAttackerOnField(ctx) || ctx->defence_client == BATTLER_NONE || ctx->defence_client == ctx->attack_client
         || CheckSubstitute(ctx, ctx->defence_client)
         || (ctx->waza_status_flag & WAZA_STATUS_FLAG_NO_OUT) || (ctx->server_status_flag & SERVER_STATUS_FLAG_x20)

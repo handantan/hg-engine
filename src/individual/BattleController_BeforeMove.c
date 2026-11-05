@@ -1318,7 +1318,8 @@ BOOL BattleController_CheckFocusPunch(struct BattleSystem *bsys UNUSED, struct B
     if (
         ((ctx->oneTurnFlag[ctx->attack_client].physical_damager_bit) || (ctx->oneTurnFlag[ctx->attack_client].special_damager_bit))
         && (ctx->oneTurnFlag[ctx->attack_client].pendingFocusPunchFlag)
-        && (ctx->current_move_index == MOVE_FOCUS_PUNCH)) {
+        && (ctx->current_move_index == MOVE_FOCUS_PUNCH)
+        && !BattlerHasAbility(ctx, ctx->attack_client, ABILITY_PARRYING)) { // PMFG (REQ-TGT-ABL-001): Parrying keeps focus
         // https://www.smogon.com/forums/threads/sword-shield-battle-mechanics-research.3655528/page-60#post-8755569
         //  The "Pokemon will flinch" flag and the "Focus Punch will lose focus" flag are dichotomous.
         //  idk what dichotomous means, but this seems to be aligned with the video evidence
@@ -1779,7 +1780,8 @@ BOOL BattlerController_DecrementPP(struct BattleSystem *bsys, struct BattleStruc
     }
 
     if (CheckMoveIsChargeMove(ctx, ctx->current_move_index)) {
-        if (((HeldItemHoldEffectGet(ctx, ctx->attack_client) == HOLD_EFFECT_CHARGE_SKIP) && ctx->current_move_index != MOVE_BIDE) || (ctx->battlemon[ctx->attack_client].condition2 & STATUS2_LOCKED_INTO_MOVE)) {
+        if (((HeldItemHoldEffectGet(ctx, ctx->attack_client) == HOLD_EFFECT_CHARGE_SKIP) && ctx->current_move_index != MOVE_BIDE) || (ctx->battlemon[ctx->attack_client].condition2 & STATUS2_LOCKED_INTO_MOVE)
+            || PMFG_SKIPS_CHARGE(ctx, ctx->attack_client, ctx->current_move_index)) {
             ctx->oneTurnFlag[ctx->attack_client].pp_dec_flag = 0;
         } else {
             needToDecrementPP = FALSE;
@@ -2323,14 +2325,26 @@ BOOL BattleController_CheckChargeMoves(struct BattleSystem *bsys, struct BattleS
             }
             break;
         case MOVE_EFFECT_FLY:
+            if (PMFG_SKIPS_CHARGE(ctx, ctx->attack_client, ctx->current_move_index)) {
+                continueMoveExecution = TRUE;
+                break;
+            }
             LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_FLY_CHARGE_TURN);
             needToRunScript = TRUE;
             break;
         case MOVE_EFFECT_DIVE:
+            if (PMFG_SKIPS_CHARGE(ctx, ctx->attack_client, ctx->current_move_index)) {
+                continueMoveExecution = TRUE;
+                break;
+            }
             LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_DIVE_CHARGE_TURN);
             needToRunScript = TRUE;
             break;
         case MOVE_EFFECT_DIG:
+            if (PMFG_SKIPS_CHARGE(ctx, ctx->attack_client, ctx->current_move_index)) {
+                continueMoveExecution = TRUE;
+                break;
+            }
             LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_DIG_CHARGE_TURN);
             needToRunScript = TRUE;
             break;
@@ -3292,7 +3306,8 @@ int BattlerController_CheckMist(struct BattleSystem *bsys, struct BattleStruct *
 int BattleController_CheckAbilityFailures4_StatBasedFailures(struct BattleSystem *bsys UNUSED, struct BattleStruct *ctx, int defender)
 {
     int moveEffect = ctx->moveTbl[ctx->current_move_index].effect;
-    BOOL hasClearBodyOrFullMetalBodyOrWhiteSmoke = MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_CLEAR_BODY) || MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_FULL_METAL_BODY) || MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_WHITE_SMOKE);
+    BOOL hasClearBodyOrFullMetalBodyOrWhiteSmoke = MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_CLEAR_BODY) || MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_FULL_METAL_BODY) || MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_WHITE_SMOKE)
+        || MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_STONE_FACE); // PMFG
 
     // If the defender is Grass-type and either the defender or the defender's ally has Flower Veil as an ability
     BOOL hasFlowerVeil = HasType(ctx, defender, TYPE_GRASS) && (MoldBreakerAbilityCheck(ctx, ctx->attack_client, defender, ABILITY_FLOWER_VEIL) || MoldBreakerAbilityCheck(ctx, ctx->attack_client, BATTLER_ALLY(defender), ABILITY_FLOWER_VEIL));

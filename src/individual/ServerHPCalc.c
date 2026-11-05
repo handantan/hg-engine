@@ -29,6 +29,15 @@ void ServerHPCalc(struct BattleSystem *bw, struct BattleStruct *sp)
         sp->damage = sp->battlemon[sp->defence_client].maxhp * -1;
     }
 
+    // PMFG (REQ-TGT-ABL-001): Aura Shield takes no damage from the first damaging hit after each switch-in
+    if (sp->damage < 0 && !(sp->pmfgAuraShieldUsed & No2Bit(sp->defence_client)) && !(sp->battlemon[sp->defence_client].condition2 & STATUS2_SUBSTITUTE)
+        && !(sp->battlemon[sp->defence_client].condition2 & STATUS2_TRANSFORM)
+        && BattlerHasAbility(sp, sp->defence_client, ABILITY_AURA_SHIELD) && !BattlerHasAbility(sp, sp->attack_client, ABILITY_INFILTRATOR)) {
+        sp->damage = 0;
+        sp->pmfgAuraShieldUsed |= No2Bit(sp->defence_client);
+        sp->pmfgAuraShieldPopup |= No2Bit(sp->defence_client);
+    }
+
     if (sp->damage) {
         eqp = HeldItemHoldEffectGet(sp, sp->defence_client);
         if (BattlerHasAbility(sp, sp->attack_client, ABILITY_OVERLOAD) && (eqp == HOLD_EFFECT_MAYBE_ENDURE || eqp == HOLD_EFFECT_ENDURE)) {
@@ -91,17 +100,22 @@ void ServerHPCalc(struct BattleSystem *bw, struct BattleStruct *sp)
 
             // handle sturdy--prevent one-hit ko's if hp == maxhp
             // PMFG (REQ-TGT-ABL-001): Nine Lives endures like Sturdy
-            if (((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_STURDY) == TRUE) || BattlerHasAbility(sp, sp->defence_client, ABILITY_NINE_LIVES)) && (sp->battlemon[sp->defence_client].hp == (s32)sp->battlemon[sp->defence_client].maxhp)) {
+            if (((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_STURDY) == TRUE) || BattlerHasAbility(sp, sp->defence_client, ABILITY_NINE_LIVES) || MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_STONE_FACE)) && (sp->battlemon[sp->defence_client].hp == (s32)sp->battlemon[sp->defence_client].maxhp)) {
                 sp->oneTurnFlag[sp->defence_client].prevent_one_hit_ko_ability = TRUE;
             }
             // make sure to cancel sturdy if hp != maxhp.  necessary for multi-hit moves
-            else if ((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_STURDY) == TRUE || BattlerHasAbility(sp, sp->defence_client, ABILITY_NINE_LIVES)) && (sp->battlemon[sp->defence_client].hp != (s32)sp->battlemon[sp->defence_client].maxhp)) {
+            else if ((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_STURDY) == TRUE || BattlerHasAbility(sp, sp->defence_client, ABILITY_NINE_LIVES) || MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_STONE_FACE)) && (sp->battlemon[sp->defence_client].hp != (s32)sp->battlemon[sp->defence_client].maxhp)) {
                 sp->oneTurnFlag[sp->defence_client].prevent_one_hit_ko_ability = FALSE;
             }
 
             if ((sp->oneTurnFlag[sp->defence_client].prevent_one_hit_ko_ability) || (sp->oneSelfFlag[sp->defence_client].prevent_one_hit_ko_item)) {
                 if ((sp->battlemon[sp->defence_client].hp + sp->damage) <= 0) {
                     sp->damage = (sp->battlemon[sp->defence_client].hp - 1) * -1;
+                    // PMFG (REQ-TGT-ABL-001): Stone Face keeps max(1, maxHP/4)
+                    if (sp->oneTurnFlag[sp->defence_client].prevent_one_hit_ko_ability && MoldBreakerAbilityCheck(sp, sp->attack_client, sp->defence_client, ABILITY_STONE_FACE)
+                        && sp->battlemon[sp->defence_client].maxhp / 4 > 1) {
+                        sp->damage = (sp->battlemon[sp->defence_client].hp - (s32)sp->battlemon[sp->defence_client].maxhp / 4) * -1;
+                    }
                     if (sp->oneTurnFlag[sp->defence_client].prevent_one_hit_ko_ability) {
                         sp->waza_status_flag |= MOVE_STATUS_ENDURED;
                     } else {

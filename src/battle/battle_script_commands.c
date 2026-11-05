@@ -2110,11 +2110,12 @@ BOOL BtlCmd_TryRestoreStatusOnSwitch(struct BattleSystem *bw, struct BattleStruc
 
         // https://github.com/rh-hideout/pokeemerald-expansion/blob/master/src/battle_util.c#L4923
         //  handle regenerator--mon restores 1/3 hp on switch
-        if (battlerAbility == ABILITY_REGENERATOR) // can be suppressed
+        // PMFG (REQ-TGT-ABL-001): Reef Warden restores 1/2 on switch-out
+        if (battlerAbility == ABILITY_REGENERATOR || BattlerHasAbility(sp, client_no, ABILITY_REEF_WARDEN)) // can be suppressed
         {
             int hp = GetMonData(pp, MON_DATA_HP, NULL), hpmax = GetMonData(pp, MON_DATA_MAXHP, NULL);
 
-            int hpdelta = hpmax / 3;
+            int hpdelta = BattlerHasAbility(sp, client_no, ABILITY_REEF_WARDEN) ? hpmax / 2 : hpmax / 3;
 
             if ((hp + hpdelta) > hpmax) {
                 hp = hpmax;
@@ -2524,7 +2525,7 @@ BOOL btl_scr_cmd_EF_iffirsthitofparentalbond(void *bw UNUSED, struct BattleStruc
 
     int address = read_battle_script_param(sp);
 
-    if (sp->oneTurnFlag[sp->attack_client].parental_bond_flag == 1 && BattlerHasAbility(sp, sp->attack_client, ABILITY_PARENTAL_BOND)) {
+    if (sp->oneTurnFlag[sp->attack_client].parental_bond_flag == 1 && (BattlerHasAbility(sp, sp->attack_client, ABILITY_PARENTAL_BOND) || BattlerHasAbility(sp, sp->attack_client, ABILITY_ECHO_CHAMBER))) {
         IncrementBattleScriptPtr(sp, address);
     }
 

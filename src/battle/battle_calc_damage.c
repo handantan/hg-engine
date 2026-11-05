@@ -368,7 +368,8 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
 #ifdef DEBUG_DAMAGE_CALC
             debug_printf("[CalcBaseDamage] parental_bond_flag is 2, damage reduction\n");
 #endif
-            damage = QMul_RoundDown(damage, UQ412__0_25);
+            // PMFG (REQ-TGT-ABL-001): Echo Chamber's second hit does half
+            damage = QMul_RoundDown(damage, (!BattlerHasAbility(sp, attacker, ABILITY_PARENTAL_BOND) && BattlerHasAbility(sp, attacker, ABILITY_ECHO_CHAMBER)) ? UQ412__0_5 : UQ412__0_25);
             break;
         default:
 #ifdef DEBUG_DAMAGE_CALC

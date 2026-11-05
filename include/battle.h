@@ -1118,6 +1118,8 @@ struct BattleStruct {
     u32 pmfgHitDone;  // bit k: sPmfgHitAbilities[k] fired on this hit; bits 24+: Flameburst per foe (ServerDoPostMoveEffects.c)
     u16 pmfgMoveDone; // bit k: sPmfgMoveAbilities[k] fired after this move
     u8 pmfgKOs;       // foes the attacker KO'd with this move (Consume, Rock and Stone)
+    u8 pmfgAuraShieldUsed;  // No2Bit(battler): Aura Shield spent this switch-in (reset in ClearBattleMonFlags)
+    u8 pmfgAuraShieldPopup; // No2Bit(battler): show Aura Shield's popup after the hit (ServerDoPostMoveEffects.c)
     u8 pmfgEndTurnDone; // bit k: sPmfgEndTurnAbilities[k] done for the current battler (ServerFieldConditionCheck.c)
 };
 
@@ -3424,6 +3426,9 @@ BOOL LONG_CALL HasType(struct BattleStruct *ctx, int battlerId, int type);
 BOOL LONG_CALL PMFG_HasLevitateAlias(struct BattleStruct *sp, int attacker, int battler);
 int LONG_CALL PMFG_AbilityPriority(struct BattleStruct *ctx, int battlerId, int move);
 BOOL LONG_CALL PMFG_WeatherSureHit(void *bsys, struct BattleStruct *ctx, int attacker, int move);
+// PMFG (REQ-TGT-ABL-001): Burrower / Diver / Flier skip Dig / Dive / Fly's charge turn
+#define PMFG_SKIPS_CHARGE(ctx, client, move) (((move) == MOVE_DIG && BattlerHasAbility(ctx, client, ABILITY_BURROWER)) \
+    || ((move) == MOVE_DIVE && BattlerHasAbility(ctx, client, ABILITY_DIVER)) || ((move) == MOVE_FLY && BattlerHasAbility(ctx, client, ABILITY_FLIER)))
 // PMFG (REQ-TGT-ABL-001): Immovable moves last within its priority bracket, like Stall
 #define PMFG_MOVES_LAST(sp, client) (BattlerHasAbility(sp, client, ABILITY_STALL) || BattlerHasAbility(sp, client, ABILITY_IMMOVABLE))
 

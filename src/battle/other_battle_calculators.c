@@ -2430,7 +2430,8 @@ BOOL LONG_CALL IsValidParentalBondMove(void *bw, struct BattleStruct *sp, BOOL c
 {
     u32 moveIndex = checkTempMove ? (u32)sp->waza_work : sp->current_move_index;
 
-    return BattlerHasAbility(sp, sp->attack_client, ABILITY_PARENTAL_BOND) && GetMoveSplit(sp, moveIndex) != SPLIT_STATUS && !IsBannedParentalBondMove(moveIndex) && !IsBannedSpreadMoveForParentalBond(bw, sp, moveIndex);
+    return (BattlerHasAbility(sp, sp->attack_client, ABILITY_PARENTAL_BOND) || (BattlerHasAbility(sp, sp->attack_client, ABILITY_ECHO_CHAMBER) && IsMoveSoundBased(moveIndex))) // PMFG: Echo Chamber
+        && GetMoveSplit(sp, moveIndex) != SPLIT_STATUS && !IsBannedParentalBondMove(moveIndex) && !IsBannedSpreadMoveForParentalBond(bw, sp, moveIndex);
 }
 
 /**

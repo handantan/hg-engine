@@ -241,6 +241,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                     flag = 1;
                 } else if ((MoldBreakerAbilityCheck(sp, sp->attack_client, sp->state_client, ABILITY_CLEAR_BODY) == TRUE)
                     || (MoldBreakerAbilityCheck(sp, sp->attack_client, sp->state_client, ABILITY_WHITE_SMOKE) == TRUE)
+                    || (MoldBreakerAbilityCheck(sp, sp->attack_client, sp->state_client, ABILITY_STONE_FACE) == TRUE) // PMFG: Stone Face blocks drops like Clear Body
                     || (BattlerHasAbility(sp, sp->state_client, ABILITY_FULL_METAL_BODY))) // Full Metal Body cannot be ignored
                 {
                     sp->mp.id = BATTLE_MSG_STATS_NOT_LOWERED;
@@ -355,6 +356,7 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                     prevented = TRUE;
                 } else if ((BattlerHasAbility(sp, sp->state_client, ABILITY_CLEAR_BODY))
                     || (BattlerHasAbility(sp, sp->state_client, ABILITY_WHITE_SMOKE))
+                    || (BattlerHasAbility(sp, sp->state_client, ABILITY_STONE_FACE))
                     || (BattlerHasAbility(sp, sp->state_client, ABILITY_FULL_METAL_BODY))) {
                     sp->mp.id = BATTLE_MSG_STATS_NOT_LOWERED;
                     sp->mp.tag = TAG_NICKNAME;

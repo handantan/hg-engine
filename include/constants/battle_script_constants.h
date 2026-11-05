@@ -549,6 +549,7 @@
 #define BATTLE_SUBSCRIPT_PMFG_ABILITY_HEAL                      (540)
 #define BATTLE_SUBSCRIPT_PMFG_MARTYR                            (541)
 #define BATTLE_SUBSCRIPT_PMFG_ABSORB_AND_RAISE_STAT              (542)
+#define BATTLE_SUBSCRIPT_PMFG_REEF_WARDEN                       (543)
 
 #define MAX_BASE_SUBSCRIPT_NUM 527
 
