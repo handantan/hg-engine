@@ -1114,6 +1114,7 @@ struct BattleStruct {
     u8 pmfgPendulumStreak[CLIENT_MAX];
     u8 pmfgLastAttackType[CLIENT_MAX]; // valid only when pmfgHasAttacked (the struct starts zeroed, and 0 is TYPE_NORMAL)
     u8 pmfgHasAttacked[CLIENT_MAX];
+    u16 pmfgEntryDone[CLIENT_MAX]; // bit k: sPmfgEntryAbilities[k] fired this switch-in (SwitchInAbilityCheck.c)
 };
 
 enum {

@@ -535,6 +535,13 @@
 #define BATTLE_SUBSCRIPT_COMATOSE                               (526)
 #define BATTLE_SUBSCRIPT_DOESNT_AFFECT_ALLY_ABILITY             (527)
 #define BATTLE_SUBSCRIPT_RECOIL_1_6                             (528) // PMFG: Controlled Burn
+#define BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT                   (529) // PMFG: entry abilities (REQ-TGT-ABL-001)
+#define BATTLE_SUBSCRIPT_PMFG_ROOTED                            (530)
+#define BATTLE_SUBSCRIPT_PMFG_RESTORING                         (531)
+#define BATTLE_SUBSCRIPT_PMFG_SHOCKWIRING                       (532)
+#define BATTLE_SUBSCRIPT_PMFG_WISHMAKER                         (533)
+#define BATTLE_SUBSCRIPT_PMFG_WINDBURST                         (534)
+#define BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP                     (535)
 
 #define MAX_BASE_SUBSCRIPT_NUM 527
 

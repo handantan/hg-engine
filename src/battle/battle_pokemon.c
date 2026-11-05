@@ -1215,6 +1215,7 @@ void LONG_CALL ClearBattleMonFlags(struct BattleStruct *sp, int client)
     sp->pmfgPendulumStreak[client] = 0;
     sp->pmfgLastAttackType[client] = TYPE_TYPELESS;
     sp->pmfgHasAttacked[client] = FALSE;
+    sp->pmfgEntryDone[client] = 0;
 
     if (gBattleSystem != NULL) {
         int maxBattlers = BattleWorkClientSetMaxGet(gBattleSystem);

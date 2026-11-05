@@ -724,6 +724,7 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
                 int k = 0;
                 for (k = 0; k < 4; k++) {
                     if (attacker == k || damageCalc->clients[k].hp == 0) {
+                        continue;
                     }
                     if (IsMovingAfterClient(sp, k) == FALSE) { // checks if sp->playerActions[k][0] == CONTROLLER_COMMAND_40
                         break;

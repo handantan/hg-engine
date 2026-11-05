@@ -20,6 +20,37 @@ static int GetTraceClient(struct BattleSystem *battleSystem, struct BattleStruct
 
 extern struct ILLUSION_STRUCT gIllusionStruct;
 
+// PMFG (REQ-TGT-ABL-001): { ability, subscript, MOVE_SUBSCRIPT_PTR_* stat change or 0 }; at most 16 rows (pmfgEntryDone bits).
+// shortcut: a stat raise still fires at +6 (SoulGold skips it), the script then says the stat won't go higher.
+const u16 sPmfgEntryAbilities[][3] = {
+    { ABILITY_BATTLE_FERVOR, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE },
+    { ABILITY_GUARD_STANCE, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_DEFENSE_UP_1_STAGE },
+    { ABILITY_MENTAL_SURGE, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_SP_ATTACK_UP_1_STAGE },
+    { ABILITY_RESOLUTE_GUARD, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_SP_DEFENSE_UP_1_STAGE },
+    { ABILITY_SKIP_STEP, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_SPEED_UP_1_STAGE },
+    { ABILITY_GLACIAL, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_SP_DEFENSE_UP_1_STAGE },
+    { ABILITY_UNCANNY, BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT, MOVE_SUBSCRIPT_PTR_SP_ATTACK_DOWN_1_STAGE },
+    { ABILITY_HOBBLE, BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT, MOVE_SUBSCRIPT_PTR_SPEED_DOWN_1_STAGE },
+    { ABILITY_BREAKING_PRESENCE, BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT, MOVE_SUBSCRIPT_PTR_DEFENSE_DOWN_1_STAGE },
+    { ABILITY_DISQUIET, BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT, MOVE_SUBSCRIPT_PTR_SP_DEFENSE_DOWN_1_STAGE },
+    { ABILITY_ROOTED, BATTLE_SUBSCRIPT_PMFG_ROOTED, 0 },
+    { ABILITY_RESTORING, BATTLE_SUBSCRIPT_PMFG_RESTORING, 0 },
+    { ABILITY_SHOCKWIRING, BATTLE_SUBSCRIPT_PMFG_SHOCKWIRING, 0 },
+    { ABILITY_WISHMAKER, BATTLE_SUBSCRIPT_PMFG_WISHMAKER, 0 },
+    { ABILITY_WINDBURST, BATTLE_SUBSCRIPT_PMFG_WINDBURST, 0 },
+    { ABILITY_MAGNIFY_FIELD, BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP, 0 },
+};
+
+// PMFG (REQ-TGT-ABL-001): SoulGold GetAdditionalTypeAbilityType
+const u16 sPmfgSoulTypes[][2] = {
+    { ABILITY_PLAIN_SOUL, TYPE_NORMAL }, { ABILITY_FIGHTER_SOUL, TYPE_FIGHTING }, { ABILITY_WIND_SOUL, TYPE_FLYING },
+    { ABILITY_VENOM_SOUL, TYPE_POISON }, { ABILITY_EARTH_SOUL, TYPE_GROUND }, { ABILITY_STONE_SOUL, TYPE_ROCK },
+    { ABILITY_HIVE_SOUL, TYPE_BUG }, { ABILITY_PHANTOM_SOUL, TYPE_GHOST }, { ABILITY_STEEL_SOUL, TYPE_STEEL },
+    { ABILITY_FLAME_SOUL, TYPE_FIRE }, { ABILITY_SEA_SOUL, TYPE_WATER }, { ABILITY_VERDANT_SOUL_TYPE, TYPE_GRASS },
+    { ABILITY_THUNDER_SOUL, TYPE_ELECTRIC }, { ABILITY_MIND_SOUL, TYPE_PSYCHIC }, { ABILITY_FROST_SOUL, TYPE_ICE },
+    { ABILITY_DRAGON_SOUL, TYPE_DRAGON }, { ABILITY_NIGHT_SOUL, TYPE_DARK }, { ABILITY_FAE_SOUL, TYPE_FAIRY },
+};
+
 /**
  *  @brief this function is basically run whenever it can (i.e. if a battler suddenly gains Mold Breaker), but it's easiest to think of it as on switch in.
  *         various items were introduced that should also happen ASAP, particularly the air balloon message.
@@ -773,6 +804,59 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                         scriptnum = BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                         break;
+                    }
+                }
+
+                // PMFG (REQ-TGT-ABL-001): SoulGold entry abilities. Each fires once per switch-in (its own pmfgEntryDone bit,
+                // not ability_activated_flag), so several can fire next to Intimidate & co. when they are innates.
+                {
+                    int fired = FALSE;
+                    for (u32 k = 0; k < NELEMS(sPmfgEntryAbilities) && sp->battlemon[client_no].hp; k++) {
+                        u32 ability = sPmfgEntryAbilities[k][0];
+                        if ((sp->pmfgEntryDone[client_no] & (1 << k)) || !BattlerHasAbility(sp, client_no, ability)) {
+                            continue;
+                        }
+                        sp->pmfgEntryDone[client_no] |= (1 << k);
+                        int side = IsClientEnemy(bw, client_no);
+                        if ((ability == ABILITY_ROOTED && (sp->battlemon[client_no].effect_of_moves & MOVE_EFFECT_FLAG_INGRAIN))
+                            || (ability == ABILITY_RESTORING && (sp->battlemon[client_no].effect_of_moves & MOVE_EFFECT_FLAG_AQUA_RING))
+                            || (ability == ABILITY_WISHMAKER && sp->fcc.wish_count[client_no])
+                            || (ability == ABILITY_WINDBURST && sp->tailwindCount[side])) {
+                            continue;
+                        }
+                        if (ability == ABILITY_MAGNIFY_FIELD) { // +2 turns to weather and terrain that will run out
+                            BOOL extended = FALSE;
+                            if ((sp->field_condition & (FIELD_CONDITION_RAIN | FIELD_CONDITION_SANDSTORM | FIELD_CONDITION_SUN | FIELD_CONDITION_HAIL | FIELD_CONDITION_SNOW_TEMP)) && sp->fcc.weather_count) {
+                                sp->fcc.weather_count += 2;
+                                extended = TRUE;
+                            }
+                            if (sp->terrainOverlay.numberOfTurnsLeft && sp->terrainOverlay.numberOfTurnsLeft < 254) {
+                                sp->terrainOverlay.numberOfTurnsLeft += 2;
+                                extended = TRUE;
+                            }
+                            if (!extended) {
+                                continue;
+                            }
+                        }
+                        sp->calc_work = sPmfgEntryAbilities[k][2]; // stat drop for BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT
+                        sp->addeffect_param = sPmfgEntryAbilities[k][2]; // stat raise for HANDLE_ABILITY_STAT_CHANGE
+                        sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
+                        sp->state_client = client_no;
+                        sp->battlerIdTemp = client_no;
+                        scriptnum = sPmfgEntryAbilities[k][1];
+                        ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
+                        fired = TRUE;
+                        break;
+                    }
+                    if (fired) {
+                        break;
+                    }
+
+                    // "Soul" abilities add a third type, silently (SoulGold GetBattlerTypes)
+                    for (u32 k = 0; k < NELEMS(sPmfgSoulTypes) && sp->battlemon[client_no].type3 == TYPE_TYPELESS; k++) {
+                        if (BattlerHasAbility(sp, client_no, sPmfgSoulTypes[k][0]) && !HasType(sp, client_no, sPmfgSoulTypes[k][1])) {
+                            sp->battlemon[client_no].type3 = sPmfgSoulTypes[k][1];
+                        }
                     }
                 }
 
