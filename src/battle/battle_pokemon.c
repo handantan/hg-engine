@@ -1211,6 +1211,10 @@ void LONG_CALL ClearBattleMonFlags(struct BattleStruct *sp, int client)
     sp->paradoxBoostedStat[client] = 0;
     sp->boosterEnergyActivated[client] = FALSE;
     sp->lastClientMoveType[client] = TYPE_TYPELESS;
+    sp->pmfgPendulumMove[client] = MOVE_NONE;
+    sp->pmfgPendulumStreak[client] = 0;
+    sp->pmfgLastAttackType[client] = TYPE_TYPELESS;
+    sp->pmfgHasAttacked[client] = FALSE;
 
     if (gBattleSystem != NULL) {
         int maxBattlers = BattleWorkClientSetMaxGet(gBattleSystem);

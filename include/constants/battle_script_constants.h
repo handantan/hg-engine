@@ -534,6 +534,7 @@
 #define BATTLE_SUBSCRIPT_PASTEL_VEIL                            (525)
 #define BATTLE_SUBSCRIPT_COMATOSE                               (526)
 #define BATTLE_SUBSCRIPT_DOESNT_AFFECT_ALLY_ABILITY             (527)
+#define BATTLE_SUBSCRIPT_RECOIL_1_6                             (528) // PMFG: Controlled Burn
 
 #define MAX_BASE_SUBSCRIPT_NUM 527
 

@@ -2141,6 +2141,11 @@ int LONG_CALL Activate_RecoilDamage(void *bsys UNUSED, struct BattleStruct *ctx)
     case MOVE_EFFECT_RECOIL_THIRD: // double edge, brave bird
         seq_no = BATTLE_SUBSCRIPT_RECOIL_1_3;
         ctx->recoilDamage = ctx->store_damage[ctx->attack_client] / 3;
+        // PMFG (REQ-TGT-ABL-001): Controlled Burn halves Fire recoil (Flare Blitz is the only Fire recoil move)
+        if (GetAdjustedMoveType(ctx, ctx->attack_client, ctx->current_move_index) == TYPE_FIRE && BattlerHasAbility(ctx, ctx->attack_client, ABILITY_CONTROLLED_BURN)) {
+            seq_no = BATTLE_SUBSCRIPT_RECOIL_1_6;
+            ctx->recoilDamage = ctx->store_damage[ctx->attack_client] / 6;
+        }
         break;
     case MOVE_EFFECT_RECOIL_HALF: // head smash, light of ruin
         seq_no = BATTLE_SUBSCRIPT_RECOIL_1_2;

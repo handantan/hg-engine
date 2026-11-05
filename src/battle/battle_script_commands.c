@@ -2219,7 +2219,7 @@ BOOL btl_scr_cmd_E4_settailwind(void *bw, struct BattleStruct *sp)
 
     client_no = GrabClientFromBattleScriptParam(bw, sp, client_no);
 
-    sp->tailwindCount[IsClientEnemy(bw, client_no)] = 4;
+    sp->tailwindCount[IsClientEnemy(bw, client_no)] = BattlerHasAbility(sp, client_no, ABILITY_WINDCALLER) ? 6 : 4; // PMFG: Windcaller (REQ-TGT-ABL-001)
 
     return FALSE;
 }

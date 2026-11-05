@@ -1108,6 +1108,12 @@ struct BattleStruct {
     int magicRoomCounter;
 
     int recoilDamage;
+
+    // PMFG (REQ-TGT-ABL-001): attack history for Pendulum, Crossfire and Bull Rush; reset on switch-in (ClearBattleMonFlags)
+    u16 pmfgPendulumMove[CLIENT_MAX];
+    u8 pmfgPendulumStreak[CLIENT_MAX];
+    u8 pmfgLastAttackType[CLIENT_MAX]; // valid only when pmfgHasAttacked (the struct starts zeroed, and 0 is TYPE_NORMAL)
+    u8 pmfgHasAttacked[CLIENT_MAX];
 };
 
 enum {

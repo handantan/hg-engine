@@ -170,6 +170,24 @@ BOOL LONG_CALL BattleContext_ShouldPrintFollowupMessage(struct BattleSystem *bat
     return ret;
 }
 
+// PMFG (REQ-TGT-ABL-001): once per used move, after every hit (SoulGold MoveEndAttackHistory and Pendulum's move-end
+// update). A move that missed or was blocked still counts; a charge turn and a status move don't count as an attack.
+static void PMFG_RecordAttack(struct BattleStruct *ctx, int client, u16 move)
+{
+    if (ctx->pmfgPendulumMove[client] == move) {
+        if (ctx->pmfgPendulumStreak[client] < 3) {
+            ctx->pmfgPendulumStreak[client]++;
+        }
+    } else {
+        ctx->pmfgPendulumMove[client] = move;
+        ctx->pmfgPendulumStreak[client] = 1;
+    }
+    if (!(ctx->server_status_flag & BATTLE_STATUS_CHARGE_TURN) && ctx->moveTbl[move].split != SPLIT_STATUS) {
+        ctx->pmfgLastAttackType[client] = GetAdjustedMoveType(ctx, client, move);
+        ctx->pmfgHasAttacked[client] = TRUE;
+    }
+}
+
 void LONG_CALL ov12_0224D23C(struct BattleSystem *bsys, struct BattleStruct *ctx)
 {
     u8 item = HeldItemHoldEffectGet(ctx, ctx->attack_client);
@@ -201,6 +219,7 @@ void LONG_CALL ov12_0224D23C(struct BattleSystem *bsys, struct BattleStruct *ctx
     if (ctx->server_status_flag2 & BATTLE_STATUS2_DISPLAY_ATTACK_MESSAGE) {
         ctx->waza_no_sketch[ctx->attack_client] = ctx->moveNoTemp;
         ctx->lastClientMoveType[ctx->attack_client] = GetAdjustedMoveType(ctx, ctx->attack_client, ctx->moveNoTemp);
+        PMFG_RecordAttack(ctx, ctx->attack_client, ctx->current_move_index);
     }
 
     ov12_0224DD74(bsys, ctx);

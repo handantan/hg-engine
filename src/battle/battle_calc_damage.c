@@ -785,7 +785,7 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
         // 6.9.15 Punk Rock
         // https://www.smogon.com/forums/threads/sword-shield-battle-mechanics-research.3655528/post-8291673
         if ((sp->rawSpeedNonRNGClientOrder[i] == defender)
-            && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_PUNK_ROCK)
+            && (MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_PUNK_ROCK) || MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_RESONANCE)) // PMFG: Resonance (REQ-TGT-ABL-001)
             && IsMoveSoundBased(moveno)) {
             finalModifier = QMul_RoundUp(finalModifier, UQ412__0_5);
 #ifdef DEBUG_DAMAGE_CALC
@@ -793,6 +793,13 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
             debug_printf("[CalcBaseDamage] 6.9.15 Punk Rock\n");
             debug_printf("[CalcBaseDamage] finalModifier: %d\n", finalModifier);
 #endif
+        }
+
+        // PMFG (REQ-TGT-ABL-001): Phalanx halves physical damage, Spectral halves special damage
+        if ((sp->rawSpeedNonRNGClientOrder[i] == defender)
+            && ((movesplit == SPLIT_PHYSICAL && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_PHALANX))
+                || (movesplit == SPLIT_SPECIAL && MoldBreakerAbilityCheck(sp, attacker, defender, ABILITY_SPECTRAL)))) {
+            finalModifier = QMul_RoundUp(finalModifier, UQ412__0_5);
         }
 
         // 6.9.16 Ice Scales

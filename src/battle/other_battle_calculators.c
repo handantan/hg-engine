@@ -1194,6 +1194,14 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
         speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__1_5);
     }
 
+    // PMFG (REQ-TGT-ABL-001): Adrenaline, +30% Speed at 1/3 HP or less
+    if (BattlerHasAbility(sp, client1, ABILITY_ADRENALINE) && sp->battlemon[client1].hp <= (s32)sp->battlemon[client1].maxhp / 3) {
+        speedModifier1 = QMul_RoundUp(speedModifier1, UQ412__1_3);
+    }
+    if (BattlerHasAbility(sp, client2, ABILITY_ADRENALINE) && sp->battlemon[client2].hp <= (s32)sp->battlemon[client2].maxhp / 3) {
+        speedModifier2 = QMul_RoundUp(speedModifier2, UQ412__1_3);
+    }
+
 #ifdef DEBUG_SPEED_CALC
     debug_printf("\n=================\n");
     debug_printf("[CalcSpeed] Step 2: Quick Feet\n");
