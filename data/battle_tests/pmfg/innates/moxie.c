@@ -1,5 +1,5 @@
 // Test: PMFG Innates - Moxie as an innate raises Attack after a KO
-// REQ-TGT-MON-001: post-move KO abilities (switch in ServerDoPostMoveEffects) see innates. Basculin's innate 3 is Moxie.
+// REQ-TGT-MON-001: post-move KO abilities (switch in ServerDoPostMoveEffects) see innates. Basculin's innate 3 is Moxie. Target is Chansey: Snorlax's innate Colossal ignores 40-power moves (step 8).
 #include "../../battle_tests.h"
 BEGIN_TEST
 {
@@ -28,10 +28,10 @@ BEGIN_TEST
     },
     .enemyParty = {
         {
-            .species = SPECIES_SNORLAX,
+            .species = SPECIES_CHANSEY,
             .level = 50,
             .form = 0,
-            .ability = ABILITY_THICK_FAT,
+            .ability = ABILITY_NATURAL_CURE,
             .item = ITEM_NONE,
             .moves = { MOVE_SPLASH, MOVE_NONE, MOVE_NONE, MOVE_NONE },
             .hp = 1,
@@ -40,10 +40,10 @@ BEGIN_TEST
             .moveEffectFlags = 0,
         },
         {
-            .species = SPECIES_SNORLAX,
+            .species = SPECIES_CHANSEY,
             .level = 50,
             .form = 0,
-            .ability = ABILITY_THICK_FAT,
+            .ability = ABILITY_NATURAL_CURE,
             .item = ITEM_NONE,
             .moves = { MOVE_SPLASH, MOVE_NONE, MOVE_NONE, MOVE_NONE },
             .hp = FULL_HP,

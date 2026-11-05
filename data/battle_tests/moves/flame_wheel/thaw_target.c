@@ -100,7 +100,7 @@ const struct TestBattleScenario BattleTests[] = {
             { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "Charmander used Flame Wheel!" },
             { .expectationType = EXPECTATION_TYPE_HP_BAR, .battlerIDOrPartySlot = BATTLER_ENEMY_FIRST, .expectationValue.hpTaken = { 25, 25, 25, 26, 26, 26, 27, 27, 27, 27, 27, 27, 29, 29, 29, 30 } },
             { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "It's not very effective..." },
-            { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "The opposing Gible thawed out!" }, 
+            { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "The opposing Gible's frostbite was healed!" }, // PMFG REQ-TGT-BTL-008: freeze is Frostbite 
             { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "Charmander lost some of its HP!" },
         },
     },
