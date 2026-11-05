@@ -182,6 +182,11 @@ int MoveCheckDamageNegatingAbilities(struct BattleStruct *sp, int attacker, int 
         }
     }
 
+    // PMFG (REQ-TGT-ABL-001): Monsoon's Water moves in rain go through Water Absorb, Dry Skin and Storm Drain
+    if (movetype == TYPE_WATER && attacker != defender && PMFG_WeatherSureHit(gBattleSystem, sp, attacker, sp->current_move_index)) {
+        scriptnum = 0;
+    }
+
     return scriptnum;
 }
 

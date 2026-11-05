@@ -861,6 +861,11 @@ BOOL LONG_CALL CalcAccuracy(void *bw, struct BattleStruct *sp, int attacker, int
         accuracy = accuracy > 50 ? 50 : accuracy;
     }
 
+    // PMFG (REQ-TGT-ABL-001): Indomitable halves the accuracy of status moves aimed at it
+    if (BattlerHasAbility(sp, defender, ABILITY_INDOMITABLE) && GetMoveSplit(sp, move_no) == SPLIT_STATUS) {
+        accuracy /= 2;
+    }
+
     if ((weather & FIELD_CONDITION_SUN_ALL)
         // thunder sucks in the sun
         && ((sp->moveTbl[move_no].effect == MOVE_EFFECT_THUNDER)
@@ -1521,15 +1526,15 @@ u8 LONG_CALL CalcSpeed(void *bw, struct BattleStruct *sp, int client1, int clien
         } else if ((move_last1 == 0) && (move_last2)) // client2 has lagging tail
         {
             ret = 0;
-        } else if ((BattlerHasAbility(sp, client1, ABILITY_STALL)) && (BattlerHasAbility(sp, client2, ABILITY_STALL))) {
+        } else if (PMFG_MOVES_LAST(sp, client1) && PMFG_MOVES_LAST(sp, client2)) {
             if (speed1 > speed2) {
                 ret = 1;
             } else if ((speed1 == speed2) && (BattleRand(bw) & 1)) {
                 ret = 2;
             }
-        } else if ((BattlerHasAbility(sp, client1, ABILITY_STALL)) && (!BattlerHasAbility(sp, client2, ABILITY_STALL))) {
+        } else if (PMFG_MOVES_LAST(sp, client1) && !PMFG_MOVES_LAST(sp, client2)) {
             ret = 1;
-        } else if ((!BattlerHasAbility(sp, client1, ABILITY_STALL)) && (BattlerHasAbility(sp, client2, ABILITY_STALL))) {
+        } else if (!PMFG_MOVES_LAST(sp, client1) && PMFG_MOVES_LAST(sp, client2)) {
             ret = 0;
         } else {
             if (speed1 < speed2) {
@@ -1689,6 +1694,8 @@ void LONG_CALL CalcPriorityAndQuickClawCustapBerry(void *bsys, struct BattleStru
             BattlerHasAbility(ctx, client, ABILITY_GALE_WINGS) && ctx->moveTbl[move].type == TYPE_FLYING && ctx->battlemon[client].hp == (s32)ctx->battlemon[client].maxhp) {
             priority++;
         }
+
+        priority += PMFG_AbilityPriority(ctx, client, move); // PMFG (REQ-TGT-ABL-001)
 
         // handle Triage
         if (BattlerHasAbility(ctx, client, ABILITY_TRIAGE)) {
@@ -2692,6 +2699,7 @@ BOOL LONG_CALL BattleSystem_CheckMoveEffect(void *bw, struct BattleStruct *sp, i
     }
 
     BOOL lockOnOrNoGuard = (BattlerHasAbility(sp, battlerIdAttacker, ABILITY_NO_GUARD)) || (BattlerHasAbility(sp, battlerIdTarget, ABILITY_NO_GUARD))
+        || PMFG_WeatherSureHit(bw, sp, battlerIdAttacker, move) // PMFG (REQ-TGT-ABL-001): Rockstorm, Monsoon
         || (sp->battlemon[battlerIdTarget].effect_of_moves & MOVE_EFFECT_FLAG_LOCK_ON
             && sp->battlemon[battlerIdTarget].moveeffect.battlerIdLockOn == battlerIdAttacker);
 
@@ -3867,18 +3875,18 @@ int LONG_CALL GetClientActionPriority(struct BattleSystem *bsys UNUSED, struct B
     }
 
     if ((BattlerHasAbility(ctx, battlerId, ABILITY_PRANKSTER)) && (GetMoveSplit(ctx, move) == SPLIT_STATUS)) {
-        return ctx->moveTbl[move].priority + 1;
+        return ctx->moveTbl[move].priority + 1 + PMFG_AbilityPriority(ctx, battlerId, move);
     }
 
     if ((BattlerHasAbility(ctx, battlerId, ABILITY_GALE_WINGS)) && (ctx->moveTbl[move].type == TYPE_FLYING)) {
-        return ctx->moveTbl[move].priority + 1;
+        return ctx->moveTbl[move].priority + 1 + PMFG_AbilityPriority(ctx, battlerId, move);
     }
 
     if ((BattlerHasAbility(ctx, battlerId, ABILITY_TRIAGE)) && (isTriageMove)) {
-        return ctx->moveTbl[move].priority + 3;
+        return ctx->moveTbl[move].priority + 3 + PMFG_AbilityPriority(ctx, battlerId, move);
     }
 
-    return ctx->moveTbl[move].priority;
+    return ctx->moveTbl[move].priority + PMFG_AbilityPriority(ctx, battlerId, move);
 }
 
 /// @brief Checks if a client has the type
@@ -4875,4 +4883,58 @@ BOOL LONG_CALL CheckStatusRecoverFromAbilityOnSwitchWrapper(struct BattleStruct 
     }
 
     return CheckStatusRecoverFromAbilityOnSwitch(ctx, ability, status);
+}
+
+// PMFG (REQ-TGT-ABL-001): SoulGold GetFullHpPriorityAbilityType; the move's base type gets +1 priority at full HP
+const u16 sPmfgFullHpPriority[][2] = {
+    { ABILITY_READY_STANCE, TYPE_NORMAL }, { ABILITY_FIRST_STRIKE, TYPE_FIGHTING }, { ABILITY_TOXIC_REFLEX, TYPE_POISON },
+    { ABILITY_EARTHEN_RUSH, TYPE_GROUND }, { ABILITY_STONE_SENTINEL, TYPE_ROCK }, { ABILITY_SWARM_INSTINCT, TYPE_BUG },
+    { ABILITY_PHANTOM_STEP, TYPE_GHOST }, { ABILITY_QUICK_FORGE, TYPE_STEEL }, { ABILITY_FLAME_RUSH, TYPE_FIRE },
+    { ABILITY_TIDAL_REFLEX, TYPE_WATER }, { ABILITY_VERDANT_GALE, TYPE_GRASS }, { ABILITY_STATIC_BURST, TYPE_ELECTRIC },
+    { ABILITY_THINK_AHEAD, TYPE_PSYCHIC }, { ABILITY_FROST_SNAP, TYPE_ICE }, { ABILITY_DRACONIC_REFLEX, TYPE_DRAGON },
+    { ABILITY_NIGHT_STALKER, TYPE_DARK }, { ABILITY_FAIRY_BLINK, TYPE_FAIRY },
+};
+
+/// @brief PMFG (REQ-TGT-ABL-001): priority added by SoulGold abilities (full-HP type table, Maneuverability, Stygian, Nine Lives)
+int LONG_CALL PMFG_AbilityPriority(struct BattleStruct *ctx, int battlerId, int move)
+{
+    struct BattlePokemon *mon = &ctx->battlemon[battlerId];
+    int bonus = 0;
+    if (mon->hp == (s32)mon->maxhp) {
+        for (u32 i = 0; i < NELEMS(sPmfgFullHpPriority); i++) {
+            if (ctx->moveTbl[move].type == sPmfgFullHpPriority[i][1] && BattlerHasAbility(ctx, battlerId, sPmfgFullHpPriority[i][0])) {
+                bonus++;
+                break;
+            }
+        }
+    }
+    if (BattlerHasAbility(ctx, battlerId, ABILITY_MANEUVERABILITY) && ctx->moveTbl[move].split != SPLIT_STATUS
+        && ctx->moveTbl[move].power > 0 && ctx->moveTbl[move].power <= 60) {
+        bonus++;
+    }
+    if (BattlerHasAbility(ctx, battlerId, ABILITY_STYGIAN)) {
+        // shortcut: any living sleeping foe counts (SoulGold checks that this move would hit it)
+        for (int i = 0; i < CLIENT_MAX; i++) {
+            if ((i & 1) != (battlerId & 1) && ctx->battlemon[i].hp && (ctx->battlemon[i].condition & STATUS_SLEEP)) {
+                bonus++;
+                break;
+            }
+        }
+    }
+    if (BattlerHasAbility(ctx, battlerId, ABILITY_NINE_LIVES) && mon->hp > 0 && mon->hp <= (s32)mon->maxhp / 3) {
+        bonus += 2;
+    }
+    return bonus;
+}
+
+/// @brief PMFG (REQ-TGT-ABL-001): Rockstorm (Rock moves in sand) and Monsoon (Water moves in rain) never miss
+BOOL LONG_CALL PMFG_WeatherSureHit(void *bsys, struct BattleStruct *ctx, int attacker, int move)
+{
+    if (attacker == BATTLER_NONE) {
+        return FALSE;
+    }
+    u32 type = GetAdjustedMoveType(ctx, attacker, move);
+    u32 weather = GetWeather(bsys, ctx, attacker);
+    return (type == TYPE_ROCK && (weather & FIELD_CONDITION_SANDSTORM_ALL) && BattlerHasAbility(ctx, attacker, ABILITY_ROCKSTORM))
+        || (type == TYPE_WATER && (weather & FIELD_CONDITION_RAIN_ALL) && BattlerHasAbility(ctx, attacker, ABILITY_MONSOON));
 }
