@@ -1217,6 +1217,7 @@ void LONG_CALL ClearBattleMonFlags(struct BattleStruct *sp, int client)
     sp->pmfgHasAttacked[client] = FALSE;
     sp->pmfgEntryDone[client] = 0;
     sp->pmfgOverlord[client] = 0; // REQ-TGT-BTL-003
+    sp->pmfgCudChew &= ~(1 << client);
     sp->pmfgAuraShieldUsed &= ~No2Bit(client);
 
     if (gBattleSystem != NULL) {

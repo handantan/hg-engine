@@ -1125,6 +1125,7 @@ struct BattleStruct {
     // PMFG (REQ-TGT-BTL-003)
     u8 pmfgOverlord[CLIENT_MAX];  // Supreme Overlord: fainted party members at switch-in, max 5 (+10% power each)
     u8 pmfgSyrupUsed[2];          // Supersweet Syrup: bit = party slot that already used it this battle, per side
+    u8 pmfgCudChew;               // Cud Chew: bit = battler whose eaten berry is chewed at the end of the next turn
     u16 pmfgScriptEpoch;              // +1 per battle script load, not counting Call returns
     u16 pmfgLastAbility[CLIENT_MAX];  // last ability BattlerHasAbility/BattlerHasInnate matched
     u16 pmfgLastAbilityEpoch[CLIENT_MAX];

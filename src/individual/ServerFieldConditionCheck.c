@@ -1671,7 +1671,7 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                     debug_printf("In THIRD_EVENT_BLOCK_ABILITIES\n", NULL);
 #endif
 
-                    switch (BATTLER_ABILITY_IN(sp, battlerId, ABILITY_SPEED_BOOST, ABILITY_HARVEST, ABILITY_MOODY, ABILITY_SLOW_START, ABILITY_BAD_DREAMS)) {
+                    switch (BATTLER_ABILITY_IN(sp, battlerId, ABILITY_SPEED_BOOST, ABILITY_HARVEST, ABILITY_MOODY, ABILITY_SLOW_START, ABILITY_BAD_DREAMS, ABILITY_CUD_CHEW)) {
                     case ABILITY_SPEED_BOOST: {
                         if ((sp->battlemon[battlerId].hp) && (sp->battlemon[battlerId].states[STAT_SPEED] < 12) && (sp->battlemon[battlerId].moveeffect.fakeOutCount != (sp->total_turn + 1))) {
                             sp->addeffect_param = MOVE_SUBSCRIPT_PTR_SPEED_UP_1_STAGE;
@@ -1695,6 +1695,26 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                             seq_no = BATTLE_SUBSCRIPT_HANDLE_HARVEST;
                             ret = TRUE;
                         }
+                        break;
+                    }
+                    case ABILITY_CUD_CHEW: { // PMFG REQ-TGT-BTL-003: a berry eaten this turn is eaten again (Pluck's way) at the end of the next
+                        if (!sp->battlemon[battlerId].hp || !IS_ITEM_BERRY(sp->recycle_item[battlerId])) {
+                            break;
+                        }
+                        if (!(sp->pmfgCudChew & (1 << battlerId))) {
+                            sp->pmfgCudChew |= 1 << battlerId;
+                            break;
+                        }
+                        sp->pmfgCudChew &= ~(1 << battlerId);
+                        u16 held = sp->battlemon[battlerId].item;
+                        sp->battlemon[battlerId].item = sp->recycle_item[battlerId];
+                        sp->recycle_item[battlerId] = 0;
+                        sp->attack_client = battlerId; // TryPluckBerry feeds the attacker
+                        TryPluckBerry(bw, sp, battlerId);
+                        sp->battlemon[battlerId].item = held;
+                        sp->battlerIdTemp = battlerId;
+                        seq_no = BATTLE_SUBSCRIPT_PMFG_CUD_CHEW;
+                        ret = TRUE;
                         break;
                     }
                     case ABILITY_MOODY: { // this is going to be interesting
