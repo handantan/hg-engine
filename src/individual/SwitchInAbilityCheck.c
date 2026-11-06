@@ -20,7 +20,7 @@ static int GetTraceClient(struct BattleSystem *battleSystem, struct BattleStruct
 
 extern struct ILLUSION_STRUCT gIllusionStruct;
 
-// PMFG (REQ-TGT-ABL-001): { ability, subscript, MOVE_SUBSCRIPT_PTR_* stat change or 0 }; at most 16 rows (pmfgEntryDone bits).
+// PMFG (REQ-TGT-ABL-001): { ability, subscript, MOVE_SUBSCRIPT_PTR_* stat change or 0 }; at most 32 rows (pmfgEntryDone bits).
 // shortcut: a stat raise still fires at +6 (SoulGold skips it), the script then says the stat won't go higher.
 const u16 sPmfgEntryAbilities[][3] = {
     { ABILITY_BATTLE_FERVOR, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE },
@@ -39,6 +39,8 @@ const u16 sPmfgEntryAbilities[][3] = {
     { ABILITY_WISHMAKER, BATTLE_SUBSCRIPT_PMFG_WISHMAKER, 0 },
     { ABILITY_WINDBURST, BATTLE_SUBSCRIPT_PMFG_WINDBURST, 0 },
     { ABILITY_MAGNIFY_FIELD, BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP, 0 },
+    { ABILITY_SUPERSWEET_SYRUP, BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT, MOVE_SUBSCRIPT_PTR_EVASION_DOWN_1_STAGE }, // REQ-TGT-BTL-003
+    { ABILITY_SUPREME_OVERLORD, BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP, 0 },
 };
 
 // PMFG (REQ-TGT-ABL-001): SoulGold GetAdditionalTypeAbilityType
@@ -823,11 +825,31 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                     int fired = FALSE;
                     for (u32 k = 0; k < NELEMS(sPmfgEntryAbilities) && sp->battlemon[client_no].hp; k++) {
                         u32 ability = sPmfgEntryAbilities[k][0];
-                        if ((sp->pmfgEntryDone[client_no] & (1 << k)) || !BattlerHasAbility(sp, client_no, ability)) {
+                        if ((sp->pmfgEntryDone[client_no] & (1u << k)) || !BattlerHasAbility(sp, client_no, ability)) {
                             continue;
                         }
-                        sp->pmfgEntryDone[client_no] |= (1 << k);
+                        sp->pmfgEntryDone[client_no] |= (1u << k);
                         int side = IsClientEnemy(bw, client_no);
+                        if (ability == ABILITY_SUPERSWEET_SYRUP) { // once per battle per mon
+                            u8 slotBit = 1 << sp->sel_mons_no[client_no];
+                            if (sp->pmfgSyrupUsed[side] & slotBit) {
+                                continue;
+                            }
+                            sp->pmfgSyrupUsed[side] |= slotBit;
+                        }
+                        if (ability == ABILITY_SUPREME_OVERLORD) {
+                            u32 fainted = 0;
+                            for (int i = 0; i < BattleWorkPokeCountGet(bw, client_no); i++) {
+                                struct PartyPokemon *mon = BattleWorkPokemonParamGet(bw, client_no, i);
+                                if (GetMonData(mon, MON_DATA_SPECIES, NULL) && !GetMonData(mon, MON_DATA_IS_EGG, NULL) && GetMonData(mon, MON_DATA_HP, NULL) == 0) {
+                                    fainted++;
+                                }
+                            }
+                            sp->pmfgOverlord[client_no] = fainted > 5 ? 5 : fainted;
+                            if (!fainted) {
+                                continue;
+                            }
+                        }
                         if ((ability == ABILITY_ROOTED && (sp->battlemon[client_no].effect_of_moves & MOVE_EFFECT_FLAG_INGRAIN))
                             || (ability == ABILITY_RESTORING && (sp->battlemon[client_no].effect_of_moves & MOVE_EFFECT_FLAG_AQUA_RING))
                             || (ability == ABILITY_WISHMAKER && sp->fcc.wish_count[client_no])

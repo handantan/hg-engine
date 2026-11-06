@@ -4710,10 +4710,35 @@ BOOL BattleController_CheckMoveFailures5(struct BattleSystem *bsys UNUSED, struc
     return FALSE;
 }
 
-// TODO: implement new mechanics
-BOOL BattleController_CheckAromaVeil(struct BattleSystem *bsys UNUSED, struct BattleStruct *ctx UNUSED, int defender UNUSED)
+/// PMFG REQ-TGT-BTL-003: Aroma Veil on the target or its ally blocks Taunt, Torment, Encore, Disable, Heal Block, Attract.
+/// shortcut: Cursed Body's disable still lands, add it in its ability handler if a playtest meets it.
+BOOL BattleController_CheckAromaVeil(struct BattleSystem *bsys UNUSED, struct BattleStruct *ctx, int defender)
 {
-    return FALSE;
+    switch (ctx->moveTbl[ctx->current_move_index].effect) {
+    case MOVE_EFFECT_TAUNT:
+    case MOVE_EFFECT_TORMENT:
+    case MOVE_EFFECT_ENCORE:
+    case MOVE_EFFECT_DISABLE:
+    case MOVE_EFFECT_PREVENT_HEALING:
+    case MOVE_EFFECT_INFATUATE:
+        break;
+    default:
+        return FALSE;
+    }
+    int attacker = ctx->attack_client;
+    int holder = MoldBreakerAbilityCheck(ctx, attacker, defender, ABILITY_AROMA_VEIL) ? defender
+        : MoldBreakerAbilityCheck(ctx, attacker, BATTLER_ALLY(defender), ABILITY_AROMA_VEIL) ? BATTLER_ALLY(defender) : -1;
+    if (holder < 0) {
+        return FALSE;
+    }
+    BattleController_ResetGeneralMoveFailureFlags(ctx, attacker, TRUE);
+    ctx->moveStatusFlagForSpreadMoves[defender] = MOVE_STATUS_FAILED;
+    ctx->battlerIdTemp = defender;
+    ctx->ability_client = holder;
+    LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_PMFG_AROMA_VEIL_FAIL);
+    ctx->next_server_seq_no = ctx->server_seq_no;
+    ctx->server_seq_no = CONTROLLER_COMMAND_RUN_SCRIPT;
+    return TRUE;
 }
 
 BOOL IfAllClientsHavePerishSong(struct BattleSystem *bsys, struct BattleStruct *ctx)

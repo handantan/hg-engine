@@ -1806,3 +1806,6 @@ The scorched field settled.
 {STRVAR_1 1, 0, 0} is hurt\nby its frostbite!
 The wild {STRVAR_1 1, 0, 0} is hurt\nby its frostbite!
 The opposing {STRVAR_1 1, 0, 0} is hurt\nby its frostbite!
+{STRVAR_1 1, 0, 0} is protected\nby an aromatic veil!
+The wild {STRVAR_1 1, 0, 0} is protected\nby an aromatic veil!
+The opposing {STRVAR_1 1, 0, 0} is protected\nby an aromatic veil!

@@ -15,20 +15,12 @@
 #include "pokemon.h"
 #include "q412.h"
 
-// PMFG (REQ-TGT-ABL-001): SoulGold's kickingMove flags (Steel Feet), type x1.5 abilities and IsEnigmaPowerMove list
-const u16 sPmfgKickingMoves[] = {
-    MOVE_STOMP, MOVE_DOUBLE_KICK, MOVE_MEGA_KICK, MOVE_JUMP_KICK, MOVE_ROLLING_KICK, MOVE_LOW_KICK, MOVE_HIGH_JUMP_KICK,
-    MOVE_TRIPLE_KICK, MOVE_BLAZE_KICK, MOVE_TROP_KICK, MOVE_STOMPING_TANTRUM, MOVE_TRIPLE_AXEL, MOVE_THUNDEROUS_KICK, MOVE_AXE_KICK,
-};
+// PMFG (REQ-TGT-ABL-001): SoulGold's type x1.5 abilities
 const u16 sPmfgTypeBoostAbilities[][2] = {
     { ABILITY_TRUE_GRIT, TYPE_NORMAL }, { ABILITY_WARRIOR_SPIRIT, TYPE_FIGHTING }, { ABILITY_WIND_FORCE, TYPE_FLYING },
     { ABILITY_TOXIC_CORE, TYPE_POISON }, { ABILITY_EARTHBOUND, TYPE_GROUND }, { ABILITY_HIVE_FORCE, TYPE_BUG },
     { ABILITY_SPECTRAL_FORCE, TYPE_GHOST }, { ABILITY_SEABOUND, TYPE_WATER }, { ABILITY_VERDANT_SOUL, TYPE_GRASS },
     { ABILITY_MIND_FORCE, TYPE_PSYCHIC }, { ABILITY_FROST_FORCE, TYPE_ICE }, { ABILITY_NIGHTFALL, TYPE_DARK }, { ABILITY_FAE_HEART, TYPE_FAIRY },
-};
-const u16 sPmfgEnigmaMoves[] = {
-    MOVE_HIDDEN_POWER, MOVE_ANCIENT_POWER, MOVE_NATURE_POWER, MOVE_SUPERPOWER, MOVE_SECRET_POWER, MOVE_POWER_GEM, MOVE_EARTH_POWER,
-    MOVE_POWER_WHIP, MOVE_STORED_POWER, MOVE_POWER_UP_PUNCH, MOVE_HIGH_HORSEPOWER, MOVE_POWER_TRIP, MOVE_MYSTICAL_POWER,
 };
 
 // int UNUSED CalcBaseDamage(void *bw, struct BattleStruct *sp, int moveno, u32 side_cond UNUSED,u32 field_cond, u16 pow UNUSED, u8 type UNUSED, u8 attacker, u8 defender, u8 critical) {
@@ -965,52 +957,8 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
 
     // Stall (the ability):
 
-    // PMFG (REQ-TGT-ABL-001): SoulGold base power abilities (CalcMoveBasePowerAfterModifiers); all stack
-    {
-        const struct sDamageCalc *atk = &damageCalc->clients[attacker];
-
-        if (ClientHasAbility(atk, ABILITY_CONTROLLED_BURN) && movetype == TYPE_FIRE
-            && (moveEffect == MOVE_EFFECT_CRASH_ON_MISS || moveEffect == MOVE_EFFECT_RECOIL_QUARTER || moveEffect == MOVE_EFFECT_RECOIL_THIRD
-                || moveEffect == MOVE_EFFECT_RECOIL_BURN_HIT || moveEffect == MOVE_EFFECT_RECOIL_HALF || moveEffect == MOVE_EFFECT_RECOIL_HALF_MAX_HP)) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
-        }
-        if (ClientHasAbility(atk, ABILITY_STEEL_FEET) && IsElementInArray(sPmfgKickingMoves, (u16 *)&moveno, NELEMS(sPmfgKickingMoves), sizeof(sPmfgKickingMoves[0]))) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
-        }
-        if (ClientHasAbility(atk, ABILITY_WINDCALLER) && movetype == TYPE_FLYING) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_3);
-        }
-        if (ClientHasAbility(atk, ABILITY_ENIGMA) && IsElementInArray(sPmfgEnigmaMoves, (u16 *)&moveno, NELEMS(sPmfgEnigmaMoves), sizeof(sPmfgEnigmaMoves[0]))) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__2_0);
-        }
-        if (ClientHasAbility(atk, ABILITY_PENDULUM) && sp->pmfgPendulumMove[attacker] == moveno && sp->pmfgPendulumStreak[attacker] > 0) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_0 + sp->pmfgPendulumStreak[attacker] * UQ412__0_2); // +20% per repeat, max +60%
-        }
-        if (ClientHasAbility(atk, ABILITY_CROSSFIRE) && sp->pmfgHasAttacked[attacker] && sp->pmfgLastAttackType[attacker] != movetype) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_25);
-        }
-        if ((ClientHasAbility(atk, ABILITY_BURROWER) && moveno == MOVE_DIG) || (ClientHasAbility(atk, ABILITY_DIVER) && moveno == MOVE_DIVE)
-            || (ClientHasAbility(atk, ABILITY_FLIER) && moveno == MOVE_FLY)) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_5);
-        }
-        if (ClientHasAbility(atk, ABILITY_BULL_RUSH) && !sp->pmfgHasAttacked[attacker]) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
-        }
-        if (ClientHasAbility(atk, ABILITY_FLARE) && movetype == TYPE_FIRE && (DefendingMon.condition & STATUS_BURN)) {
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_5);
-        }
-        if (ClientHasAbility(atk, ABILITY_PACK_LEADER)) {
-            u32 allies = 0;
-            for (int slot = 0; slot < attackerPartySize; slot++) {
-                struct PartyPokemon *mon = damageCalc->attackerParty[slot];
-                if (slot != sp->sel_mons_no[attacker] && GetMonData(mon, MON_DATA_SPECIES, NULL) != SPECIES_NONE
-                    && !GetMonData(mon, MON_DATA_IS_EGG, NULL) && GetMonData(mon, MON_DATA_HP, NULL) != 0) {
-                    allies++;
-                }
-            }
-            basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_0 + (allies > 5 ? 5 : allies) * UQ412__0_25 / 5); // +5% per healthy ally
-        }
-    }
+    // PMFG (REQ-TGT-ABL-001, BTL-003): SoulGold base power abilities, in the battle overlay (this one is full)
+    basePowerModifier = PMFG_BasePowerModifier(sp, damageCalc, basePowerModifier);
 
     // Apply the chained modifier to the starting base power. That is, multiply the starting base power by the chained base power modifiers, divide by 4096, and pokeRound the result. If the base power would now be less than 1, make it 1. Finally, if the base power is greater than 65,535, make it the the current base power modulo 65,536 (BP % 65536).
 

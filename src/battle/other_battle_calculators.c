@@ -2893,6 +2893,76 @@ int LONG_CALL CheckSideAbilityWithInnates(void *bw, struct BattleStruct *sp, int
     return cnt;
 }
 
+// PMFG (REQ-TGT-ABL-001): SoulGold's kickingMove flags (Steel Feet) and IsEnigmaPowerMove list
+static const u16 sPmfgKickingMoves[] = {
+    MOVE_STOMP, MOVE_DOUBLE_KICK, MOVE_MEGA_KICK, MOVE_JUMP_KICK, MOVE_ROLLING_KICK, MOVE_LOW_KICK, MOVE_HIGH_JUMP_KICK,
+    MOVE_TRIPLE_KICK, MOVE_BLAZE_KICK, MOVE_TROP_KICK, MOVE_STOMPING_TANTRUM, MOVE_TRIPLE_AXEL, MOVE_THUNDEROUS_KICK, MOVE_AXE_KICK,
+};
+static const u16 sPmfgEnigmaMoves[] = {
+    MOVE_HIDDEN_POWER, MOVE_ANCIENT_POWER, MOVE_NATURE_POWER, MOVE_SUPERPOWER, MOVE_SECRET_POWER, MOVE_POWER_GEM, MOVE_EARTH_POWER,
+    MOVE_POWER_WHIP, MOVE_STORED_POWER, MOVE_POWER_UP_PUNCH, MOVE_HIGH_HORSEPOWER, MOVE_POWER_TRIP, MOVE_MYSTICAL_POWER,
+};
+
+/// PMFG (REQ-TGT-ABL-001, BTL-003): SoulGold base power abilities (CalcMoveBasePowerAfterModifiers); all stack.
+/// Called from CalcBaseDamage.c; lives here because overlay 138 has no room left.
+u32 LONG_CALL PMFG_BasePowerModifier(struct BattleStruct *sp, struct DamageCalcStruct *damageCalc, u32 basePowerModifier)
+{
+    int attacker = damageCalc->attacker;
+    int attackerPartySize = damageCalc->attackerPartySize;
+    int moveno = damageCalc->moveno;
+    u8 movetype = damageCalc->movetype;
+    u16 moveEffect = damageCalc->moveEffect;
+    struct sDamageCalc DefendingMon = damageCalc->clients[damageCalc->defender];
+    const struct sDamageCalc *atk = &damageCalc->clients[attacker];
+
+    if (ClientHasAbility(atk, ABILITY_CONTROLLED_BURN) && movetype == TYPE_FIRE
+        && (moveEffect == MOVE_EFFECT_CRASH_ON_MISS || moveEffect == MOVE_EFFECT_RECOIL_QUARTER || moveEffect == MOVE_EFFECT_RECOIL_THIRD
+            || moveEffect == MOVE_EFFECT_RECOIL_BURN_HIT || moveEffect == MOVE_EFFECT_RECOIL_HALF || moveEffect == MOVE_EFFECT_RECOIL_HALF_MAX_HP)) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
+    }
+    if (ClientHasAbility(atk, ABILITY_STEEL_FEET) && IsElementInArray(sPmfgKickingMoves, (u16 *)&moveno, NELEMS(sPmfgKickingMoves), sizeof(sPmfgKickingMoves[0]))) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
+    }
+    if (ClientHasAbility(atk, ABILITY_WINDCALLER) && movetype == TYPE_FLYING) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_3);
+    }
+    if (ClientHasAbility(atk, ABILITY_ENIGMA) && IsElementInArray(sPmfgEnigmaMoves, (u16 *)&moveno, NELEMS(sPmfgEnigmaMoves), sizeof(sPmfgEnigmaMoves[0]))) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__2_0);
+    }
+    if (ClientHasAbility(atk, ABILITY_PENDULUM) && sp->pmfgPendulumMove[attacker] == moveno && sp->pmfgPendulumStreak[attacker] > 0) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_0 + sp->pmfgPendulumStreak[attacker] * UQ412__0_2); // +20% per repeat, max +60%
+    }
+    if (ClientHasAbility(atk, ABILITY_CROSSFIRE) && sp->pmfgHasAttacked[attacker] && sp->pmfgLastAttackType[attacker] != movetype) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_25);
+    }
+    if ((ClientHasAbility(atk, ABILITY_BURROWER) && moveno == MOVE_DIG) || (ClientHasAbility(atk, ABILITY_DIVER) && moveno == MOVE_DIVE)
+        || (ClientHasAbility(atk, ABILITY_FLIER) && moveno == MOVE_FLY)) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_5);
+    }
+    if (ClientHasAbility(atk, ABILITY_BULL_RUSH) && !sp->pmfgHasAttacked[attacker]) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_2);
+    }
+    if (ClientHasAbility(atk, ABILITY_FLARE) && movetype == TYPE_FIRE && (DefendingMon.condition & STATUS_BURN)) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_5);
+    }
+    if (ClientHasAbility(atk, ABILITY_PACK_LEADER)) {
+        u32 allies = 0;
+        for (int slot = 0; slot < attackerPartySize; slot++) {
+            struct PartyPokemon *mon = damageCalc->attackerParty[slot];
+            if (slot != sp->sel_mons_no[attacker] && GetMonData(mon, MON_DATA_SPECIES, NULL) != SPECIES_NONE
+                && !GetMonData(mon, MON_DATA_IS_EGG, NULL) && GetMonData(mon, MON_DATA_HP, NULL) != 0) {
+                allies++;
+            }
+        }
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_0 + (allies > 5 ? 5 : allies) * UQ412__0_25 / 5); // +5% per healthy ally
+    }
+    // REQ-TGT-BTL-003: Supreme Overlord, +10% per fainted party member counted at switch-in (expansion's UQ_4_12(0.1) = 410)
+    if (ClientHasAbility(atk, ABILITY_SUPREME_OVERLORD) && sp->pmfgOverlord[attacker]) {
+        basePowerModifier = QMul_RoundUp(basePowerModifier, UQ412__1_0 + 410 * sp->pmfgOverlord[attacker]);
+    }
+    return basePowerModifier;
+}
+
 /// REQ-TGT-MON-003: remember the ability a check matched, for PMFG_DisplayedAbility
 static void PMFG_NoteAbility(struct BattleStruct *ctx, int battlerId, u32 ability)
 {

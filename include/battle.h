@@ -1114,7 +1114,7 @@ struct BattleStruct {
     u8 pmfgPendulumStreak[CLIENT_MAX];
     u8 pmfgLastAttackType[CLIENT_MAX]; // valid only when pmfgHasAttacked (the struct starts zeroed, and 0 is TYPE_NORMAL)
     u8 pmfgHasAttacked[CLIENT_MAX];
-    u16 pmfgEntryDone[CLIENT_MAX]; // bit k: sPmfgEntryAbilities[k] fired this switch-in (SwitchInAbilityCheck.c)
+    u32 pmfgEntryDone[CLIENT_MAX]; // bit k: sPmfgEntryAbilities[k] fired this switch-in (SwitchInAbilityCheck.c)
     u32 pmfgHitDone;  // bit k: sPmfgHitAbilities[k] fired on this hit; bits 24+: Flameburst per foe (ServerDoPostMoveEffects.c)
     u16 pmfgMoveDone; // bit k: sPmfgMoveAbilities[k] fired after this move
     u8 pmfgKOs;       // foes the attacker KO'd with this move (Consume, Rock and Stone)
@@ -1122,6 +1122,9 @@ struct BattleStruct {
     u8 pmfgAuraShieldPopup; // No2Bit(battler): show Aura Shield's popup after the hit (ServerDoPostMoveEffects.c)
     u8 pmfgEndTurnDone; // bit k: sPmfgEndTurnAbilities[k] done for the current battler (ServerFieldConditionCheck.c)
     // PMFG (REQ-TGT-MON-003): which ability a popup names; see PMFG_DisplayedAbility
+    // PMFG (REQ-TGT-BTL-003)
+    u8 pmfgOverlord[CLIENT_MAX];  // Supreme Overlord: fainted party members at switch-in, max 5 (+10% power each)
+    u8 pmfgSyrupUsed[2];          // Supersweet Syrup: bit = party slot that already used it this battle, per side
     u16 pmfgScriptEpoch;              // +1 per battle script load, not counting Call returns
     u16 pmfgLastAbility[CLIENT_MAX];  // last ability BattlerHasAbility/BattlerHasInnate matched
     u16 pmfgLastAbilityEpoch[CLIENT_MAX];
@@ -1984,6 +1987,7 @@ static inline __attribute__((always_inline)) BOOL ClientHasAbility(const struct 
 BOOL LONG_CALL BattlerHasAbility(struct BattleStruct *ctx, int battlerId, u32 ability);
 /// REQ-TGT-MON-003: the ability an ability popup names for this battler (an innate when one just acted)
 u32 LONG_CALL PMFG_DisplayedAbility(struct BattleStruct *ctx, int battlerId);
+u32 LONG_CALL PMFG_BasePowerModifier(struct BattleStruct *sp, struct DamageCalcStruct *damageCalc, u32 basePowerModifier);
 
 /**
  *  @brief perform damage division, setting the variables that need to be set for damage in general
