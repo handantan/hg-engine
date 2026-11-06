@@ -415,8 +415,9 @@ void SetupAndStartTotemBattle(TaskManager *taskManager, u16 species, u8 level, u
 }
 
 int LONG_CALL PokeParty_GetPokeCount(void *party); // rom.ld
-u16 ItemToMachineMoveIndex(u16 itemId);            // src/item.c
-BOOL GetMonMachineMoveCompat(struct PartyPokemon *pp, u16 machineMoveIndex); // src/pokemon.c
+// LONG_CALL: this overlay links apart from src/*.c; a plain BL gets an ARM veneer into Thumb code and hangs
+u16 LONG_CALL ItemToMachineMoveIndex(u16 itemId); // src/item.c
+BOOL LONG_CALL GetMonMachineMoveCompat(struct PartyPokemon *pp, u16 machineMoveIndex); // src/pokemon.c
 
 /**
  *  @brief PMFG REQ-TGT-QOL-001: the party slot that can use a field move (scr_seq 146: Cut, Rock Smash, Strength, Surf,
