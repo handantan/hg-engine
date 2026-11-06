@@ -886,7 +886,9 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                     // sp->battlemon[battlerId].condition2 -= 1 << 13;
                     sp->binding_turns[battlerId]--;
                     if (sp->binding_turns[battlerId]) {
-                        sp->hp_calc_work = BattleDamageDivide(sp->battlemon[battlerId].maxhp * -1, 8);
+                        // PMFG REQ-TGT-BTL-004: Binding Band on the binder makes it 1/6
+                        int binder = sp->battlemon[battlerId].moveeffect.battlerIdBinding;
+                        sp->hp_calc_work = BattleDamageDivide(sp->battlemon[battlerId].maxhp * -1, HeldItemHoldEffectGet(sp, binder) == HOLD_EFFECT_TRAPPING_DAMAGE_UP ? 6 : 8);
                         LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_BIND_EFFECT);
                     } else {
                         LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_BIND_END);
