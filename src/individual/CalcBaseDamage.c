@@ -965,6 +965,13 @@ int UNUSED CalcBaseDamageInternal(struct BattleSystem *bw, struct BattleStruct *
     movepower = QMul_RoundDown(movepower, basePowerModifier);
     movepower = movepower < 1 ? 1 : movepower;
     movepower = movepower % 65536;
+    // PMFG REQ-TGT-BTL-007: Tera-type moves below 60 BP hit at 60 (SoulGold battle_util.c:8868-8881): not multi-hit,
+    // priority 0, not variable/HP-based power; after every base power modifier
+    if (movepower < 60 && sp->battlemon[attacker].is_currently_terastallized && movetype == sp->battlemon[attacker].tera_type
+        && sp->moveTbl[moveno].power > 1 && sp->moveTbl[moveno].priority == 0 && !IsMultiHitMove(moveno)
+        && moveno != MOVE_ERUPTION && moveno != MOVE_WATER_SPOUT && moveno != MOVE_DRAGON_ENERGY) {
+        movepower = 60;
+    }
 
 #ifdef DEBUG_DAMAGE_CALC
     debug_printf("\n=================\n");

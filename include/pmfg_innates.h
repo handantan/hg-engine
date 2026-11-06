@@ -7,6 +7,7 @@
 
 #define PMFG_NUM_INNATES 3
 #define PMFG_FLAG_GAME_CLEAR 0x964 // pret/pokeheartgold include/constants/flags.h FLAG_GAME_CLEAR (Johto League beaten)
+#define PMFG_FLAG_TERA_ORB_CHARGED 0x4D // REQ-TGT-BTL-007; = FLAG_PMFG_TERA_ORB_CHARGED in asm/include/flags.inc
 
 
 u32 LONG_CALL PMFG_UnlockedInnateCount(void);

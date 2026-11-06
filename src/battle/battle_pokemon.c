@@ -1168,8 +1168,7 @@ void LONG_CALL ClearBattleMonFlags(struct BattleStruct *sp, int client)
     sp->battlemon[client].air_balloon_flag = 0;
     sp->battlemon[client].potentially_affected_by_psychic_terrain_move_used_flag = 0;
     sp->battlemon[client].ability_activated_flag = 0;
-    sp->battlemon[client].tera_type = 0;
-    sp->battlemon[client].is_currently_terastallized = 0;
+    PMFG_TeraOnLoad(sp, client); // PMFG REQ-TGT-BTL-007: own Tera type; Tera stays for the battle
     sp->battlemon[client].is_currently_dynamaxed = 0;
     sp->battlemon[client].has_dynamaxed_before = 0;
     sp->battlemon[client].type3 = TYPE_TYPELESS;

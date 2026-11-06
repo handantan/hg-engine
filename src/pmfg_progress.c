@@ -163,3 +163,31 @@ void LONG_CALL PmfgEntryMark(struct BattleStruct *sp, int client, u32 bit)
     sp->battlemon[client].ability_activated_flag = 1;
     sp->pmfgVanillaEntryDone[client] |= bit;
 }
+
+// ---- PMFG REQ-TGT-BTL-007 Terastallization (Docs/plan/phase-4-btl-007.md). Terastallizing itself: ServerBeforeAct.c ----
+
+/**
+ *  @brief a battler's mon was loaded (switch-in, faint, Transform; from ClearBattleMonFlags): Tera again if this party
+ *  slot already Terastallized this battle (Tera lasts the whole battle), else not Terastallized.
+ *  shortcut: once per battle per side, not per trainer (a multi battle's two trainers share it); fine while no PMFG trainer Terastallizes
+ */
+void LONG_CALL PMFG_TeraOnLoad(struct BattleStruct *sp, int client)
+{
+    BOOL tera = sp->pmfgTeraSlot[client & 1] == sp->sel_mons_no[client] + 1;
+    sp->battlemon[client].is_currently_terastallized = tera;
+    sp->battlemon[client].tera_type = tera ? sp->pmfgTeraType[client & 1] : 0;
+}
+
+u32 LONG_CALL PMFG_StabKind(struct BattleStruct *sp, int attacker, int type)
+{
+    struct BattlePokemon *bm = &sp->battlemon[attacker];
+    // a Terastallized mon's own types can't change (hg-engine blocks Soak, Forest's Curse...), so these stay the original types
+    BOOL base = bm->type1 == type || bm->type2 == type || bm->type3 == type;
+    if (!bm->is_currently_terastallized) {
+        return base ? 2 : 0;
+    }
+    if (bm->tera_type == type) {
+        return base ? 3 : 2;
+    }
+    return base ? 1 : 0;
+}

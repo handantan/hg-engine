@@ -177,6 +177,7 @@ _0216:
     wait_movement
     get_party_lead_alive VAR_SPECIAL_x8008
     heal_party
+    setflag FLAG_PMFG_TERA_ORB_CHARGED // PMFG REQ-TGT-BTL-007: heals recharge the Tera Orb
     return
 
 _023A:
@@ -359,6 +360,7 @@ scr_seq_0003_069:
     play_fanfare SEQ_ME_ASA
     wait_fanfare
     heal_party
+    setflag FLAG_PMFG_TERA_ORB_CHARGED // PMFG REQ-TGT-BTL-007: heals recharge the Tera Orb
     restore_overworld
     fade_screen 6, 1, 1, RGB_BLACK
     wait_fade
@@ -1072,6 +1074,7 @@ scr_seq_0003_012:
     play_fanfare SEQ_ME_ASA
     wait_fanfare
     heal_party
+    setflag FLAG_PMFG_TERA_ORB_CHARGED // PMFG REQ-TGT-BTL-007: heals recharge the Tera Orb
     fade_screen 6, 1, 1, RGB_BLACK
     wait_fade
     npc_msg 42

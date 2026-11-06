@@ -1131,6 +1131,10 @@ struct BattleStruct {
     u16 pmfgScriptEpoch;              // +1 per battle script load, not counting Call returns
     u16 pmfgLastAbility[CLIENT_MAX];  // last ability BattlerHasAbility/BattlerHasInnate matched
     u16 pmfgLastAbilityEpoch[CLIENT_MAX];
+    // PMFG (REQ-TGT-BTL-007): Terastallization, src/pmfg_progress.c
+    u8 pmfgTeraWant;    // No2Bit(battler): Terastallize before this turn's moves (battle input / test ACTION_TERA)
+    u8 pmfgTeraSlot[2]; // per side: party slot + 1 of the mon that Terastallized (once per battle), 0 = not yet
+    u8 pmfgTeraType[2]; // per side: that mon's Tera type
 };
 
 enum {
@@ -3453,6 +3457,9 @@ BOOL LONG_CALL BattleSystem_CheckMoveEffect(void *bw, struct BattleStruct *sp, i
 /// @param type
 /// @return whether the client has the type
 BOOL LONG_CALL HasType(struct BattleStruct *ctx, int battlerId, int type);
+// PMFG REQ-TGT-BTL-007 (src/pmfg_progress.c)
+void LONG_CALL PMFG_TeraOnLoad(struct BattleStruct *sp, int client);
+u32 LONG_CALL PMFG_StabKind(struct BattleStruct *sp, int attacker, int type); // 0 none, 1 base type while Tera (no Adaptability), 2 plain STAB, 3 Tera + base type
 BOOL LONG_CALL PMFG_HasLevitateAlias(struct BattleStruct *sp, int attacker, int battler);
 int LONG_CALL PMFG_AbilityPriority(struct BattleStruct *ctx, int battlerId, int move);
 BOOL LONG_CALL PMFG_WeatherSureHit(void *bsys, struct BattleStruct *ctx, int attacker, int move);

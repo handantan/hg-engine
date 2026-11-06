@@ -2593,6 +2593,13 @@ void LONG_CALL getEquivalentAttackAndDefense(struct BattleStruct *sp, u16 attack
             *equivalentDefense = rawPhysicalDefense;
         }
         break;
+    case MOVE_TERA_BLAST: // PMFG REQ-TGT-BTL-007: physical when the Terastallized user's staged Attack is higher (ties stay special)
+        if (sp->battlemon[attacker].is_currently_terastallized && tempPhysicalAttack > tempSpecialAttack) {
+            *movesplit = SPLIT_PHYSICAL;
+            *equivalentAttack = rawPhysicalAttack;
+            *equivalentDefense = rawPhysicalDefense;
+        }
+        break;
 
     default:
         break;
@@ -3632,7 +3639,7 @@ int LONG_CALL GetDynamicMoveType(struct BattleSystem *bsys, struct BattleStruct 
                     break;
                 }
             }
-            type = ctx->battlemon[battlerId].tera_type;
+            return ctx->battlemon[battlerId].tera_type; // PMFG REQ-TGT-BTL-007: the -ate/Normalize step below would turn it back into Normal
         } else {
             type = TYPE_NORMAL;
         }

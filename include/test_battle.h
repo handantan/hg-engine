@@ -110,6 +110,8 @@ struct PACKED TestBattleScenario {
 #define ACTION_MOVE_SLOT_2   1
 #define ACTION_MOVE_SLOT_3   2
 #define ACTION_MOVE_SLOT_4   3
+#define ACTION_TERA          0x80 // PMFG REQ-TGT-BTL-007: | a move slot = Terastallize, then use it
+u8 LONG_CALL TestBattle_TakeTeraWants(void);
 #define ACTION_SWITCH_SLOT_0 4
 #define ACTION_SWITCH_SLOT_1 5
 #define ACTION_SWITCH_SLOT_2 6

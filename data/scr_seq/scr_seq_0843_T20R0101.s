@@ -1362,6 +1362,7 @@ scr_seq_T20R0101_013:
 	wait_fade
 	play_fanfare SEQ_ME_ASA
 	heal_party
+	setflag FLAG_PMFG_TERA_ORB_CHARGED // PMFG REQ-TGT-BTL-007: heals recharge the Tera Orb
 	scrcmd_436
 	restore_overworld
 	wait_fanfare

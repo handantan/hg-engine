@@ -477,23 +477,21 @@ void CalcDamageOverall(void *bw, struct BattleStruct *sp)
 #endif // DEBUG_DAMAGE_ROLLS
             damage = QMul_RoundDown(damage, UQ412__1_5);
         }
-    } else if (((sp->server_status_flag & SERVER_STATUS_FLAG_TYPE_FLAT) == 0) && HasType(sp, attacker, type)) {
-        if (ATK_HAS(ABILITY_ADAPTABILITY)) {
+    } else if ((sp->server_status_flag & SERVER_STATUS_FLAG_TYPE_FLAT) == 0) {
+        // PMFG REQ-TGT-BTL-007: Tera STAB (SoulGold battle_terastal.c:133-186); Adaptability is read only when it can apply, as before
+        u32 kind = PMFG_StabKind(sp, attacker, type), stab = 0;
+        if (kind == 1) {
+            stab = UQ412__1_5;
+        } else if (kind) {
+            stab = ATK_HAS(ABILITY_ADAPTABILITY) ? (kind == 3 ? UQ412__2_25 : UQ412__2_0) : (kind == 3 ? UQ412__2_0 : UQ412__1_5);
+        }
+        if (stab) {
 #ifdef DEBUG_DAMAGE_ROLLS
             for (int u = 0; u < 16; u++) {
-                predamage[u] = QMul_RoundDown(predamage[u], UQ412__2_0);
-                ;
+                predamage[u] = QMul_RoundDown(predamage[u], stab);
             }
 #endif // DEBUG_DAMAGE_ROLLS
-            damage = QMul_RoundDown(damage, UQ412__2_0);
-        } else {
-#ifdef DEBUG_DAMAGE_ROLLS
-            for (int u = 0; u < 16; u++) {
-                predamage[u] = QMul_RoundDown(predamage[u], UQ412__1_5);
-                ;
-            }
-#endif // DEBUG_DAMAGE_ROLLS
-            damage = QMul_RoundDown(damage, UQ412__1_5);
+            damage = QMul_RoundDown(damage, stab);
         }
     }
 

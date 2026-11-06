@@ -147,6 +147,19 @@ BOOL LONG_CALL TestBattle_HasMoreExpectations()
  * @param hp Custom HP (0 = use max)
  * @param status Status condition
  */
+static u8 sTeraWant; // PMFG REQ-TGT-BTL-007: No2Bit(battler) of ACTION_TERA this turn
+
+/**
+ *  @brief PMFG REQ-TGT-BTL-007: the battlers whose scripted action this turn has ACTION_TERA (then cleared); read by
+ *  PMFG_TryTerastallize (src/battle/pmfg_tera.c), which can't reach this overlay's ctx-less AI path otherwise
+ */
+u8 LONG_CALL TestBattle_TakeTeraWants(void)
+{
+    u8 want = sTeraWant;
+    sTeraWant = 0;
+    return want;
+}
+
 static void LONG_CALL TestBattle_OverridePokemon(struct PartyPokemon *mon, u16 species, u8 level, u8 form, u16 ability, u16 item, u16 moves[4], u16 hp, u32 status, const u16 furtherParams[NUM_FURTHER_TEST_PARAMS][2])
 {
     int i;
@@ -556,9 +569,12 @@ void LONG_CALL TestBattle_GetAIScriptedMove(int battlerId, u8 *moveSlot, u8 *tar
         return;
     }
 
-    if (action.action <= ACTION_MOVE_SLOT_4) {
-        *moveSlot = action.action;
+    if ((action.action & ~ACTION_TERA) <= ACTION_MOVE_SLOT_4) {
+        *moveSlot = action.action & ~ACTION_TERA;
         *target = action.target;
+        if (action.action & ACTION_TERA) {
+            sTeraWant |= No2Bit(battlerId);
+        }
     }
     IncrementScriptIndex(battlerId);
 }
@@ -828,8 +844,10 @@ void LONG_CALL TestBattle_autoSelectPlayerMoves(struct BattleSystem *bsys, struc
                 mon = &sCurrentScenario->playerParty[partySlot];
             }
 
-            ctx->battlemon[battlerId].tera_type = mon->teraType;
-            ctx->battlemon[battlerId].is_currently_terastallized = mon->isTerastallized;
+            if (mon->teraType || mon->isTerastallized) { // PMFG REQ-TGT-BTL-007: else keep the personality's Tera type
+                ctx->battlemon[battlerId].tera_type = mon->teraType;
+                ctx->battlemon[battlerId].is_currently_terastallized = mon->isTerastallized;
+            }
         }
     }
 
@@ -857,7 +875,10 @@ void LONG_CALL TestBattle_autoSelectPlayerMoves(struct BattleSystem *bsys, struc
             IncrementScriptIndex(0);
         } else {
             // fight
-            u8 moveSlot = action.action;
+            u8 moveSlot = action.action & ~ACTION_TERA;
+            if (action.action & ACTION_TERA) {
+                sTeraWant |= No2Bit(0);
+            }
             u8 target = action.target;
             ctx->playerActions[0][0] = CONTROLLER_COMMAND_FIGHT_INPUT;
             ctx->playerActions[0][1] = target;
@@ -894,7 +915,10 @@ void LONG_CALL TestBattle_autoSelectPlayerMoves(struct BattleSystem *bsys, struc
                 IncrementScriptIndex(2);
             } else {
                 // fight
-                u8 moveSlot = action.action;
+                u8 moveSlot = action.action & ~ACTION_TERA;
+                if (action.action & ACTION_TERA) {
+                    sTeraWant |= No2Bit(2);
+                }
                 u8 target = action.target;
                 ctx->playerActions[2][0] = CONTROLLER_COMMAND_FIGHT_INPUT;
                 ctx->playerActions[2][1] = target;

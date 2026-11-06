@@ -12,12 +12,16 @@
 #include "constants/system_control.h"
 
 #include "battle.h"
+#include "save.h"
+#include "test_battle.h"
+#include "pmfg_innates.h"
 #include "item.h"
 #include "mega.h"
 #include "overlay.h"
 #include "pokemon.h"
 
 static BOOL MegaEvolutionOrUltraBurst(struct BattleSystem *bsys, struct BattleStruct *ctx);
+static BOOL PMFG_TryTerastallize(struct BattleSystem *bw, struct BattleStruct *sp);
 
 /********************************************************************************************************************/
 /********************************************************************************************************************/
@@ -317,6 +321,12 @@ void __attribute__((section(".init"))) ServerBeforeActInternal(struct BattleSyst
             // debug_printf("In SBA_TERASTALLIZING\n");
 
             // 太晶化
+            if (PMFG_TryTerastallize(bw, sp)) { // PMFG REQ-TGT-BTL-007
+                LoadBattleSubSeqScript(sp, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_PMFG_TERASTALLIZE);
+                sp->next_server_seq_no = sp->server_seq_no;
+                sp->server_seq_no = CONTROLLER_COMMAND_RUN_SCRIPT;
+                return;
+            }
             sp->sba_seq_no++;
             break;
         }
@@ -435,5 +445,65 @@ static BOOL MegaEvolutionOrUltraBurst(struct BattleSystem *bsys, struct BattleSt
         }
         newBS.needMega[client_no] = MEGA_NO_NEED;
     }
+    return FALSE;
+}
+
+// ---- PMFG REQ-TGT-BTL-007 Terastallization (Docs/plan/phase-4-btl-007.md; rules in phase-4-btl-007-notes.md) ----
+
+static BOOL PMFG_CanTerastallize(struct BattleStruct *sp, int client)
+{
+    struct BattlePokemon *bm = &sp->battlemon[client];
+    if (!bm->hp || sp->pmfgTeraSlot[client & 1] || sp->playerActions[client][3] != SELECT_FIGHT_COMMAND
+        || IsMegaSpecies(bm->species, bm->form_no)
+        || CheckMegaData(bm->species, GetBattleMonItem(sp, client), bm->form_no)) { // SoulGold: no Tera while holding a Mega Stone
+        return FALSE;
+    }
+#ifndef DEBUG_BATTLE_SCENARIOS
+    if (!(client & 1) && !(CheckScriptFlag(FLAG_TERASTALIZATION_ENABLED) && CheckScriptFlag(PMFG_FLAG_TERA_ORB_CHARGED))) {
+        return FALSE; // the player needs the orb (hg-engine's enable flag, set by the obtain event) and its charge
+    }
+#endif
+    return TRUE;
+}
+
+/**
+ *  @brief SBA_TERASTALLIZING: Terastallize the next battler that asked to, in turn order.
+ *  @return TRUE if it did: the caller runs BATTLE_SUBSCRIPT_PMFG_TERASTALLIZE (battlerIdTemp, msg_work = Tera type), then this step again
+ */
+static BOOL PMFG_TryTerastallize(struct BattleSystem *bw, struct BattleStruct *sp)
+{
+    int max = BattleWorkClientSetMaxGet(bw);
+#ifdef DEBUG_BATTLE_SCENARIOS
+    sp->pmfgTeraWant |= TestBattle_TakeTeraWants();
+#endif
+    for (int i = 0; i < max; i++) {
+        int client = sp->turnOrder[i];
+        if (!(sp->pmfgTeraWant & No2Bit(client))) {
+            continue;
+        }
+        sp->pmfgTeraWant &= ~No2Bit(client);
+        if (!PMFG_CanTerastallize(sp, client)) {
+            continue;
+        }
+        struct PartyPokemon *pp = BattleWorkPokemonParamGet(bw, client, sp->sel_mons_no[client]);
+        // D-060 1a, SoulGold GetTeraTypeFromPersonality (pokemon.c:7183): primary type if personality bit 0 is clear, else secondary
+        u32 type = GetMonData(pp, (GetMonData(pp, MON_DATA_PERSONALITY, NULL) & 1) ? MON_DATA_TYPE_2 : MON_DATA_TYPE_1, NULL);
+#ifdef DEBUG_BATTLE_SCENARIOS
+        if (sp->battlemon[client].tera_type) {
+            type = sp->battlemon[client].tera_type; // a test's preset teraType
+        }
+#endif
+        sp->battlemon[client].tera_type = type;
+        sp->battlemon[client].is_currently_terastallized = 1;
+        sp->pmfgTeraSlot[client & 1] = sp->sel_mons_no[client] + 1;
+        sp->pmfgTeraType[client & 1] = type;
+        if (!(client & 1)) {
+            ClearScriptFlag(PMFG_FLAG_TERA_ORB_CHARGED); // recharged by heal_party
+        }
+        sp->battlerIdTemp = client;
+        sp->msg_work = type;
+        return TRUE;
+    }
+    sp->pmfgTeraWant = 0;
     return FALSE;
 }
