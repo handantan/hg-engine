@@ -1121,6 +1121,10 @@ struct BattleStruct {
     u8 pmfgAuraShieldUsed;  // No2Bit(battler): Aura Shield spent this switch-in (reset in ClearBattleMonFlags)
     u8 pmfgAuraShieldPopup; // No2Bit(battler): show Aura Shield's popup after the hit (ServerDoPostMoveEffects.c)
     u8 pmfgEndTurnDone; // bit k: sPmfgEndTurnAbilities[k] done for the current battler (ServerFieldConditionCheck.c)
+    // PMFG (REQ-TGT-MON-003): which ability a popup names; see PMFG_DisplayedAbility
+    u16 pmfgScriptEpoch;              // +1 per battle script load, not counting Call returns
+    u16 pmfgLastAbility[CLIENT_MAX];  // last ability BattlerHasAbility/BattlerHasInnate matched
+    u16 pmfgLastAbilityEpoch[CLIENT_MAX];
 };
 
 enum {
@@ -1978,6 +1982,8 @@ static inline __attribute__((always_inline)) BOOL ClientHasAbility(const struct 
     return client->ability == ability || ClientHasInnate(client, ability);
 }
 BOOL LONG_CALL BattlerHasAbility(struct BattleStruct *ctx, int battlerId, u32 ability);
+/// REQ-TGT-MON-003: the ability an ability popup names for this battler (an innate when one just acted)
+u32 LONG_CALL PMFG_DisplayedAbility(struct BattleStruct *ctx, int battlerId);
 
 /**
  *  @brief perform damage division, setting the variables that need to be set for damage in general

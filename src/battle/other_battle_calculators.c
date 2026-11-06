@@ -2893,6 +2893,15 @@ int LONG_CALL CheckSideAbilityWithInnates(void *bw, struct BattleStruct *sp, int
     return cnt;
 }
 
+/// REQ-TGT-MON-003: remember the ability a check matched, for PMFG_DisplayedAbility
+static void PMFG_NoteAbility(struct BattleStruct *ctx, int battlerId, u32 ability)
+{
+    if (battlerId >= 0 && battlerId < CLIENT_MAX) {
+        ctx->pmfgLastAbility[battlerId] = ability;
+        ctx->pmfgLastAbilityEpoch[battlerId] = ctx->pmfgScriptEpoch;
+    }
+}
+
 /// @brief REQ-TGT-MON-001: the main ability if it is in `abilities`, else the first unlocked innate in it, else the main ability
 /// shortcut: one ability per switch per call, so two innates in the same switch fire only the first; split the switch if that matters
 u32 LONG_CALL BattlerAbilityIn(struct BattleStruct *sp, int battlerId, const u16 *abilities, u32 count)
@@ -2901,6 +2910,7 @@ u32 LONG_CALL BattlerAbilityIn(struct BattleStruct *sp, int battlerId, const u16
     u16 innates[PMFG_NUM_INNATES];
     for (u32 i = 0; i < count; i++) {
         if (abilities[i] == main) {
+            PMFG_NoteAbility(sp, battlerId, main);
             return main;
         }
     }
@@ -2908,6 +2918,7 @@ u32 LONG_CALL BattlerAbilityIn(struct BattleStruct *sp, int battlerId, const u16
     for (u32 j = 0; j < PMFG_NUM_INNATES; j++) {
         for (u32 i = 0; i < count; i++) {
             if (innates[j] != ABILITY_NONE && abilities[i] == innates[j]) {
+                PMFG_NoteAbility(sp, battlerId, innates[j]);
                 return innates[j];
             }
         }
@@ -4157,7 +4168,11 @@ BOOL LONG_CALL BattlerHasInnate(struct BattleStruct *ctx, int battlerId, u32 abi
     }
     u16 innates[PMFG_NUM_INNATES];
     GetBattlerInnates(ctx, battlerId, innates);
-    return innates[0] == ability || innates[1] == ability || innates[2] == ability;
+    if (innates[0] == ability || innates[1] == ability || innates[2] == ability) {
+        PMFG_NoteAbility(ctx, battlerId, ability);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 /// @brief the battler's unlocked innates; locked slots read ABILITY_NONE
@@ -4175,7 +4190,32 @@ void LONG_CALL GetBattlerInnates(struct BattleStruct *ctx, int battlerId, u16 *o
 /// @brief main ability (as GetBattlerAbility resolves it) or an unlocked innate
 BOOL LONG_CALL BattlerHasAbility(struct BattleStruct *ctx, int battlerId, u32 ability)
 {
-    return GetBattlerAbility(ctx, battlerId) == ability || BattlerHasInnate(ctx, battlerId, ability);
+    if (GetBattlerAbility(ctx, battlerId) == ability) {
+        PMFG_NoteAbility(ctx, battlerId, ability);
+        return TRUE;
+    }
+    return BattlerHasInnate(ctx, battlerId, ability);
+}
+
+/// REQ-TGT-MON-003: a popup without an explicit ability names the ability the battler's last check matched, if that
+/// check ran in this script or the gap just before it (where the trigger sits) and the battler still has it; else the
+/// main ability, as before. Popups usually open their script, before other checks on the battler run.
+/// shortcut: a trigger that reads the main ability directly (e.g. CompareMonDataToValue BMON_DATA_ABILITY) right after
+/// an innate matched names the innate, upgrade to passing the ability in each AbilityPopup if a playtest shows one.
+/// Battle text with an ability placeholder (ov12_0224819C) still names the main ability; no innate path reached one.
+u32 LONG_CALL PMFG_DisplayedAbility(struct BattleStruct *ctx, int battlerId)
+{
+    u32 main = ctx->battlemon[battlerId].ability;
+    u32 ability = ABILITY_NONE;
+    if ((u16)(ctx->pmfgScriptEpoch - ctx->pmfgLastAbilityEpoch[battlerId]) <= 1) {
+        ability = ctx->pmfgLastAbility[battlerId];
+    }
+    if (ability == ABILITY_NONE || ability == main) {
+        return main;
+    }
+    u16 innates[PMFG_NUM_INNATES];
+    GetBattlerInnates(ctx, battlerId, innates); // not BattlerHasInnate: reading must not count as a match
+    return (innates[0] == ability || innates[1] == ability || innates[2] == ability) ? ability : main;
 }
 
 /// @brief Check if ability causes Trace to fail

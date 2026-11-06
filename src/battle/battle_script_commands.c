@@ -693,6 +693,7 @@ int read_battle_script_param(struct BattleStruct *sp)
  */
 void LONG_CALL LoadBattleSubSeqScript(struct BattleStruct *sp, int kind, int index)
 {
+    sp->pmfgScriptEpoch++; // REQ-TGT-MON-003
     sp->skill_arc_kind = kind;
     sp->skill_arc_index = index;
     sp->skill_seq_no = 0;
@@ -735,7 +736,9 @@ BOOL LONG_CALL PopBattleScript(struct BattleStruct *sp)
 #ifdef DEBUG_BATTLE_SCRIPT_COMMANDS
         debug_printf("\n=================\Popping script index %d...\n\n", sp->push_count);
 #endif
+        u16 epoch = sp->pmfgScriptEpoch; // REQ-TGT-MON-003: returning from a Call continues the same script
         LoadBattleSubSeqScript(sp, sp->push_skill_arc_kind[sp->push_count], sp->push_skill_arc_index[sp->push_count]);
+        sp->pmfgScriptEpoch = epoch;
         sp->skill_seq_no = sp->push_skill_seq_no[sp->push_count];
         return FALSE;
     }
@@ -5020,7 +5023,7 @@ BOOL btl_scr_cmd_116_abilitypopup(void *bw, struct BattleStruct *sp)
             sp->skill_seq_no -= 3; // reset position to current command so script does not continue
 
             if (ability == -1) {
-                ability = sp->battlemon[battler].ability;
+                ability = PMFG_DisplayedAbility(sp, battler); // REQ-TGT-MON-003: was the main ability
             }
 
             sp->abilityPopupWork = work;

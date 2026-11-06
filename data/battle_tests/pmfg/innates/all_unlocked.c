@@ -64,7 +64,7 @@ BEGIN_TEST
         },
     },
     .expectations = {
-        // the effect, not the popup: the popup still names the main ability ("Feraligatr's Torrent"), REQ-TGT-MON-003
+        // the effect; popup_names_innate.c checks the popup (REQ-TGT-MON-003)
         { .expectationType = EXPECTATION_TYPE_MESSAGE, .expectationValue.message = "The opposing Snorlax's Attack fell!" },
     },
     .innatesUnlocked = TRUE,
