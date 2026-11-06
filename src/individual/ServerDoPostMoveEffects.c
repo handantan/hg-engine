@@ -1802,6 +1802,25 @@ int LONG_CALL Activate_MirrorHerb_WhiteHerb_EjectPack(void *bsys, struct BattleS
         int ret = FALSE;
         int client_no = ctx->turnOrder[ctx->swoak_work];
         ctx->swoak_work++;
+        // PMFG REQ-TGT-BTL-003: Opportunist copies the stages the mover raised on itself with this move
+        // shortcut: raises outside a move (Speed Boost, entry abilities) are not copied, add a hook there if a playtest needs it
+        if (ctx->battlemon[client_no].hp && IsClientEnemy(bsys, client_no) != IsClientEnemy(bsys, ctx->attack_client)
+            && BattlerHasAbility(ctx, client_no, ABILITY_OPPORTUNIST)) {
+            for (int stat = STAT_ATTACK; stat < 8; stat++) {
+                if (ctx->pmfgMoverGain[stat] > 0 && ctx->battlemon[client_no].states[stat] < 12) {
+                    int stage = ctx->battlemon[client_no].states[stat] + ctx->pmfgMoverGain[stat];
+                    ctx->battlemon[client_no].states[stat] = stage > 12 ? 12 : stage;
+                    ret = TRUE;
+                }
+            }
+            if (ret) {
+                ctx->battlerIdTemp = client_no;
+                LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_PMFG_OPPORTUNIST);
+                ctx->next_server_seq_no = ctx->server_seq_no;
+                ctx->server_seq_no = CONTROLLER_COMMAND_RUN_SCRIPT;
+                return TRUE;
+            }
+        }
         int itemHeldEffect = HeldItemHoldEffectGet(ctx, client_no);
         switch (itemHeldEffect) {
         case HOLD_EFFECT_SWITCH_OUT_ON_STAT_DROP: // Eject Pack

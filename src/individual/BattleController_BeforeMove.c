@@ -225,6 +225,7 @@ void __attribute__((section(".init"))) BattleController_BeforeMove(struct Battle
             ctx->battlemon[ctx->attack_client].effect_of_moves &= ~MOVE_EFFECT_FLAG_GRUDGE;
         }
         // reset new stuff here, because subscript is modified
+        memset(ctx->pmfgMoverGain, 0, sizeof(ctx->pmfgMoverGain)); // PMFG REQ-TGT-BTL-003: Opportunist
         // ctx->battlemon[ctx->attack_client].moveeffect.custapBerryFlag = 0;
         // ctx->battlemon[ctx->attack_client].moveeffect.quickClawFlag = 0;
 

@@ -555,6 +555,7 @@
 #define BATTLE_SUBSCRIPT_PMFG_AROMA_VEIL_FAIL                   (546) // REQ-TGT-BTL-003
 #define BATTLE_SUBSCRIPT_PMFG_COSTAR                            (547) // REQ-TGT-BTL-003
 #define BATTLE_SUBSCRIPT_PMFG_CUD_CHEW                          (548) // REQ-TGT-BTL-003
+#define BATTLE_SUBSCRIPT_PMFG_OPPORTUNIST                       (549) // REQ-TGT-BTL-003
 
 #define MAX_BASE_SUBSCRIPT_NUM 527
 

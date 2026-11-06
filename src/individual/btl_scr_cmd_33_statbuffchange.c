@@ -207,6 +207,9 @@ BOOL btl_scr_cmd_33_statbuffchange(void *bw, struct BattleStruct *sp)
                 sp->mp.param[1] = STAT_ATTACK + stattochange;
             }
             battlemon->states[STAT_ATTACK + stattochange] += statchange;
+            if (sp->state_client == sp->attack_client) {
+                sp->pmfgMoverGain[STAT_ATTACK + stattochange] += statchange; // PMFG REQ-TGT-BTL-003: Opportunist copies it after the move
+            }
             if (battlemon->states[STAT_ATTACK + stattochange] > 12) {
                 battlemon->states[STAT_ATTACK + stattochange] = 12;
             }
