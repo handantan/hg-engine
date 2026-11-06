@@ -24,6 +24,8 @@ static const u8 sPartyMenuRotomCatalogFormOrder[] = { 3, 4, 5, /*quit*/ 0, 0, 1,
 u32 LONG_CALL getButtonColorDepressed(int selection);
 u32 LONG_CALL getButtonColorRaised(int selection);
 void PartyMenu_ShowRotomCatalogList(struct PartyMenu *partyMenu);
+u16 ItemToMachineMoveIndex(u16 itemId);                                      // src/item.c
+BOOL GetMonMachineMoveCompat(struct PartyPokemon *pp, u16 machineMoveIndex); // src/pokemon.c
 
 u8 LONG_CALL sub_0207B0B0(struct PartyMenu *wk, u8 *buf)
 {
@@ -63,6 +65,22 @@ u8 LONG_CALL sub_0207B0B0(struct PartyMenu *wk, u8 *buf)
                 fieldEffect = MoveId_GetFieldEffectId(move);
                 if (fieldEffect != 0xFF) {
                     buf[count] = fieldEffect;
+                    ++count;
+                    PartyMenu_ContextMenuAddFieldMove(wk, move, fieldMoveIndex);
+                    ++fieldMoveIndex;
+                }
+            }
+
+            // PMFG REQ-TGT-QOL-001 (B-036, as H&S party_menu.c:2961-2996): Fly and Flash for a mon that can learn them, with
+            // the machine in the bag, as for field obstacles (script_commands.c). Badges are still checked when used.
+            static const u16 sPmfgMenuMachines[] = { ITEM_HM02, ITEM_TM070 }; // Fly, Flash
+            for (i = 0; i < NELEMS(sPmfgMenuMachines) && fieldMoveIndex < MAX_MON_MOVES; ++i) {
+                move = ItemToMachineMove(sPmfgMenuMachines[i]);
+                if (GetMonData(pp, MON_DATA_MOVE1, NULL) != move && GetMonData(pp, MON_DATA_MOVE2, NULL) != move
+                    && GetMonData(pp, MON_DATA_MOVE3, NULL) != move && GetMonData(pp, MON_DATA_MOVE4, NULL) != move
+                    && Bag_HasItem(Sav2_Bag_get(wk->args->fieldSystem->savedata), sPmfgMenuMachines[i], 1, HEAP_ID_PARTY_MENU)
+                    && GetMonMachineMoveCompat(pp, ItemToMachineMoveIndex(sPmfgMenuMachines[i]))) {
+                    buf[count] = MoveId_GetFieldEffectId(move);
                     ++count;
                     PartyMenu_ContextMenuAddFieldMove(wk, move, fieldMoveIndex);
                     ++fieldMoveIndex;
