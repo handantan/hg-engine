@@ -3,6 +3,7 @@
 #include "../../include/constants/maps.h"
 #include "../../include/debug.h"
 #include "../../include/map_events_internal.h"
+#include "../../include/pokemon.h"
 #include "../../include/save.h"
 #include "../../include/types.h"
 
@@ -106,4 +107,53 @@ u8 LONG_CALL EncounterSlot_WildMonSlotRoll_Headbutt(void)
     } else {
         return 5;
     }
+}
+
+// pret src/field/encounter_check.c:52-65
+struct EncounterGenState {
+    u32 playerId;
+    BOOL isRepel;
+    BOOL isSweetScent;
+    u8 level;
+    u8 isEgg;
+    u8 ability;
+    u8 unk_0F;
+    u8 unk_10;
+    u8 isSinjohMap;
+    u8 unownPuzzleFlags[4];
+    void *pokedex;
+};
+
+u32 LONG_CALL PlayerProfile_GetTrainerID(void *profile);
+BOOL LONG_CALL Save_VarsFlags_CheckAlphPuzzleFlag(void *varsFlags, int puzzle);
+
+#define MAP_RUINS_OF_ALPH_HALL_ENTRANCE_SINJOH_EVENT 491 // pret include/constants/maps.h
+
+/**
+ *  @brief PMFG (B-039): vanilla EncounterGenState_Init (overlay 2, 0x02248618; pret src/field/encounter_check.c:1374-1395)
+ *  keeps the lead's ability in a u8, so IDs above 255 aliased field abilities (Zero to Hero 278 -> Intimidate, Mind Float
+ *  534 -> Intimidate, All-Seeing Idol 521 -> Static). Same as vanilla, but those count as no field ability.
+ */
+void LONG_CALL EncounterGenState_Init(FieldSystem *fsys, struct PartyPokemon *mon, const void *encData UNUSED, struct EncounterGenState *gen)
+{
+    if (!GetMonData(mon, MON_DATA_IS_EGG, NULL)) {
+        u32 ability = GetMonData(mon, MON_DATA_ABILITY, NULL);
+        gen->isEgg = FALSE;
+        gen->ability = ability > 0xFF ? ABILITY_NONE : ability;
+    } else {
+        gen->isEgg = TRUE;
+        gen->ability = 123; // vanilla NUM_ABILITIES: matches no ability
+    }
+    gen->level = 0;
+    gen->isRepel = FALSE;
+    gen->isSweetScent = FALSE;
+    gen->unk_0F = 0;
+    gen->unk_10 = 0;
+    void *varsFlags = SavArray_Flags_get(fsys->savedata);
+    gen->isSinjohMap = fsys->location->mapId == MAP_RUINS_OF_ALPH_HALL_ENTRANCE_SINJOH_EVENT;
+    for (int i = 0; i < 4; i++) {
+        gen->unownPuzzleFlags[i] = Save_VarsFlags_CheckAlphPuzzleFlag(varsFlags, i);
+    }
+    gen->pokedex = SaveData_GetDexPtr(fsys->savedata);
+    gen->playerId = PlayerProfile_GetTrainerID(Sav2_PlayerData_GetProfileAddr(fsys->savedata));
 }

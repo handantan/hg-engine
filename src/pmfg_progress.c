@@ -1,6 +1,7 @@
 #include "config.h"
 #include "types.h"
 #include "pokemon.h"
+#include "battle.h"
 #include "test_battle.h"
 #include "save.h"
 #include "constants/file.h"
@@ -143,4 +144,22 @@ void LONG_CALL PMFG_ApplyTrainerIVsEVs(struct PartyPokemon *mon)
     SetMonData(mon, MON_DATA_SPEED_EV, &ev);
     SetMonData(mon, physical ? MON_DATA_ATK_EV : MON_DATA_SPATK_EV, &ev);
     SetMonData(mon, defensive ? MON_DATA_DEF_EV : MON_DATA_SPDEF_EV, &ev);
+}
+
+/**
+ *  @brief PMFG (REQ-TGT-MON-001, B-018): can this hg-engine entry ability (PMFG_ENTRY_* bit) still fire this switch-in?
+ *  A cleared ability_activated_flag (switch-in, Skill Swap...) re-arms every bit.
+ */
+BOOL LONG_CALL PmfgEntryReady(struct BattleStruct *sp, int client, u32 bit)
+{
+    if (!sp->battlemon[client].ability_activated_flag) {
+        sp->pmfgVanillaEntryDone[client] = 0;
+    }
+    return !(sp->pmfgVanillaEntryDone[client] & bit);
+}
+
+void LONG_CALL PmfgEntryMark(struct BattleStruct *sp, int client, u32 bit)
+{
+    sp->battlemon[client].ability_activated_flag = 1;
+    sp->pmfgVanillaEntryDone[client] |= bit;
 }

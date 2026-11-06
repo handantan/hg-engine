@@ -1115,6 +1115,7 @@ struct BattleStruct {
     u8 pmfgLastAttackType[CLIENT_MAX]; // valid only when pmfgHasAttacked (the struct starts zeroed, and 0 is TYPE_NORMAL)
     u8 pmfgHasAttacked[CLIENT_MAX];
     u32 pmfgEntryDone[CLIENT_MAX]; // bit k: sPmfgEntryAbilities[k] fired this switch-in (SwitchInAbilityCheck.c)
+    u32 pmfgVanillaEntryDone[CLIENT_MAX]; // PMFG_ENTRY_* bits: hg-engine entry abilities fired (PmfgEntryReady)
     u32 pmfgHitDone;  // bit k: sPmfgHitAbilities[k] fired on this hit; bits 24+: Flameburst per foe (ServerDoPostMoveEffects.c)
     u16 pmfgMoveDone; // bit k: sPmfgMoveAbilities[k] fired after this move
     u8 pmfgKOs;       // foes the attacker KO'd with this move (Consume, Rock and Stone)
@@ -1973,6 +1974,23 @@ void LONG_CALL GetBattlerInnates(struct BattleStruct *ctx, int battlerId, u16 *o
 int LONG_CALL ContactAbility(struct BattleStruct *sp, int attacker);
 u32 LONG_CALL BattlerAbilityIn(struct BattleStruct *sp, int battlerId, const u16 *abilities, u32 count);
 /// REQ-TGT-MON-001: for `switch` over a battler's ability; the case labels are the list, so innates reach the cases too
+// PMFG (REQ-TGT-MON-001, B-018): hg-engine's entry abilities shared ability_activated_flag, so with innates the first one
+// to fire (e.g. Lugia's Pressure) blocked the rest (its Drizzle). Each now has a bit; the flag still means "something
+// fired", and a cleared flag (switch-in, Skill Swap...) re-arms every bit.
+enum {
+    PMFG_ENTRY_UNNERVE = 1 << 0, PMFG_ENTRY_SCREEN_CLEANER = 1 << 1, PMFG_ENTRY_WEATHER = 1 << 2, PMFG_ENTRY_CLOUD_NINE = 1 << 3,
+    PMFG_ENTRY_INTIMIDATE = 1 << 4, PMFG_ENTRY_DOWNLOAD = 1 << 5, PMFG_ENTRY_ANTICIPATION = 1 << 6, PMFG_ENTRY_FOREWARN = 1 << 7,
+    PMFG_ENTRY_FRISK = 1 << 8, PMFG_ENTRY_MOLD_BREAKER = 1 << 9, PMFG_ENTRY_PRESSURE = 1 << 10, PMFG_ENTRY_DARK_AURA = 1 << 11,
+    PMFG_ENTRY_FAIRY_AURA = 1 << 12, PMFG_ENTRY_AURA_BREAK = 1 << 13, PMFG_ENTRY_SURGE = 1 << 14, PMFG_ENTRY_WIND_POWER = 1 << 15,
+    PMFG_ENTRY_WIND_RIDER = 1 << 16, PMFG_ENTRY_ORICHALCUM_PULSE = 1 << 17, PMFG_ENTRY_HADRON_ENGINE = 1 << 18,
+    PMFG_ENTRY_COMATOSE = 1 << 19, PMFG_ENTRY_PASTEL_VEIL = 1 << 20, PMFG_ENTRY_HOSPITALITY = 1 << 21, PMFG_ENTRY_PROTEAN = 1 << 22,
+};
+
+// Out of line: SwitchInAbilityCheck's overlay must end below 0x023C2400, where BattleFormChangeCheck's overlay loads
+// while it runs (battle_pokemon.c BattleFormChangeCheck); inlined, these pushed it past that. In src/pmfg_progress.c (the battle overlay is full).
+BOOL LONG_CALL PmfgEntryReady(struct BattleStruct *sp, int client, u32 bit);
+void LONG_CALL PmfgEntryMark(struct BattleStruct *sp, int client, u32 bit);
+
 #define BATTLER_ABILITY_IN(sp, battlerId, ...) BattlerAbilityIn((sp), (battlerId), (const u16[]){ __VA_ARGS__ }, sizeof((const u16[]){ __VA_ARGS__ }) / sizeof(u16))
 
 // always_inline: src/individual/ overlays enter at the first byte of .text, so no out-of-line helper may land before the entry function

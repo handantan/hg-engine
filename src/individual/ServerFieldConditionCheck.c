@@ -1383,12 +1383,10 @@ void ServerFieldConditionCheck(void *bw, struct BattleStruct *sp)
                             sp->battlerIdTemp = ST_ServerDir2ClientNoGet(bw, sp, side);
                             ret = 1;
 
-                            // clear ability activated flag for wind power/rider
+                            // re-arm wind power/rider (PMFG: only their bits, so Intimidate & co. on the same mon stay spent;
+                            // innates count, so no ability check)
                             for (int index = side; index < client_set_max; index += 2) {
-                                u32 currAbility = GetBattlerAbility(sp, index);
-                                if (currAbility == ABILITY_WIND_POWER || currAbility == ABILITY_WIND_RIDER) {
-                                    sp->battlemon[index].ability_activated_flag = FALSE;
-                                }
+                                sp->pmfgVanillaEntryDone[index] &= ~(PMFG_ENTRY_WIND_POWER | PMFG_ENTRY_WIND_RIDER);
                             }
                         }
                     }

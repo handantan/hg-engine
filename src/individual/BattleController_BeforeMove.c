@@ -632,12 +632,12 @@ void __attribute__((section(".init"))) BattleController_BeforeMove(struct Battle
             // Protean cannot activate if the client is Terastallized
             && (!ctx->battlemon[ctx->attack_client].is_currently_terastallized)
             // Protean should activate only once per switch-in if gen 9 behavior
-            && (ctx->battlemon[ctx->attack_client].ability_activated_flag == 0 || PROTEAN_GENERATION < 9)) {
+            && (PmfgEntryReady(ctx, ctx->attack_client, PMFG_ENTRY_PROTEAN) || PROTEAN_GENERATION < 9)) {
             ctx->battlemon[ctx->attack_client].type1 = type;
             ctx->battlemon[ctx->attack_client].type2 = type;
             ctx->battlemon[ctx->attack_client].type3 = TYPE_TYPELESS;
 #if PROTEAN_GENERATION >= 9
-            ctx->battlemon[ctx->attack_client].ability_activated_flag = 1;
+            PmfgEntryMark(ctx, ctx->attack_client, PMFG_ENTRY_PROTEAN);
 #endif
             LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_HANDLE_PROTEAN_MESSAGE);
             ctx->msg_work = ctx->battlemon[ctx->attack_client].type1;

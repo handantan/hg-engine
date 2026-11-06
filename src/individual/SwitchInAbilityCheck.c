@@ -178,11 +178,11 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Unnerve / As One
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp)
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_UNNERVE)) && (sp->battlemon[client_no].hp)
                         && ((BattlerHasAbility(sp, client_no, ABILITY_AS_ONE_GLASTRIER))
                             || (BattlerHasAbility(sp, client_no, ABILITY_AS_ONE_SPECTRIER))
                             || (BattlerHasAbility(sp, client_no, ABILITY_UNNERVE)))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_UNNERVE);
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_HANDLE_UNNERVE_MESSAGE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -283,11 +283,11 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Screen Cleaner
                 {
-                    if (sp->battlemon[client_no].ability_activated_flag == 0
+                    if (PmfgEntryReady(sp, client_no, PMFG_ENTRY_SCREEN_CLEANER)
                         && sp->battlemon[client_no].hp
                         && BattlerHasAbility(sp, client_no, ABILITY_SCREEN_CLEANER)) {
                         u32 screens = SIDE_STATUS_REFLECT | SIDE_STATUS_LIGHT_SCREEN | SIDE_STATUS_AURORA_VEIL;
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_SCREEN_CLEANER);
                         if ((sp->side_condition[0] | sp->side_condition[1]) & screens) {
                             for (int side = 0; side < 2; side++) {
                                 sp->side_condition[side] &= ~screens;
@@ -371,52 +371,52 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Weather Ability
                 {
-                    if (!(CanUndergoPrimalReversion(sp, client_no)) && (sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp)) {
+                    if (!(CanUndergoPrimalReversion(sp, client_no)) && (PmfgEntryReady(sp, client_no, PMFG_ENTRY_WEATHER)) && (sp->battlemon[client_no].hp)) {
                         switch (BATTLER_ABILITY_IN(sp, client_no, ABILITY_DRIZZLE, ABILITY_SAND_STREAM, ABILITY_DROUGHT, ABILITY_SNOW_WARNING, ABILITY_DESOLATE_LAND, ABILITY_PRIMORDIAL_SEA, ABILITY_DELTA_STREAM)) {
                         case ABILITY_DRIZZLE:
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_WEATHER);
                             if ((sp->field_condition & FIELD_CONDITION_RAIN_ALL) == 0) {
                                 scriptnum = BATTLE_SUBSCRIPT_DRIZZLE;
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                             }
                             break;
                         case ABILITY_SAND_STREAM:
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_WEATHER);
                             if ((sp->field_condition & FIELD_CONDITION_SANDSTORM_ALL) == 0) {
                                 scriptnum = BATTLE_SUBSCRIPT_SAND_STREAM;
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                             }
                             break;
                         case ABILITY_DROUGHT:
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_WEATHER);
                             if ((sp->field_condition & FIELD_CONDITION_SUN_ALL) == 0) {
                                 scriptnum = BATTLE_SUBSCRIPT_DROUGHT;
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                             }
                             break;
                         case ABILITY_SNOW_WARNING:
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_WEATHER);
                             if ((sp->field_condition & FIELD_CONDITION_HAIL_ALL) == 0) {
                                 scriptnum = BATTLE_SUBSCRIPT_SNOW_WARNING;
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                             }
                             break;
                         case ABILITY_DESOLATE_LAND:
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_WEATHER);
                             if ((sp->field_condition & FIELD_CONDITION_EXTREMELY_HARSH_SUNLIGHT) == 0) {
                                 scriptnum = BATTLE_SUBSCRIPT_DESOLATE_LAND;
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                             }
                             break;
                         case ABILITY_PRIMORDIAL_SEA:
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_WEATHER);
                             if ((sp->field_condition & FIELD_CONDITION_HEAVY_RAIN) == 0) {
                                 scriptnum = BATTLE_SUBSCRIPT_PRIMORDIAL_SEA;
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                             }
                             break;
                         case ABILITY_DELTA_STREAM:
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_WEATHER);
                             if ((sp->field_condition & FIELD_CONDITION_STRONG_WINDS) == 0) {
                                 scriptnum = BATTLE_SUBSCRIPT_DELTA_STREAM;
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -432,8 +432,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Cloud Nine/Air Lock
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && ((BattlerHasAbility(sp, client_no, ABILITY_CLOUD_NINE)) || (BattlerHasAbility(sp, client_no, ABILITY_AIR_LOCK)))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_CLOUD_NINE)) && (sp->battlemon[client_no].hp) && ((BattlerHasAbility(sp, client_no, ABILITY_CLOUD_NINE)) || (BattlerHasAbility(sp, client_no, ABILITY_AIR_LOCK)))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_CLOUD_NINE);
                         scriptnum = BATTLE_SUBSCRIPT_HANDLE_CLOUD_NINE_MESSAGE;
                         sp->battlerIdTemp = client_no;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -443,9 +443,9 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Intimidate
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_INTIMIDATE))) {
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_INTIMIDATE)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_INTIMIDATE))) {
                         // mark intimidate as having activated if it can regardless of if it does so that abilities that suppress it don't suddenly let it activate once they disappear
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_INTIMIDATE);
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_INTIMIDATE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -455,7 +455,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Download
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_DOWNLOAD))) {
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_DOWNLOAD)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_DOWNLOAD))) {
                         {
                             int num;
                             int def = 0, spdef = 0;
@@ -467,7 +467,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                                 }
                             }
 
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_DOWNLOAD);
 
                             if ((def + spdef) != 0) {
                                 if (def >= spdef) {
@@ -488,8 +488,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Anticipation
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_ANTICIPATION))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_ANTICIPATION)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_ANTICIPATION))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_ANTICIPATION);
                         {
                             int num, pos;
                             u16 movenum;
@@ -526,8 +526,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Forewarn
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_FOREWARN))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_FOREWARN)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_FOREWARN))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_FOREWARN);
                         {
                             int num, pos;
                             u16 movenum;
@@ -597,7 +597,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Frisk
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == FALSE) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_FRISK))) {
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_FRISK)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_FRISK))) {
                         if (BattleTypeGet(bw) & BATTLE_TYPE_DOUBLES) {
                             int def[2];
 
@@ -622,11 +622,11 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                                 sp->defence_client = def[1];
                                 ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
                             } else {
-                                sp->battlemon[client_no].ability_activated_flag = TRUE;
+                                PmfgEntryMark(sp, client_no, PMFG_ENTRY_FRISK);
                                 sp->frisk_tracker = 0; // only reset frisk after everything
                             }
                         } else {
-                            sp->battlemon[client_no].ability_activated_flag = TRUE;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_FRISK);
                             sp->frisk_tracker = 0;
                             if ((sp->battlemon[client_no ^ 1].hp) && (sp->battlemon[client_no ^ 1].item)) // xor 1 will always result in opponent in single battle
                             {
@@ -665,8 +665,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Mold Breaker, Turboblaze, Teravolt
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && ((BattlerHasAbility(sp, client_no, ABILITY_MOLD_BREAKER)) || (BattlerHasAbility(sp, client_no, ABILITY_TURBOBLAZE)) || (BattlerHasAbility(sp, client_no, ABILITY_TERAVOLT)))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_MOLD_BREAKER)) && (sp->battlemon[client_no].hp) && ((BattlerHasAbility(sp, client_no, ABILITY_MOLD_BREAKER)) || (BattlerHasAbility(sp, client_no, ABILITY_TURBOBLAZE)) || (BattlerHasAbility(sp, client_no, ABILITY_TERAVOLT)))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_MOLD_BREAKER);
                         sp->battlerIdTemp = client_no;
                         if (BattlerHasAbility(sp, client_no, ABILITY_MOLD_BREAKER)) {
                             scriptnum = BATTLE_SUBSCRIPT_MOLD_BREAKER;
@@ -683,8 +683,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Pressure
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_PRESSURE))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_PRESSURE)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_PRESSURE))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_PRESSURE);
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_PRESSURE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -694,8 +694,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Dark Aura
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_DARK_AURA))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_DARK_AURA)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_DARK_AURA))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_DARK_AURA);
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_HANDLE_DARK_AURA_MESSAGE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -705,8 +705,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Fairy Aura
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_FAIRY_AURA))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_FAIRY_AURA)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_FAIRY_AURA))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_FAIRY_AURA);
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_HANDLE_FAIRY_AURA_MESSAGE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -716,8 +716,8 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Aura Break
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_AURA_BREAK))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_AURA_BREAK)) && (sp->battlemon[client_no].hp) && (BattlerHasAbility(sp, client_no, ABILITY_AURA_BREAK))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_AURA_BREAK);
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_HANDLE_AURA_BREAK_MESSAGE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -745,7 +745,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Surge Abilities
                 {
-                    if (sp->battlemon[client_no].ability_activated_flag == 0 && (sp->battlemon[client_no].hp)) {
+                    if (PmfgEntryReady(sp, client_no, PMFG_ENTRY_SURGE) && (sp->battlemon[client_no].hp)) {
                         switch (BATTLER_ABILITY_IN(sp, client_no, ABILITY_GRASSY_SURGE, ABILITY_MISTY_SURGE, ABILITY_ELECTRIC_SURGE, ABILITY_PSYCHIC_SURGE, ABILITY_HEATSTORM)) {
                         case ABILITY_HEATSTORM: // PMFG (REQ-TGT-ABL-001): sets Scorched Field
                             if (sp->terrainOverlay.type != SCORCHED_FIELD) {
@@ -779,7 +779,7 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                         }
 
                         if (ret == SWITCH_IN_CHECK_MOVE_SCRIPT) {
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_SURGE);
                             sp->battlerIdTemp = client_no; // For ability popup
                             sp->attack_client = client_no; // this should allow for the seeds to affect the terrain
                             scriptnum = BATTLE_SUBSCRIPT_CREATE_TERRAIN_OVERLAY;
@@ -913,14 +913,14 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                 // TODO:  was not sure where to add these
                 // Wind Power - charge the mon when tailwind activates/on switch in if tailwind is active
                 //     - post-move effect handled in MoveHitDefenderAbilityCheck
-                //     - ability_activated_flag is reset when tailwind runs out for these abilities in ServerFieldConditionCheck
+                //     - their PMFG_ENTRY_* bit is cleared when tailwind runs out (ServerFieldConditionCheck)
                 {
                     if ((sp->battlemon[client_no].hp)
                         // tailwind is active -- should catch if tailwind was just used as well
                         && (sp->tailwindCount[IsClientEnemy(bw, client_no)] != 0)
                         && (BattlerHasAbility(sp, client_no, ABILITY_WIND_POWER))
-                        && (sp->battlemon[client_no].ability_activated_flag == 0)) {
-                        sp->battlemon[client_no].ability_activated_flag = TRUE; // make sure to reset when clearing tailwind
+                        && (PmfgEntryReady(sp, client_no, PMFG_ENTRY_WIND_POWER))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_WIND_POWER); // make sure to reset when clearing tailwind
                         sp->battlerIdTemp = client_no;
                         sp->waza_work = sp->current_move_index;
                         scriptnum = BATTLE_SUBSCRIPT_HANDLE_CHARGE_BOOST;
@@ -931,14 +931,14 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // TODO:  was not sure where to add these
                 // Wind Rider - speed the mon up when tailwind activates/on switch in if tailwind is active
-                //     - ability_activated_flag is reset when tailwind runs out for these abilities in ServerFieldConditionCheck
+                //     - their PMFG_ENTRY_* bit is cleared when tailwind runs out (ServerFieldConditionCheck)
                 {
                     if ((sp->battlemon[client_no].hp)
                         // tailwind is active -- should catch if tailwind was just used as well
                         && (sp->tailwindCount[IsClientEnemy(bw, client_no)] != 0)
                         && (BattlerHasAbility(sp, client_no, ABILITY_WIND_RIDER) || BattlerHasAbility(sp, client_no, ABILITY_WIND_CHIME)) // PMFG: Wind Chime raises Sp. Atk
-                        && (sp->battlemon[client_no].ability_activated_flag == 0)) {
-                        sp->battlemon[client_no].ability_activated_flag = TRUE; // make sure to reset when clearing tailwind
+                        && (PmfgEntryReady(sp, client_no, PMFG_ENTRY_WIND_RIDER))) {
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_WIND_RIDER); // make sure to reset when clearing tailwind
                         sp->addeffect_param = BattlerHasAbility(sp, client_no, ABILITY_WIND_RIDER) ? MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE : MOVE_SUBSCRIPT_PTR_SP_ATTACK_UP_1_STAGE;
                         sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
                         sp->state_client = client_no;
@@ -953,9 +953,9 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                 // Orichalcum Pulse
                 {
                     if ((sp->battlemon[client_no].hp)
-                        && (sp->battlemon[client_no].ability_activated_flag == 0)
+                        && (PmfgEntryReady(sp, client_no, PMFG_ENTRY_ORICHALCUM_PULSE))
                         && (BattlerHasAbility(sp, client_no, ABILITY_ORICHALCUM_PULSE))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_ORICHALCUM_PULSE);
                         sp->ability_client = client_no; // Use ability_client instead of battlerIdTemp so ActivateParadoxAbility doesn't interfere
                         scriptnum = BATTLE_SUBSCRIPT_ORICHALCUM_PULSE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -966,9 +966,9 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                 // Hadron Engine
                 {
                     if ((sp->battlemon[client_no].hp)
-                        && (sp->battlemon[client_no].ability_activated_flag == 0)
+                        && (PmfgEntryReady(sp, client_no, PMFG_ENTRY_HADRON_ENGINE))
                         && (BattlerHasAbility(sp, client_no, ABILITY_HADRON_ENGINE))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_HADRON_ENGINE);
                         sp->battlerIdTemp = client_no;
                         sp->addeffect_type = SIDE_EFFECT_TYPE_ABILITY;
                         if (sp->terrainOverlay.type == ELECTRIC_TERRAIN
@@ -1002,10 +1002,10 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                 // Comatose
                 {
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0)
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_COMATOSE))
                         && (sp->battlemon[client_no].hp)
                         && (BattlerHasAbility(sp, client_no, ABILITY_COMATOSE))) {
-                        sp->battlemon[client_no].ability_activated_flag = 1;
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_COMATOSE);
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_COMATOSE;
                         ret = SWITCH_IN_CHECK_MOVE_SCRIPT;
@@ -1017,10 +1017,10 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                 // https://wiki.pokemonwiki.com/wiki/パステルベール
                 {
                     int ally = BATTLER_ALLY(client_no);
-                    if ((sp->battlemon[client_no].ability_activated_flag == 0)
+                    if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_PASTEL_VEIL))
                         && (sp->battlemon[client_no].hp)
                         && (BattlerHasAbility(sp, client_no, ABILITY_PASTEL_VEIL))) {
-                        sp->battlemon[client_no].ability_activated_flag = TRUE;
+                        PmfgEntryMark(sp, client_no, PMFG_ENTRY_PASTEL_VEIL);
                         sp->switchInFlags[client_no].pastelVeilProcessed = TRUE;
 
                         sp->switchInFlags[ally].pastelVeilProcessed = 1;
@@ -1248,13 +1248,13 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                     if (BattleTypeGet(bw) & (BATTLE_TYPE_DOUBLES | BATTLE_TYPE_MULTI)) {
                         int ally = BATTLER_ALLY(client_no);
-                        if ((sp->battlemon[client_no].ability_activated_flag == 0)
+                        if ((PmfgEntryReady(sp, client_no, PMFG_ENTRY_HOSPITALITY))
                             && (sp->battlemon[client_no].hp)
                             && (BattlerHasAbility(sp, client_no, ABILITY_HOSPITALITY))
                             && (sp->battlemon[ally].hp)
                             && ((u32)sp->battlemon[ally].hp != sp->battlemon[ally].maxhp)) {
 
-                            sp->battlemon[client_no].ability_activated_flag = 1;
+                            PmfgEntryMark(sp, client_no, PMFG_ENTRY_HOSPITALITY);
                             sp->hp_calc_work = sp->battlemon[ally].maxhp / 4;
                             sp->battlerIdTemp = client_no;
                             sp->state_client = ally;

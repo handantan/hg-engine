@@ -670,6 +670,8 @@ arm9 EncounterSlot_WildMonSlotRoll_Surfing 02247720 0
 arm9 EncounterSlot_WildMonSlotRoll_Fishing 02247764 1
 arm9 EncounterSlot_WildMonSlotRoll_RockSmash 0224779C 0
 arm9 EncounterSlot_WildMonSlotRoll_Headbutt 022477C0 0
+# PMFG B-039: abilities above 255 no longer alias vanilla field abilities (src/field/encounter_check.c)
+0002 EncounterGenState_Init 02248618
 
 0012 GetPokemon_CheckIfTrainer_hook 2246704 0
 0012 GetPokemon_BallBlocked_hook 02247094 0

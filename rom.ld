@@ -932,3 +932,6 @@ OverlayManager_GetArgs = 0x020072A4 | 1;
 FieldSystem_LaunchApplication = 0x0203DFB4 | 1;
 SetupNativeScript = 0x0203FD58 | 1;
 ScrNative_WaitApplication = 0x020429F8 | 1;
+/* pmfg: B-039, EncounterGenState_Init replacement (pret src/field/encounter_check.c:1374) */
+PlayerProfile_GetTrainerID = 0x02028F84 | 1;
+Save_VarsFlags_CheckAlphPuzzleFlag = 0x02066724 | 1;
