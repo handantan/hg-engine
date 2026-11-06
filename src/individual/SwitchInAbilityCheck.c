@@ -41,6 +41,7 @@ const u16 sPmfgEntryAbilities[][3] = {
     { ABILITY_MAGNIFY_FIELD, BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP, 0 },
     { ABILITY_SUPERSWEET_SYRUP, BATTLE_SUBSCRIPT_PMFG_LOWER_FOES_STAT, MOVE_SUBSCRIPT_PTR_EVASION_DOWN_1_STAGE }, // REQ-TGT-BTL-003
     { ABILITY_SUPREME_OVERLORD, BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP, 0 },
+    { ABILITY_COSTAR, BATTLE_SUBSCRIPT_PMFG_COSTAR, 0 },
 };
 
 // PMFG (REQ-TGT-ABL-001): SoulGold GetAdditionalTypeAbilityType
@@ -836,6 +837,23 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
                                 continue;
                             }
                             sp->pmfgSyrupUsed[side] |= slotBit;
+                        }
+                        if (ability == ABILITY_COSTAR) { // doubles: copy a living ally's stat stages if any changed
+                            // shortcut: crit stages (Focus Energy) are not copied, add them if a playtest needs it
+                            int ally = BATTLER_ALLY(client_no);
+                            BOOL changed = FALSE;
+                            if ((BattleTypeGet(bw) & BATTLE_TYPE_DOUBLES) && sp->battlemon[ally].hp) {
+                                for (int st = 0; st < 8; st++) {
+                                    changed |= sp->battlemon[ally].states[st] != 6;
+                                }
+                            }
+                            if (!changed) {
+                                continue;
+                            }
+                            for (int st = 0; st < 8; st++) {
+                                sp->battlemon[client_no].states[st] = sp->battlemon[ally].states[st];
+                            }
+                            sp->ability_client = ally;
                         }
                         if (ability == ABILITY_SUPREME_OVERLORD) {
                             u32 fainted = 0;
