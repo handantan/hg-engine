@@ -1725,6 +1725,12 @@ void LONG_CALL CalcPriorityAndQuickClawCustapBerry(void *bsys, struct BattleStru
             }
         }
 
+        // PMFG REQ-TGT-BTL-003: Quick Draw, 30% for a damaging move; shares Quick Claw's flag and turn-start message (subscript 278)
+        if (!ctx->battlemon[client].moveeffect.quickClawFlag && !ctx->battlemon[client].moveeffect.custapBerryFlag
+            && GetMoveSplit(ctx, move) != SPLIT_STATUS && BattlerHasAbility(ctx, client, ABILITY_QUICK_DRAW) && BattleRand(bsys) % 100 < 30) {
+            ctx->battlemon[client].moveeffect.quickClawFlag = 1;
+        }
+
         ctx->clientPriority[client] = priority;
     }
 }

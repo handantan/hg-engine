@@ -16,6 +16,13 @@ _loop:
     GoTo _continue
 
 _printMessage:
+    // PMFG REQ-TGT-BTL-003: no Custap Berry and no Quick Claw means Quick Draw set the flag
+    // shortcut: a Quick Draw mon holding a Quick Claw always shows the item message, split the flag if that matters
+    CompareMonDataToValue OPCODE_EQU, BATTLER_CATEGORY_MSG_TEMP, BMON_DATA_CUSTAP_FLAG, 1, _itemMessage
+    CheckItemHoldEffect CHECK_OPCODE_HAVE, BATTLER_CATEGORY_MSG_TEMP, HOLD_EFFECT_SOMETIMES_PRIORITY, _itemMessage
+    AbilityPopup BATTLER_CATEGORY_MSG_TEMP, ABILITY_QUICK_DRAW
+    GoTo _continue
+_itemMessage:
     PlayBattleAnimation BATTLER_CATEGORY_MSG_TEMP, BATTLE_ANIMATION_HELD_ITEM
     Wait 
     // {0} can act faster than normal, thanks to its {1}!
