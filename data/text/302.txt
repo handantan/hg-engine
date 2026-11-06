@@ -206,3 +206,9 @@ Sp. Def↓
 Speed↓
 EV
 IV
+Innate 1
+Innate 2
+Innate 3
+Locked: unlocks after\n8 badges.
+Locked: unlocks after\nbeating the Johto League.
+Locked: unlocks after\n12 badges.

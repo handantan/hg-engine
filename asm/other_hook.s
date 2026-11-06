@@ -517,11 +517,11 @@ pop     {r4-r6,pc}
 Summary_Check_SELButton:
 mov     r1, #4
 tst     r6, r1
-beq     Summary_StatsPage_Return
+beq     Summary_Check_STARTButton
 sub     r1, r2, #3
 ldrsb   r1, [r5, r1]
 cmp     r1, #1
-bne     Summary_StatsPage_Return
+bne     Summary_Check_STARTButton
 mov     r1, #0
 bl      Summary_ChangeStatScreenState
 mov     r0, #0x5E
@@ -529,6 +529,19 @@ lsl     r0, #4
 add     r0, #1
 ldr     r2, =0x0200604C | 1
 bl      bx_r2
+mov     r0, #2
+pop     {r4-r6,pc}
+
+// PMFG (REQ-TGT-MON-003): START on the Skills page cycles the ability box through the innates
+Summary_Check_STARTButton:
+mov     r1, #8
+tst     r6, r1
+beq     Summary_StatsPage_Return
+sub     r1, r2, #3
+ldrsb   r1, [r5, r1]
+cmp     r1, #1
+bne     Summary_StatsPage_Return
+bl      PMFG_Summary_CycleAbility
 mov     r0, #2
 pop     {r4-r6,pc}
 

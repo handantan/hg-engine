@@ -2,6 +2,11 @@
 
 #include "../include/battle.h"
 #include "../include/types.h"
+#include "../include/message.h"
+#include "../include/pmfg_innates.h"
+#include "../include/script.h"
+#include "../include/sound.h"
+#include "../include/constants/file.h"
 
 // file is from LheaRachel on github who adapted it from Bubble
 // i just adapted it to hgss and added the +/- handling and such
@@ -144,8 +149,11 @@ void Summary_ColorizeStatScreen(struct SummaryState *summary, u32 mode)
     }
 }
 
+static u8 sAbilitySlot; // PMFG (REQ-TGT-MON-003): 0 = main ability, 1-3 = innate shown in the Skills page ability box
+
 void Summary_ColorizeStatScreen_Wrap(struct SummaryState *summary)
 {
+    sAbilitySlot = 0; // page (re)drawn: vanilla prints the main ability
     Summary_ColorizeStatScreen(summary, 0);
 }
 
@@ -224,4 +232,56 @@ u16 ModifyStatByNature(u32 nature, u16 n, u8 statIndex)
         break;
     }
     return retVal;
+}
+
+// PMFG (REQ-TGT-MON-003, D-059 a): START on the Skills page cycles the ability box through the main ability and the innates.
+// Offsets from vanilla's Skills page print (0x0208CB9C, 0x0208D3xx): msgData (archive 302) +0x7A0, msgFmt +0x7A8, string buffer +0x7AC;
+// addl windows 6/7 = ability name/description, defn window 0x15 = "Ability" label.
+#define SUMMARY_MSGDATA(s) (*(MsgData **)((u8 *)(s) + 0x7A0))
+#define SUMMARY_MSGFMT(s) (*(MessageFormat **)((u8 *)(s) + 0x7A8))
+#define SUMMARY_STRBUF(s) (*(String **)((u8 *)(s) + 0x7AC))
+#define SUMMARY_MSG_ABILITY_LABEL 116
+#define SUMMARY_MSG_ABILITY_NAME 125
+#define SUMMARY_MSG_INNATE_LABEL 208 // 208-210 "Innate N", 211-213 unlock milestones (data/text/302.txt)
+
+static void PrintMsg(struct SummaryState *summary, GF_BGL_BMPWIN *win, MsgData *md, u32 msgId, u32 color)
+{
+    FillWindowPixelBuffer(win, 0);
+    ReadMsgDataIntoString(md, msgId, SUMMARY_STRBUF(summary));
+    AddTextPrinterParameterizedWithColor(win, 0, SUMMARY_STRBUF(summary), 3, 0, 0xFF, color, NULL); // x = 3 as vanilla
+    CopyWindowToVram(win);
+}
+
+void LONG_CALL PMFG_Summary_CycleAbility(struct SummaryState *summary)
+{
+    u16 innates[PMFG_NUM_INNATES];
+    PMFG_GetSpeciesInnates(summary->pokemonData.species, summary->pokemonData.form, innates);
+    do {
+        sAbilitySlot = (sAbilitySlot + 1) % (PMFG_NUM_INNATES + 1);
+    } while (sAbilitySlot != 0 && innates[sAbilitySlot - 1] == 0);
+
+    u32 ability = sAbilitySlot ? innates[sAbilitySlot - 1] : summary->pokemonData.ability;
+    // innate N unlocks at the milestone PMFG_UnlockedInnateCount counts (8 badges / Johto League / 12 badges); texts 211-213 must match it
+    BOOL locked = sAbilitySlot > PMFG_UnlockedInnateCount();
+    GF_BGL_BMPWIN *nameWin = &summary->addlWindows[6];
+
+    PrintMsg(summary, &summary->defnWindows[0x15], SUMMARY_MSGDATA(summary),
+        sAbilitySlot ? SUMMARY_MSG_INNATE_LABEL + sAbilitySlot - 1 : SUMMARY_MSG_ABILITY_LABEL, WHITE);
+
+    FillWindowPixelBuffer(nameWin, 0);
+    WORDSET_RegisterAbilityName(SUMMARY_MSGFMT(summary), 0, ability);
+    String *tmpl = NewString_ReadMsgData(SUMMARY_MSGDATA(summary), SUMMARY_MSG_ABILITY_NAME);
+    StringExpandPlaceholders(SUMMARY_MSGFMT(summary), SUMMARY_STRBUF(summary), tmpl);
+    String_Delete(tmpl);
+    Summary_PrintString(summary, nameWin, BLACK, JUSTIFY_LEFT);
+    CopyWindowToVram(nameWin);
+
+    if (locked) {
+        PrintMsg(summary, &summary->addlWindows[7], SUMMARY_MSGDATA(summary), SUMMARY_MSG_INNATE_LABEL + PMFG_NUM_INNATES + sAbilitySlot - 1, BLACK);
+    } else {
+        MsgData *md = NewMsgDataFromNarc(1, ARC_MSG_DATA, 722, 0x13); // ability descriptions, as vanilla loads them
+        PrintMsg(summary, &summary->addlWindows[7], md, ability, BLACK);
+        DestroyMsgData(md);
+    }
+    PlaySE(0x5E1);
 }
