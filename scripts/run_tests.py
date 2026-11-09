@@ -357,7 +357,12 @@ def run_single_partition(args) -> int:
             print(format_aggregate_results([payload]), flush=True)
         return 0
 
-    emu.open("test.nds")
+    rom_path = "test.nds"
+    if result_file is not None:
+        # PMFG: DeSmuME keeps the save in ~/.config/desmume/<ROM name>.dsv; partitions sharing one name race on it and hang at boot
+        rom_path = os.path.join(os.path.dirname(result_file), f"test_p{partition_index}.nds")
+        os.symlink(os.path.abspath("test.nds"), rom_path)
+    emu.open(rom_path)
     emu.backup.import_file("test.sav")
 
     window = None

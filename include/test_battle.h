@@ -139,7 +139,8 @@ BOOL LONG_CALL TestBattle_HasMoreTests();
 BOOL LONG_CALL TestBattle_IsComplete();
 void LONG_CALL TestBattle_MarkComplete();
 void LONG_CALL TestBattle_QueueNextTest();
-void LONG_CALL TestBattle_OverrideParties(struct BATTLE_PARAM *bp);
+const struct TestBattleScenario *LONG_CALL TestBattle_BeginScenario(void);
+void LONG_CALL TestBattle_OverrideParties(struct BATTLE_PARAM *bp); // src/field/test_battle_party.c
 void LONG_CALL TestBattle_ApplyBattleState(struct BattleStruct *sp);
 void LONG_CALL TestBattle_autoSelectPlayerMoves(struct BattleSystem *bsys, struct BattleStruct *ctx);
 
