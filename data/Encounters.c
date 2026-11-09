@@ -14187,14 +14187,14 @@ const EncounterData __data[] =
             { 45, 60, SPECIES_MAGIKARP },
         },
         .goodRodSlots = {
-            { 45, 40, SPECIES_POLIWAG },
-            { 45, 40, SPECIES_POLIWAG },
-            { 45, 40, SPECIES_GOLDEEN },
+            { 40, 45, SPECIES_POLIWAG },
+            { 40, 45, SPECIES_POLIWAG },
+            { 40, 45, SPECIES_GOLDEEN },
             { 45, 60, SPECIES_MAGIKARP },
             { 45, 60, SPECIES_MAGIKARP },
         },
         .superRodSlots = {
-            { 45, 40, SPECIES_POLIWAG },
+            { 40, 45, SPECIES_POLIWAG },
             { 45, 50, SPECIES_POLIWHIRL },
             { 55, 67, SPECIES_GYARADOS },
             { 50, 65, SPECIES_SLOWBRO },
