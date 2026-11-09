@@ -134,6 +134,7 @@ u8 LONG_CALL TestBattle_TakeTeraWants(void);
 struct TestBattleScenario *LONG_CALL TestBattle_GetCurrentScenario();
 void LONG_CALL SendValueThroughCommunicationSendHole(int value);
 BOOL LONG_CALL TestBattle_HasMoreExpectations();
+void LONG_CALL TestBattle_CheckMessage(struct BattleSystem *battleSystem); // PMFG: BattleMessage_ExpandPlaceholders's expectation check
 BOOL LONG_CALL TestBattle_HasMoreTests();
 BOOL LONG_CALL TestBattle_IsComplete();
 void LONG_CALL TestBattle_MarkComplete();

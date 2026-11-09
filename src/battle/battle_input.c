@@ -254,7 +254,9 @@ void Sub_PokeIconResourceFree(struct BI_PARAM *bip)
 
         CATS_ActorPointerDelete_S(newBS.MegaButton);
         newBS.MegaButton = NULL;
-        if (newBS.MegaIconLight) {
+        if (newBS.CanMega == 2) { // PMFG REQ-TGT-BTL-007: the Tera button; ServerBeforeAct's SBA_TERASTALLIZING reads it
+            PMFG_SetTeraWant(bip->bw->sp, bip->client_no_fight_screen, newBS.MegaIconLight);
+        } else if (newBS.MegaIconLight) {
             newBS.playerWantMega = No2Bit(bip->client_no_fight_screen); // determine which party pos queued up the mega for cases where the player is in control of 2 clients
         } else {
             newBS.playerWantMega = FALSE;
@@ -361,9 +363,6 @@ void LoadMegaButton(struct BI_PARAM *bip)
     int iconindex = MEGA_ICON_BLANK_GFX; // indices of new sprites added to item narc
     int palindex = MEGA_ICON_BLANK_GFX + 1;
 
-    if (newBS.PlayerMegaed) {
-        return;
-    }
     if (!newBS.MegaButton && newBS.CanMega) {
         csp = BattleWorkCATS_SYS_PTRGet(bip->bw);
         crp = BattleWorkCATS_RES_PTRGet(bip->bw);
@@ -371,6 +370,8 @@ void LoadMegaButton(struct BI_PARAM *bip)
             iconindex = MEGA_ICON_SELECTED_GFX;
             palindex = MEGA_ICON_SELECTED_GFX + 1;
         }
+        iconindex += TERA_BUTTON_GFX_OFFSET(newBS.CanMega);
+        palindex += TERA_BUTTON_GFX_OFFSET(newBS.CanMega);
         OAM_LoadResourcePlttWorkArc(pfd, FADE_SUB_OBJ, csp, crp, ARC_BATTLE_GFX, palindex, 0, 1, NNS_G2D_VRAM_TYPE_2DSUB, MEGA_BUTTON_PAL_TAG);
         OAM_LoadResourceCharArc(csp, crp, ARC_BATTLE_GFX, iconindex, 0, NNS_G2D_VRAM_TYPE_2DSUB, MEGA_BUTTON_SPRITE_TAG);
 
@@ -427,9 +428,6 @@ BOOL CheckMegaButton(struct BI_PARAM *bip, int tp_ret)
     if (!newBS.CanMega) {
         return 0;
     }
-    if (newBS.PlayerMegaed) {
-        return 0;
-    }
     csp = BattleWorkCATS_SYS_PTRGet(bip->bw);
     crp = BattleWorkCATS_RES_PTRGet(bip->bw);
     pfd = BattleWorkPfdGet(bip->bw);
@@ -443,6 +441,8 @@ BOOL CheckMegaButton(struct BI_PARAM *bip, int tp_ret)
     } else {
         newBS.MegaIconLight = 1;
     }
+    iconindex += TERA_BUTTON_GFX_OFFSET(newBS.CanMega);
+    palindex += TERA_BUTTON_GFX_OFFSET(newBS.CanMega);
     OAM_LoadResourceCharArc(csp, crp, ARC_BATTLE_GFX, iconindex, 0, NNS_G2D_VRAM_TYPE_2DSUB, MEGA_BUTTON_SPRITE_TAG);
     OAM_LoadResourcePlttWorkArc(pfd, FADE_SUB_OBJ, csp, crp, ARC_BATTLE_GFX, palindex, 0, 1, NNS_G2D_VRAM_TYPE_2DSUB, MEGA_BUTTON_PAL_TAG);
     OAM_ObjectUpdate(newBS.MegaButton->act);
@@ -526,7 +526,7 @@ void BGCallback_Waza_Extend(struct BI_PARAM *bip, int select_bg, int force_put)
     bip->scrn_buf[3] = sys_AllocMemory(5, 0x800);
 
     // me when i commit crimes that transfer to low-level really nicely
-    if (newBS.CanMega && !newBS.PlayerMegaed) {
+    if (newBS.CanMega) {
         scrn_data_id = 353; // new button layout nscr in a007
         *(u16 *)(0x0226E29E) = 353;
         // swap out touch data ptr
@@ -566,7 +566,7 @@ void BGCallback_Waza_Extend(struct BI_PARAM *bip, int select_bg, int force_put)
  */
 u32 GrabCancelXValue(void)
 {
-    if (newBS.CanMega && !newBS.PlayerMegaed) {
+    if (newBS.CanMega) {
         return 92;
     } else {
         return 128;
@@ -580,7 +580,7 @@ u32 GrabCancelXValue(void)
  */
 void SwapOutBottomScreen(struct BI_PARAM *bip)
 {
-    if (CheckCanDrawMegaButton(bip) && !newBS.PlayerMegaed) {
+    if (CheckCanDrawMegaButton(bip)) { // PlayerMegaed is checked in there (PMFG: not for the Tera button)
         *(u16 *)(0x0226E29E) = 353; // new button layout nscr
         // swap out touch data ptr
         *(u32 *)(0x0226E930) = (u32)&SkillMenuTouchData; // something like this

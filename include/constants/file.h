@@ -48,6 +48,9 @@
 #define PRIMAL_REVERSION_ALPHA_GFX     (363)
 #define MEGA_ICON_SELECTED_GFX         (365)
 #define MEGA_ICON_BLANK_GFX            (367)
+#define TERA_ICON_SELECTED_GFX         (369) // PMFG REQ-TGT-BTL-007 (D-061): the Mega button's Tera twins
+#define TERA_ICON_BLANK_GFX            (371)
+#define TERA_BUTTON_GFX_OFFSET(canMega) ((canMega) == 2 ? TERA_ICON_SELECTED_GFX - MEGA_ICON_SELECTED_GFX : 0)
 
 // a028 file indexes
 #define CODE_ADDON_HIDDEN_ABILITY_LIST    7

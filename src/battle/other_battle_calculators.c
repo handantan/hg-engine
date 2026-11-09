@@ -4874,7 +4874,8 @@ BOOL LONG_CALL ShouldUseNormalTypeEffCalc(struct BattleStruct *ctx, int attack_c
         }
     }
 
-    if (ctx->oneTurnFlag[defence_client].roostFlag && TypeEffectivenessTable[index][1] == TYPE_FLYING) {
+    if (ctx->oneTurnFlag[defence_client].roostFlag && TypeEffectivenessTable[index][1] == TYPE_FLYING
+        && !ctx->battlemon[defence_client].is_currently_terastallized) { // PMFG REQ-TGT-BTL-007: Roost keeps a Tera type
         ret = FALSE;
     }
 

@@ -178,6 +178,21 @@ void LONG_CALL PMFG_TeraOnLoad(struct BattleStruct *sp, int client)
     sp->battlemon[client].tera_type = tera ? sp->pmfgTeraType[client & 1] : 0;
 }
 
+/**
+ *  @brief D-061 (1a): the move menu shows the Tera button in the Mega button's place (src/battle/mega.c
+ *  CheckCanDrawMegaButton, for a mon that can't Mega Evolve). Same gate as ServerBeforeAct's PMFG_CanTerastallize.
+ */
+BOOL LONG_CALL PMFG_CanDrawTeraButton(struct BattleStruct *sp, int client)
+{
+    return CheckScriptFlag(FLAG_TERASTALIZATION_ENABLED) && CheckScriptFlag(PMFG_FLAG_TERA_ORB_CHARGED) && !sp->pmfgTeraSlot[0]
+        && !(client && (sp->pmfgTeraWant & 1)); // doubles: the first mon already asked to Terastallize
+}
+
+void LONG_CALL PMFG_SetTeraWant(struct BattleStruct *sp, int client, BOOL want)
+{
+    sp->pmfgTeraWant = want ? (sp->pmfgTeraWant | (1 << client)) : (sp->pmfgTeraWant & ~(1 << client));
+}
+
 u32 LONG_CALL PMFG_StabKind(struct BattleStruct *sp, int attacker, int type)
 {
     struct BattlePokemon *bm = &sp->battlemon[attacker];

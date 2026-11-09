@@ -3459,6 +3459,8 @@ BOOL LONG_CALL BattleSystem_CheckMoveEffect(void *bw, struct BattleStruct *sp, i
 BOOL LONG_CALL HasType(struct BattleStruct *ctx, int battlerId, int type);
 // PMFG REQ-TGT-BTL-007 (src/pmfg_progress.c)
 void LONG_CALL PMFG_TeraOnLoad(struct BattleStruct *sp, int client);
+BOOL LONG_CALL PMFG_CanDrawTeraButton(struct BattleStruct *sp, int client); // D-061: Tera button in the Mega button's place
+void LONG_CALL PMFG_SetTeraWant(struct BattleStruct *sp, int client, BOOL want);
 u32 LONG_CALL PMFG_StabKind(struct BattleStruct *sp, int attacker, int type); // 0 none, 1 base type while Tera (no Adaptability), 2 plain STAB, 3 Tera + base type
 BOOL LONG_CALL PMFG_HasLevitateAlias(struct BattleStruct *sp, int attacker, int battler);
 int LONG_CALL PMFG_AbilityPriority(struct BattleStruct *ctx, int battlerId, int move);

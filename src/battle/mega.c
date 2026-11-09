@@ -1279,6 +1279,10 @@ static BOOL CheckMegaMoveData(u32 mon, u16 *moves, u32 form)
     return FALSE;
 }
 
+/**
+ *  @return 1: the Mega button; 2: PMFG REQ-TGT-BTL-007 (D-061 a) the Tera button in its place, for a mon that can't
+ *  Mega Evolve (Mega and Tera are tracked apart, so it still shows after the player Mega Evolved another mon)
+ */
 BOOL CheckCanDrawMegaButton(struct BI_PARAM *bip)
 {
     void *pp;
@@ -1286,17 +1290,6 @@ BOOL CheckCanDrawMegaButton(struct BI_PARAM *bip)
     u16 mon;
     u16 form_no;
     u16 moves[4];
-
-#ifndef DEBUG_ENABLE_ALL_GIMMICKS
-    if (!CheckScriptFlag(FLAG_MEGA_EVOLUTION_ENABLED)) {
-        return FALSE;
-    }
-#endif
-
-    if (bip->client_no && newBS.playerWantMega) // if client number is not zero but the player has already queued up mega
-    {
-        return FALSE;
-    }
 
     if (IS_NOT_VALID_EWRAM_POINTER(&bip->bw->opponentData[bip->client_no])) // fix crash on hardware/melonDS
     {
@@ -1311,11 +1304,16 @@ BOOL CheckCanDrawMegaButton(struct BI_PARAM *bip)
     }
 
     form_no = GetMonData(pp, MON_DATA_FORM, 0);
-    if (bip->bw->sp->battlemon[bip->client_no].condition2 & STATUS2_TRANSFORM) { // can not draw mega button if form is nonzero.  only base form can mega evolve
-        return FALSE;
+    if (CheckMegaData(mon, item, form_no) || CheckMegaMoveData(mon, moves, form_no)) {
+        return
+#ifndef DEBUG_ENABLE_ALL_GIMMICKS
+            CheckScriptFlag(FLAG_MEGA_EVOLUTION_ENABLED) &&
+#endif
+            !newBS.PlayerMegaed
+            && !(bip->client_no && newBS.playerWantMega) // the player already queued up a mega for the first mon
+            && !(bip->bw->sp->battlemon[bip->client_no].condition2 & STATUS2_TRANSFORM); // only base form can mega evolve
     }
-
-    return CheckMegaData(mon, item, form_no) || CheckMegaMoveData(mon, moves, form_no);
+    return !IsMegaSpecies(mon, form_no) && PMFG_CanDrawTeraButton(bip->bw->sp, bip->client_no) ? 2 : FALSE;
 }
 
 BOOL CheckCanSpeciesMegaEvolveByMove(struct BattleStruct *sp, u32 client)
