@@ -6782,6 +6782,22 @@ DummyTextTrap \slot, \unk
 RunNewCommand NEW_COMMAND_PMFG_SETTINGS_VIEWER, 0
 .endm
 
+// pmfg: REQ-TGT-QOL-003 (D-063), in place of a trade/tutor script's party picker + get_party_selection (the field must
+// be faded out): choose a party or PC box mon; var = its party slot (a box mon is moved into the party), 255 = none.
+// Every exit after it must run pmfg_return_box_mon, which puts that slot's mon back in its box (no-op for a party pick).
+.equ NEW_COMMAND_PMFG_CHOOSE_MON, 2
+.equ NEW_COMMAND_PMFG_TAKE_PICKED_MON, 3
+.equ NEW_COMMAND_PMFG_RETURN_BOX_MON, 4
+
+.macro pmfg_choose_mon,var
+RunNewCommand NEW_COMMAND_PMFG_CHOOSE_MON, \var
+RunNewCommand NEW_COMMAND_PMFG_TAKE_PICKED_MON, \var
+.endm
+
+.macro pmfg_return_box_mon
+RunNewCommand NEW_COMMAND_PMFG_RETURN_BOX_MON, 0
+.endm
+
 // pmfg: D-046, the Ho-Oh/Lugia path chosen at Radio Tower 5F, used where the legend scripts read get_game_version.
 // Until the choice it is this ROM's own version (HeartGold), as in vanilla.
 .macro pmfg_get_legend_version,var

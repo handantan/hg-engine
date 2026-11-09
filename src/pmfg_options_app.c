@@ -25,3 +25,13 @@ static BOOL PMFG_OptionsScreenApp_Exit(void *manager, int *state)
 const OverlayManagerTemplate PMFG_OptionsScreenApp = {
     PMFG_OptionsScreenApp_Init, PMFG_OptionsScreenApp_Main, PMFG_OptionsScreenApp_Exit, OVERLAY_PMFG_OPTIONS,
 };
+
+// REQ-TGT-QOL-003 (D-063): the trade/tutor mon chooser, a second mode of the same overlay
+static BOOL PMFG_ChooserApp_Init(void *manager, int *state)
+{
+    return ENTRY[3](manager, state);
+}
+
+const OverlayManagerTemplate PMFG_ChooserApp = {
+    PMFG_ChooserApp_Init, PMFG_OptionsScreenApp_Main, PMFG_OptionsScreenApp_Exit, OVERLAY_PMFG_OPTIONS,
+};

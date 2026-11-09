@@ -170,6 +170,7 @@ _01CE:
 	npc_msg 5
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	setflag FLAG_GOT_TM23_FROM_JASMINE
 	end
@@ -177,6 +178,7 @@ _01CE:
 _0202:
 	callstd std_bag_is_full
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -188,11 +190,13 @@ _020C:
 	npc_msg 6
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
 _0235:
 	white_out
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -204,6 +208,7 @@ _023B:
 	npc_msg 7
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -218,8 +223,7 @@ _0264:
 	closemsg
 	fade_screen 6, 1, 0, RGB_BLACK
 	wait_fade
-	scrcmd_566
-	get_party_selection VAR_SPECIAL_RESULT
+	pmfg_choose_mon VAR_SPECIAL_RESULT // PMFG REQ-TGT-QOL-003: party or PC box mon
 	restore_overworld
 	fade_screen 6, 1, 1, RGB_BLACK
 	wait_fade
@@ -257,6 +261,7 @@ _030E:
 	npc_msg 11
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -264,6 +269,7 @@ _034B:
 	npc_msg 10
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -272,6 +278,7 @@ _0356:
 	npc_msg 14
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -279,6 +286,7 @@ _0364:
 	npc_msg 15
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -293,6 +301,7 @@ _0385:
 _0388:
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -321,6 +330,7 @@ _03E2:
 	npc_msg 19
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	compare VAR_UNK_410E, 1
 	goto_if_ne _0408
@@ -393,6 +403,7 @@ _048E:
 	npc_msg 21
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	compare VAR_UNK_410E, 2
 	goto_if_ne _04B4
@@ -431,6 +442,7 @@ _04F4:
 _04F7:
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	compare VAR_UNK_410E, 1
 	goto_if_ne _0510
@@ -453,6 +465,7 @@ _0536:
 _0539:
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	compare VAR_UNK_410E, 2
 	goto_if_ne _0552
@@ -477,6 +490,7 @@ _0585:
 _0588:
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -484,6 +498,7 @@ _0590:
 	npc_msg 18
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 
@@ -503,6 +518,7 @@ _05C2:
 _05C5:
 	wait_button
 	closemsg
+	pmfg_return_box_mon
 	releaseall
 	end
 	.balign 4

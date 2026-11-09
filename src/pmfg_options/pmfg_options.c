@@ -8,6 +8,9 @@
 #include "../../include/pmfg_options.h"
 #include "../../include/pmfg_settings.h"
 #include "../../include/pmfg_options_text.h"
+#include "../../include/pokemon.h"
+#include "../../include/pokemon_storage_system.h"
+#include "../../include/save.h"
 
 // pmfg: options screen app (B-020), shown once after Oak's speech. First asks RECOMMENDED / CUSTOM; CUSTOM lists the
 // settings of Docs/requirements/target/data/settings.csv a page at a time, over the HGSS Options app's backgrounds
@@ -16,6 +19,7 @@
 // buttons are drawn into the background.
 // From the PC (SYS-008, args PMFG_OPTIONS_ARGS_PC) it opens on the pages, ease-only settings can't go above their
 // current value, and B leaves without saving.
+// REQ-TGT-QOL-003 (D-063 c): the same screen also lists party and PC box mons for trade/tutor scripts (STATE_CHOOSER).
 
 #define HEAP_ID 0x4B // overlay 36's heap, destroyed before this app starts
 #define TEXT_SPEED_NOTRANSFER 0xFF
@@ -61,7 +65,7 @@ u32 LONG_CALL GfGfxLoader_LoadCharData(u32 narcId, s32 memberNo, void *bgConfig,
 void LONG_CALL GfGfxLoader_LoadScrnData(u32 narcId, s32 memberNo, void *bgConfig, u32 layer, u32 tileStart, u32 szByte, BOOL isCompressed, u32 heapId);
 void LONG_CALL GfGfxLoader_GXLoadPal(u32 narcId, s32 memberNo, u32 location, u32 palSlotOffset, u32 szByte, u32 heapId);
 
-enum { STATE_PROMPT, STATE_PAGES, STATE_DONE };
+enum { STATE_PROMPT, STATE_PAGES, STATE_CHOOSER, STATE_DONE };
 enum { WIN_TITLE, WIN_ROWS, WIN_DESC, WIN_COUNT };
 
 static const WindowTemplate sWindows[WIN_COUNT] = {
@@ -82,6 +86,22 @@ static struct {
     u8 limit[NUM_PMFG_SETTINGS]; // number of values the player may pick, from index 0
 } sApp;
 
+// chooser pages: the party, then each box that holds a mon; a page lists its mons, 8 rows at a time
+#define SAVE_PCSTORAGE 41 // pret include/constants/save_arrays.h
+#define CHOOSER_PARTY_PAGE 0xFF
+#define CHOOSER_ROWS 8
+void *LONG_CALL SaveArray_Get(SaveData *saveData, int id); // src/save.c, overlay 129 (LONG_CALL: a plain bl gets an ARM veneer)
+
+static struct {
+    u16 *result;
+    struct Party *party;
+    PCStorage *storage;
+    u8 pages[1 + NUM_PC_BOXES]; // CHOOSER_PARTY_PAGE or a box
+    u8 numPages, page, count, top;
+    u8 slots[MONS_PER_BOX]; // this page's party or box slots
+    struct PartyPokemon mon; // a box mon as a party mon, for its level
+} sChooser;
+
 static void Print(u32 win, const u16 *text, u32 x, u32 y, u32 color)
 {
     CopyU16ArrayToString(sApp.string, (u16 *)text);
@@ -94,11 +114,10 @@ static u8 RowSetting(u8 row)
     return sPmfgOptionsPageRows[sApp.page][row];
 }
 
-static void Draw(void)
+static void ChooserDraw(void);
+
+static void SettingsDraw(void)
 {
-    for (int i = 0; i < WIN_COUNT; i++) {
-        FillWindowPixelBuffer(&sApp.windows[i], 15);
-    }
     Print(WIN_TITLE, sPmfgOptionsText[PMFG_OPTIONS_TEXT_TITLE], 0, 0, COLOR_NORMAL);
     if (sApp.state == STATE_PROMPT) {
         Print(WIN_ROWS, sPmfgOptionsText[PMFG_OPTIONS_TEXT_PROMPT], 0, 0, COLOR_NORMAL);
@@ -117,14 +136,100 @@ static void Draw(void)
     if (sApp.state == STATE_PAGES) {
         Print(WIN_DESC, sPmfgOptionsText[sApp.pc ? PMFG_OPTIONS_TEXT_HELP_PC : PMFG_OPTIONS_TEXT_HELP], 0, 32, COLOR_LOCKED); // third line, under the description
     }
+}
+
+static void Draw(void)
+{
+    for (int i = 0; i < WIN_COUNT; i++) {
+        FillWindowPixelBuffer(&sApp.windows[i], 15);
+    }
+    if (sApp.state == STATE_CHOOSER) {
+        ChooserDraw();
+    } else {
+        SettingsDraw();
+    }
     for (int i = 0; i < WIN_COUNT; i++) {
         CopyWindowToVram(&sApp.windows[i]);
+    }
+}
+
+static struct PartyPokemon *ChooserMon(u8 row)
+{
+    u8 box = sChooser.pages[sChooser.page], slot = sChooser.slots[row];
+    if (box == CHOOSER_PARTY_PAGE) {
+        return Party_GetMonByIndex(sChooser.party, slot);
+    }
+    CopyBoxPokemonToPokemon(&sChooser.storage->boxes[box].mons[slot], &sChooser.mon);
+    return &sChooser.mon;
+}
+
+static void ChooserLoadPage(void)
+{
+    u8 box = sChooser.pages[sChooser.page];
+    sChooser.count = sChooser.top = sApp.cursor = 0;
+    for (u8 slot = 0; slot < (box == CHOOSER_PARTY_PAGE ? sChooser.party->count : MONS_PER_BOX); slot++) {
+        if (box == CHOOSER_PARTY_PAGE || GetBoxMonData(&sChooser.storage->boxes[box].mons[slot], MON_DATA_SPECIES, NULL)) {
+            sChooser.slots[sChooser.count++] = slot;
+        }
+    }
+}
+
+static void ChooserDraw(void)
+{
+    u16 text[12];
+    u8 box = sChooser.pages[sChooser.page];
+    Print(WIN_TITLE, sPmfgOptionsText[PMFG_OPTIONS_TEXT_CHOOSER_TITLE], 0, 0, COLOR_NORMAL);
+    Print(WIN_TITLE, box == CHOOSER_PARTY_PAGE ? sPmfgOptionsText[PMFG_OPTIONS_TEXT_CHOOSER_PARTY] : sChooser.storage->box_names[box], 152, 0, COLOR_NORMAL);
+    for (u8 row = sChooser.top; row < sChooser.count && row < sChooser.top + CHOOSER_ROWS; row++) {
+        struct PartyPokemon *mon = ChooserMon(row);
+        BOOL egg = GetMonData(mon, MON_DATA_IS_EGG, NULL);
+        u32 color = row == sApp.cursor ? COLOR_SELECTED : egg ? COLOR_LOCKED : COLOR_NORMAL, y = (row - sChooser.top) * 16;
+        GetMonData(mon, MON_DATA_NICKNAME, text);
+        Print(WIN_ROWS, text, 0, y, color);
+        if (!egg) {
+            u32 level = GetMonData(mon, MON_DATA_LEVEL, NULL), n = 0;
+            for (u32 div = level >= 100 ? 100 : level >= 10 ? 10 : 1; div; div /= 10) {
+                text[n++] = 0x121 + level / div % 10; // the game's digits (engine/charmap.txt)
+            }
+            text[n] = 0xFFFF;
+            Print(WIN_ROWS, sPmfgOptionsText[PMFG_OPTIONS_TEXT_CHOOSER_LV], 160, y, color);
+            Print(WIN_ROWS, text, 184, y, color);
+        }
+    }
+    Print(WIN_DESC, sPmfgOptionsText[PMFG_OPTIONS_TEXT_CHOOSER_HELP], 0, 32, COLOR_LOCKED);
+}
+
+static void ChooserInput(u32 keys)
+{
+    if (keys & (PAD_KEY_UP | PAD_KEY_DOWN)) {
+        sApp.cursor = (sApp.cursor + ((keys & PAD_KEY_DOWN) ? 1 : sChooser.count - 1)) % sChooser.count;
+        sChooser.top = sApp.cursor < sChooser.top ? sApp.cursor : sApp.cursor >= sChooser.top + CHOOSER_ROWS ? sApp.cursor - CHOOSER_ROWS + 1 : sChooser.top;
+    } else if (keys & (PAD_BUTTON_R | PAD_BUTTON_L)) {
+        sChooser.page = (sChooser.page + ((keys & PAD_BUTTON_R) ? 1 : sChooser.numPages - 1)) % sChooser.numPages;
+        ChooserLoadPage();
+    } else if ((keys & PAD_BUTTON_A) && !GetMonData(ChooserMon(sApp.cursor), MON_DATA_IS_EGG, NULL)) {
+        u8 box = sChooser.pages[sChooser.page], slot = sChooser.slots[sApp.cursor];
+        *sChooser.result = box == CHOOSER_PARTY_PAGE ? slot : PMFG_CHOOSER_BOX(box, slot);
+        sApp.state = STATE_DONE;
+    } else if (keys & PAD_BUTTON_B) {
+        *sChooser.result = PMFG_CHOOSER_NONE;
+        sApp.state = STATE_DONE;
+    } else {
+        return;
+    }
+    PlaySE(sApp.state == STATE_DONE ? SEQ_SE_DP_DECIDE : SEQ_SE_DP_SELECT);
+    if (sApp.state != STATE_DONE) {
+        Draw();
     }
 }
 
 static void HandleInput(void)
 {
     u32 keys = gSystem.newKeys;
+    if (sApp.state == STATE_CHOOSER) {
+        ChooserInput(keys);
+        return;
+    }
     if (sApp.state == STATE_PROMPT) {
         if (keys & (PAD_KEY_UP | PAD_KEY_DOWN)) {
             sApp.cursor ^= 1;
@@ -165,6 +270,8 @@ static void HandleInput(void)
     }
 }
 
+static void OpenScreens(void);
+
 static BOOL PMFG_OptionsScreen_Init(void *manager, int *state UNUSED)
 {
     Heap_Create(3, HEAP_ID, 0x20000);
@@ -175,7 +282,34 @@ static BOOL PMFG_OptionsScreen_Init(void *manager, int *state UNUSED)
         sApp.values[i] = PMFG_GetSetting(i); // a new game reads as all defaults
         sApp.limit[i] = sApp.pc && sPmfgOptionsEaseOnly[i] ? sApp.values[i] + 1 : sPmfgOptionsNumValues[i];
     }
+    OpenScreens();
+    return TRUE;
+}
 
+static BOOL PMFG_Chooser_Init(void *manager, int *state UNUSED)
+{
+    Heap_Create(3, HEAP_ID, 0x20000);
+    sApp.pc = TRUE; // back to the field on exit, as from the PC
+    sApp.state = STATE_CHOOSER;
+    sChooser.result = OverlayManager_GetArgs(manager);
+    sChooser.party = SaveData_GetPlayerPartyPtr(SaveBlock2_get());
+    sChooser.storage = SaveArray_Get(SaveBlock2_get(), SAVE_PCSTORAGE);
+    sChooser.pages[0] = CHOOSER_PARTY_PAGE;
+    sChooser.numPages = 1;
+    for (u8 box = 0; box < NUM_PC_BOXES; box++) {
+        sChooser.page = sChooser.numPages;
+        sChooser.pages[sChooser.page] = box;
+        ChooserLoadPage();
+        sChooser.numPages += sChooser.count != 0;
+    }
+    sChooser.page = 0;
+    ChooserLoadPage();
+    OpenScreens();
+    return TRUE;
+}
+
+static void OpenScreens(void)
+{
     Main_SetVBlankIntrCB(NULL, NULL);
     GfGfx_DisableEngineAPlanes();
     GfGfx_DisableEngineBPlanes();
@@ -206,7 +340,6 @@ static BOOL PMFG_OptionsScreen_Init(void *manager, int *state UNUSED)
     GfGfx_BothDispOn();
     SetMasterBrightnessNeutral(0);
     SetMasterBrightnessNeutral(1);
-    return TRUE;
 }
 
 static BOOL PMFG_OptionsScreen_Main(void *manager UNUSED, int *state UNUSED)
@@ -237,6 +370,6 @@ static BOOL PMFG_OptionsScreen_Exit(void *manager UNUSED, int *state UNUSED)
 }
 
 // first in the overlay (.init), so overlay 129's trampolines find it at PMFG_OPTIONS_ENTRY
-__attribute__((section(".init"))) const OverlayFunc gPmfgOptionsEntry[3] = {
-    PMFG_OptionsScreen_Init, PMFG_OptionsScreen_Main, PMFG_OptionsScreen_Exit,
+__attribute__((section(".init"))) const OverlayFunc gPmfgOptionsEntry[4] = {
+    PMFG_OptionsScreen_Init, PMFG_OptionsScreen_Main, PMFG_OptionsScreen_Exit, PMFG_Chooser_Init,
 };
