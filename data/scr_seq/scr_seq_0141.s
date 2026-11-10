@@ -292,6 +292,14 @@ scrdef scr_seq_0141_262
 scrdef scr_seq_0141_263
 scrdef scr_seq_0141_264
 scrdef scr_seq_0141_265
+scrdef scr_seq_0141_266
+scrdef scr_seq_0141_267
+scrdef scr_seq_0141_268
+scrdef scr_seq_0141_269
+scrdef scr_seq_0141_270
+scrdef scr_seq_0141_271
+scrdef scr_seq_0141_272
+scrdef scr_seq_0141_273
 // pmfg: tools/sg_item_sheet.py end
 scrdef_end
 
@@ -2011,6 +2019,54 @@ scr_seq_0141_264: // R26
 
 scr_seq_0141_265: // W41
 	setvar VAR_SPECIAL_x8008, ITEM_RAZOR_CLAW
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_266: // R02
+	setvar VAR_SPECIAL_x8008, ITEM_CARBOS
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_267: // R02
+	setvar VAR_SPECIAL_x8008, ITEM_NUGGET
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_268: // R10
+	setvar VAR_SPECIAL_x8008, ITEM_TM069
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_269: // W20
+	setvar VAR_SPECIAL_x8008, ITEM_SHELL_BELL
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_270: // Viridian Forest
+	setvar VAR_SPECIAL_x8008, ITEM_REVIVE
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_271: // Viridian Forest
+	setvar VAR_SPECIAL_x8008, ITEM_ELIXIR
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_272: // Viridian Forest
+	setvar VAR_SPECIAL_x8008, ITEM_MAX_POTION
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_273: // Viridian Forest
+	setvar VAR_SPECIAL_x8008, ITEM_FULL_HEAL
 	setvar VAR_SPECIAL_x8009, 1
 	goto scr_seq_0141_255
 	end

@@ -35891,6 +35891,272 @@ const TrainerData sTrainerData[] = {
             },
         },
     },
+    [797] = {
+        .name = "ALLAN",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_CAMPER,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 255,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 55,
+                .species = SPECIES_GRANBULL,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_INTRO,
+                .text = "My GRANBULL is the cutest in the\\nworld.\\r",
+            },
+            {
+                .type = TRMSG_LOSE,
+                .text = "My GRANBULL!\\n",
+            },
+            {
+                .type = TRMSG_AFTER,
+                .text = "Look how adorable my GRANBULL\\nacts!\\fIsn’t it cute enough to make\\nyour heart melt?\\n",
+            },
+        },
+    },
+    [798] = {
+        .name = "TOM",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_SUPER_NERD,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 56,
+                .species = SPECIES_MAGNEMITE,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 56,
+                .species = SPECIES_MAGNEMITE,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 56,
+                .species = SPECIES_STEELIX,
+                .ballSeal = 0,
+            },
+        },
+    },
+    [799] = {
+        .name = "TIM",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_HIKER,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 55,
+                .species = SPECIES_GOLEM,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 55,
+                .species = SPECIES_KABUTOPS,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 55,
+                .species = SPECIES_QUAGSIRE,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_INTRO,
+                .text = "She’ll be coming ’round MT.SILVER\\nwhen she comes…\\fMT.SILVER is in JOHTO, right?\\r",
+            },
+            {
+                .type = TRMSG_LOSE,
+                .text = "I was too busy singing…\\n",
+            },
+            {
+                .type = TRMSG_AFTER,
+                .text = "Battles are about concentration.\\n",
+            },
+        },
+    },
+    [800] = {
+        .name = "SIDNEY",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_HIKER,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 56,
+                .species = SPECIES_DUGTRIO,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 56,
+                .species = SPECIES_STEELIX,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_INTRO,
+                .text = "I’ll tell you a secret.\\fBut first, we battle!\\r",
+            },
+            {
+                .type = TRMSG_LOSE,
+                .text = "Oh, dang! I lost that…\\n",
+            },
+            {
+                .type = TRMSG_AFTER,
+                .text = "The POWER PLANT is across a small\\nriver.\\n",
+            },
+        },
+    },
+    [801] = {
+        .name = "DAWN",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_SWIMMER_F,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 60,
+                .species = SPECIES_SEAKING,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_INTRO,
+                .text = "I’m disgusted by wimpy people!\\r",
+            },
+            {
+                .type = TRMSG_LOSE,
+                .text = "I could beat you at swimming…\\n",
+            },
+            {
+                .type = TRMSG_AFTER,
+                .text = "It’s a quick swim between FUCHSIA\\nand SEAFOAM ISLANDS…\\fSheesh, some big man my boyfriend\\nis! What a wimp!\\n",
+            },
+        },
+    },
+    [802] = {
+        .name = "CAMERON",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_SWIMMER_M,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 64,
+                .species = SPECIES_AZUMARILL,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_INTRO,
+                .text = "I guess it’s impossible to swim\\nall the way to JOHTO.\\r",
+            },
+            {
+                .type = TRMSG_LOSE,
+                .text = "Aiyah!\\n",
+            },
+            {
+                .type = TRMSG_AFTER,
+                .text = "Besides the sea, I can also swim\\nin ponds and rivers.\\n",
+            },
+        },
+    },
+    [803] = {
+        .name = "SETH",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_SWIMMER_M,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 59,
+                .species = SPECIES_QUAGSIRE,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 59,
+                .species = SPECIES_OCTILLERY,
+                .ballSeal = 0,
+            },
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 59,
+                .species = SPECIES_GYARADOS,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_INTRO,
+                .text = "Land ho! Gotta keep going!\\r",
+            },
+            {
+                .type = TRMSG_LOSE,
+                .text = "Glug…\\n",
+            },
+            {
+                .type = TRMSG_AFTER,
+                .text = "This arrogant guy was at CINNABAR’s\\nvolcano.\\n",
+            },
+        },
+    },
 };
 
 const u16 sTrainerTextOrder[] = {
@@ -36589,6 +36855,12 @@ const u16 sTrainerTextOrder[] = {
     794,
     795,
     796,
+    797,
+    799,
+    800,
+    801,
+    802,
+    803,
 };
 
 const u32 sTrainerDataCount = sizeof(sTrainerData) / sizeof(sTrainerData[0]);
