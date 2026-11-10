@@ -2308,6 +2308,9 @@
 .equ FLAG_PMFG_GOT_DARKRAI, 0x4b // REQ-TGT-MAP-008
 .equ FLAG_PMFG_GOT_KUBFU, 0x4c // REQ-TGT-MAP-008
 .equ FLAG_PMFG_TERA_ORB_CHARGED, 0x4d // REQ-TGT-BTL-007: set by heal_party, cleared when the player Terastallizes
+.equ FLAG_PMFG_JIRACHI_SUMMONED, 0x59 // REQ-TGT-MAP-013: the White Rock was touched at night (reset by the Hall of Fame)
+.equ FLAG_PMFG_JIRACHI_GONE, 0x5a // REQ-TGT-MAP-013: Jirachi's hide flag after its battle (reset by the Hall of Fame)
+.equ FLAG_PMFG_CAUGHT_JIRACHI, 0x5b // REQ-TGT-MAP-013
 // pmfg: tools/sg_item_sheet.py begin (REQ-TGT-MAP-007)
 .equ FLAG_PMFG_ITEMBALL_R27_CARBOS, 0x41 // REQ-TGT-MAP-007
 .equ FLAG_PMFG_ITEMBALL_R27_MOON_STONE, 0x42 // REQ-TGT-MAP-007
