@@ -3,6 +3,7 @@
 
 .equ _EV_scr_seq_D46R0101_000, 0
 .equ _EV_scr_seq_D46R0101_001, 1
+.equ _EV_scr_seq_D46R0101_002, 2
 
 .equ obj_D46R0101_gsleader2, 0
 .equ obj_D46R0101_monstarball, 1
@@ -20,5 +21,6 @@
 .equ obj_D46R0101_pmfg_ball_elixir, 13
 .equ obj_D46R0101_pmfg_ball_max_potion, 14
 .equ obj_D46R0101_pmfg_ball_full_heal, 15
+.equ obj_D46R0101_pmfg_spiky_pichu, 16
 
 .endif //SCR_SEQ_D46R0101_H_

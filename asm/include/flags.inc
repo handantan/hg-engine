@@ -2311,6 +2311,8 @@
 .equ FLAG_PMFG_JIRACHI_SUMMONED, 0x59 // REQ-TGT-MAP-013: the White Rock was touched at night (reset by the Hall of Fame)
 .equ FLAG_PMFG_JIRACHI_GONE, 0x5a // REQ-TGT-MAP-013: Jirachi's hide flag after its battle (reset by the Hall of Fame)
 .equ FLAG_PMFG_CAUGHT_JIRACHI, 0x5b // REQ-TGT-MAP-013
+.equ FLAG_PMFG_HIDE_SPIKY_PICHU, 0x5c // REQ-TGT-MAP-014: set on entering Viridian Forest unless Celebi is in the party
+.equ FLAG_PMFG_GOT_SPIKY_PICHU, 0x5d // REQ-TGT-MAP-014
 // pmfg: tools/sg_item_sheet.py begin (REQ-TGT-MAP-007)
 .equ FLAG_PMFG_ITEMBALL_R27_CARBOS, 0x41 // REQ-TGT-MAP-007
 .equ FLAG_PMFG_ITEMBALL_R27_MOON_STONE, 0x42 // REQ-TGT-MAP-007
