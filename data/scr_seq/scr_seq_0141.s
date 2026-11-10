@@ -300,6 +300,8 @@ scrdef scr_seq_0141_270
 scrdef scr_seq_0141_271
 scrdef scr_seq_0141_272
 scrdef scr_seq_0141_273
+scrdef scr_seq_0141_274
+scrdef scr_seq_0141_275
 // pmfg: tools/sg_item_sheet.py end
 scrdef_end
 
@@ -2067,6 +2069,18 @@ scr_seq_0141_272: // Viridian Forest
 
 scr_seq_0141_273: // Viridian Forest
 	setvar VAR_SPECIAL_x8008, ITEM_FULL_HEAL
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_274: // Pewter Museum
+	setvar VAR_SPECIAL_x8008, ITEM_ROOT_FOSSIL
+	setvar VAR_SPECIAL_x8009, 1
+	goto scr_seq_0141_255
+	end
+
+scr_seq_0141_275: // Pewter Museum
+	setvar VAR_SPECIAL_x8008, ITEM_CLAW_FOSSIL
 	setvar VAR_SPECIAL_x8009, 1
 	goto scr_seq_0141_255
 	end
