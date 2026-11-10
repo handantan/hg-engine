@@ -24,7 +24,11 @@
 
 #ifdef DEBUG_BATTLE_SCENARIOS
 #include "test_battle.h"
+
 #endif // DEBUG_BATTLE_SCENARIOS
+
+#define PMFG_DOJO_FIRST_TRAINER 804 // = TRAINER_PMFG_DOJO_LICKILICKY (asm/include/trainers.inc)
+#define PMFG_DOJO_LAST_TRAINER  809 // = TRAINER_PMFG_DOJO_PIDGEOT
 
 struct BattleSetup LONG_CALL *BattleSetup_New_Tutorial(u32 heapID, FieldSystem *fieldSystem);
 int LONG_CALL BattleSetup_GetWildTransitionEffect(struct BattleSetup *setup);
@@ -202,7 +206,9 @@ void MakeTrainerPokemonParty(struct BATTLE_PARAM *bp, int num, int heapID)
     // REQ-TGT-TRN-002 (refs/soulgold/src/battle_main.c:2010-2085, level_scaling.c:179-195,404-430,483-508): party
     // average + 1 - a per-save, per-trainer 0..1, minus each mon's authored gap below the top (at most 2)
     u32 scaledPartyLevel = 0, highestLevel = 0;
-    if (PMFG_GetSetting(SETTING_TRAINER_LEVEL_SCALING) == SETTING_TRAINER_LEVEL_SCALING_ON) {
+    // PMFG REQ-TGT-MAP-012: the Saffron Dojo's Lv 1 sparring mons (TRAINER_PMFG_DOJO_*, new_trainers.csv) never scale
+    if (PMFG_GetSetting(SETTING_TRAINER_LEVEL_SCALING) == SETTING_TRAINER_LEVEL_SCALING_ON
+        && !(bp->trainer_id[num] >= PMFG_DOJO_FIRST_TRAINER && bp->trainer_id[num] <= PMFG_DOJO_LAST_TRAINER)) {
         u32 id = bp->trainer_id[num];
         highestLevel = TrainerPartyHighestLevel(buf, bp->trainer_data[num].data_type, pokecount);
         scaledPartyLevel = PMFG_PartyScalingLevel();

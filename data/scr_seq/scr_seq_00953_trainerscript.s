@@ -827,6 +827,12 @@
 /* Trainer 800 */ scrdef scr_seq_0953_normalTrainer
 /* Trainer 801 */ scrdef scr_seq_0953_normalTrainer
 /* Trainer 802 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 803 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 804 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 805 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 806 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 807 */ scrdef scr_seq_0953_normalTrainer
+/* Trainer 808 */ scrdef scr_seq_0953_normalTrainer
 // to add new trainers, just keep the list going here with more normalTrainer entries.
 
 scrdef_end

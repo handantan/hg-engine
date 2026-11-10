@@ -36244,6 +36244,156 @@ const TrainerData sTrainerData[] = {
             },
         },
     },
+    [804] = {
+        .name = "LICKILICKY",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_BLACK_BELT,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 1,
+                .species = SPECIES_LICKILICKY,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_LOSE,
+                .text = "That was good training!\\n",
+            },
+        },
+    },
+    [805] = {
+        .name = "MACHAMP",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_BLACK_BELT,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 1,
+                .species = SPECIES_MACHAMP,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_LOSE,
+                .text = "That was good training!\\n",
+            },
+        },
+    },
+    [806] = {
+        .name = "STEELIX",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_BLACK_BELT,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 1,
+                .species = SPECIES_STEELIX,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_LOSE,
+                .text = "That was good training!\\n",
+            },
+        },
+    },
+    [807] = {
+        .name = "ALAKAZAM",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_BLACK_BELT,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 1,
+                .species = SPECIES_ALAKAZAM,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_LOSE,
+                .text = "That was good training!\\n",
+            },
+        },
+    },
+    [808] = {
+        .name = "SLOWKING",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_BLACK_BELT,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 1,
+                .species = SPECIES_SLOWKING,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_LOSE,
+                .text = "That was good training!\\n",
+            },
+        },
+    },
+    [809] = {
+        .name = "PIDGEOT",
+        .data = {
+            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerClass = TRAINERCLASS_BLACK_BELT,
+            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_PRIORITIZE_DAMAGE,
+            .battleType = SINGLE_BATTLE,
+        },
+        .party = {
+            {
+                .ivs = 0,
+                .abilitySlot = TRAINER_POKEMON_ABILITY_1,
+                .level = 1,
+                .species = SPECIES_PIDGEOT,
+                .ballSeal = 0,
+            },
+        },
+        .text = {
+            {
+                .type = TRMSG_LOSE,
+                .text = "That was good training!\\n",
+            },
+        },
+    },
 };
 
 const u16 sTrainerTextOrder[] = {
@@ -36948,6 +37098,12 @@ const u16 sTrainerTextOrder[] = {
     801,
     802,
     803,
+    804,
+    805,
+    806,
+    807,
+    808,
+    809,
 };
 
 const u32 sTrainerDataCount = sizeof(sTrainerData) / sizeof(sTrainerData[0]);
