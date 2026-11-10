@@ -65,7 +65,7 @@ u32 LONG_CALL GfGfxLoader_LoadCharData(u32 narcId, s32 memberNo, void *bgConfig,
 void LONG_CALL GfGfxLoader_LoadScrnData(u32 narcId, s32 memberNo, void *bgConfig, u32 layer, u32 tileStart, u32 szByte, BOOL isCompressed, u32 heapId);
 void LONG_CALL GfGfxLoader_GXLoadPal(u32 narcId, s32 memberNo, u32 location, u32 palSlotOffset, u32 szByte, u32 heapId);
 
-enum { STATE_PROMPT, STATE_PAGES, STATE_CHOOSER, STATE_DONE };
+enum { STATE_PROMPT, STATE_PAGES, STATE_CONFIRM, STATE_CHOOSER, STATE_DONE };
 enum { WIN_TITLE, WIN_ROWS, WIN_DESC, WIN_COUNT };
 
 static const WindowTemplate sWindows[WIN_COUNT] = {
@@ -133,8 +133,9 @@ static void SettingsDraw(void)
         }
         Print(WIN_DESC, sPmfgOptionsDesc[RowSetting(sApp.cursor)], 0, 0, COLOR_NORMAL);
     }
-    if (sApp.state == STATE_PAGES) {
-        Print(WIN_DESC, sPmfgOptionsText[sApp.pc ? PMFG_OPTIONS_TEXT_HELP_PC : PMFG_OPTIONS_TEXT_HELP], 0, 32, COLOR_LOCKED); // third line, under the description
+    if (sApp.state == STATE_PAGES || sApp.state == STATE_CONFIRM) { // third line, under the description
+        u32 help = sApp.state == STATE_CONFIRM ? PMFG_OPTIONS_TEXT_CONFIRM : sApp.pc ? PMFG_OPTIONS_TEXT_HELP_PC : PMFG_OPTIONS_TEXT_HELP;
+        Print(WIN_DESC, sPmfgOptionsText[help], 0, 32, sApp.state == STATE_CONFIRM ? COLOR_SELECTED : COLOR_LOCKED);
     }
 }
 
@@ -239,6 +240,17 @@ static void HandleInput(void)
         } else {
             return;
         }
+    } else if (sApp.state == STATE_CONFIRM) { // B-024: START (or A) saves, B goes back to the page
+        if (keys & (PAD_BUTTON_START | PAD_BUTTON_A)) {
+            for (u8 i = 0; i < NUM_PMFG_SETTINGS; i++) {
+                PMFG_SetSetting(i, sApp.values[i]);
+            }
+            sApp.state = STATE_DONE;
+        } else if (keys & PAD_BUTTON_B) {
+            sApp.state = STATE_PAGES;
+        } else {
+            return;
+        }
     } else {
         u8 s = RowSetting(sApp.cursor), rows = 0;
         while (rows < PMFG_OPTIONS_ROWS && RowSetting(rows) != PMFG_OPTIONS_NO_ROW) {
@@ -254,12 +266,10 @@ static void HandleInput(void)
             sApp.page = (sApp.page + ((keys & PAD_BUTTON_R) ? 1 : PMFG_OPTIONS_PAGES - 1)) % PMFG_OPTIONS_PAGES;
             sApp.cursor = 0;
         } else if (keys & PAD_BUTTON_START) {
-            for (u8 i = 0; i < NUM_PMFG_SETTINGS; i++) {
-                PMFG_SetSetting(i, sApp.values[i]);
-            }
-            sApp.state = STATE_DONE;
-        } else if ((keys & PAD_BUTTON_B) && sApp.pc) {
-            sApp.state = STATE_DONE;
+            sApp.state = STATE_CONFIRM;
+        } else if (keys & PAD_BUTTON_B) { // PC: leave without saving; new game: back to RECOMMENDED / CUSTOM (B-024)
+            sApp.state = sApp.pc ? STATE_DONE : STATE_PROMPT;
+            sApp.cursor = 1;
         } else {
             return;
         }

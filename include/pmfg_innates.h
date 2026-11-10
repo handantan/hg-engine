@@ -15,5 +15,6 @@ u32 LONG_CALL PMFG_ProgressLevelCap(void); // REQ-TGT-SYS-002, src/pmfg_progress
 u32 LONG_CALL PMFG_PartyScalingLevel(void); // REQ-TGT-TRN-002
 void LONG_CALL PMFG_ApplyTrainerIVsEVs(struct PartyPokemon *mon); // REQ-TGT-SYS-004
 void LONG_CALL PMFG_GetSpeciesInnates(u16 species, u8 form, u16 *out); // reads PMFG_NUM_INNATES from a028 member CODE_ADDON_PMFG_INNATES
+BOOL LONG_CALL PMFG_MonHasIllusion(struct PartyPokemon *mon); // B-019: ability or unlocked innate
 
 #endif // PMFG_INNATES_H

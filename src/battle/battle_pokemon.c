@@ -13,6 +13,7 @@
 #include "battle.h"
 #include "overlay.h"
 #include "pokemon.h"
+#include "pmfg_innates.h" // B-019 PMFG_MonHasIllusion
 
 #ifdef DEBUG_BATTLE_SCENARIOS
 #include "test_battle.h"
@@ -293,7 +294,7 @@ void ClientPokemonEncount(void *bw, struct CLIENT_PARAM *cp)
 
     if (
         // mon's ability is illusion
-        GetMonData(Party_GetMonByIndex(party, 0), MON_DATA_ABILITY, 0) == ABILITY_ILLUSION
+        PMFG_MonHasIllusion(Party_GetMonByIndex(party, 0))
         // illusion position is not initialized or has been initialized to the current position
         && (gIllusionStruct.illusionPos[SanitizeClientForTeamAccess(bw, side)] == 6 || gIllusionStruct.illusionPos[SanitizeClientForTeamAccess(bw, side)] == 0)
         // if a side has 2 battlers, the logic can run regardless--the "last mon" is worst-case the one being sent out so nothing changes
@@ -344,7 +345,7 @@ void ClientPokemonEncountAppear(void *bw, struct CLIENT_PARAM *cp)
 
     if (
         // mon's ability is illusion
-        GetMonData(Party_GetMonByIndex(party, pap->sel_mons_no), MON_DATA_ABILITY, 0) == ABILITY_ILLUSION
+        PMFG_MonHasIllusion(Party_GetMonByIndex(party, pap->sel_mons_no))
         // illusion position is not initialized or has been initialized to the current position
         && (gIllusionStruct.illusionPos[SanitizeClientForTeamAccess(bw, side)] == 6 || gIllusionStruct.illusionPos[SanitizeClientForTeamAccess(bw, side)] == pap->sel_mons_no)
         // if a side has 2 battlers, the logic can run regardless--the "last mon" worst-case is the one being sent out so nothing changes
@@ -395,7 +396,7 @@ void ClientPokemonAppear(void *bw, struct CLIENT_PARAM *cp)
 
     if (
         // mon's ability is illusion
-        GetMonData(Party_GetMonByIndex(party, pap->sel_mons_no), MON_DATA_ABILITY, 0) == ABILITY_ILLUSION
+        PMFG_MonHasIllusion(Party_GetMonByIndex(party, pap->sel_mons_no))
         // illusion position is not initialized or has been initialized to the current position
         && (gIllusionStruct.illusionPos[SanitizeClientForTeamAccess(bw, side)] == 6 || gIllusionStruct.illusionPos[SanitizeClientForTeamAccess(bw, side)] == pap->sel_mons_no)
         // if a side has 2 battlers, the logic can run regardless--the "last mon" is worst-case the one being sent out so nothing changes
@@ -671,14 +672,12 @@ void CT_SwitchInMessageParamMake(void *bw, struct CLIENT_PARAM *cp, struct SWITC
 {
     if (cp->client_type & 1) {
         struct Party *party;
-        u32 ability = 0;
 
         party = BattleWorkPokePartyGet(bw, cp->client_no);
 
-        ability = GetMonData(Party_GetMonByIndex(party, smp->sel_mons_no), MON_DATA_ABILITY, NULL);
 
         // switch in we do not need to check for if the client is actually in an illusion
-        if (ability == ABILITY_ILLUSION
+        if (PMFG_MonHasIllusion(Party_GetMonByIndex(party, smp->sel_mons_no))
             && ((DoesSideHave2Battlers(bw, cp->client_no))
                 || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES) && party->count > 2)
                 || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES)) == 0)
@@ -700,12 +699,10 @@ void CT_SwitchInMessageParamMake(void *bw, struct CLIENT_PARAM *cp, struct SWITC
         }
     } else {
         struct Party *party;
-        u32 ability = 0;
 
         party = BattleWorkPokePartyGet(bw, cp->client_no);
 
-        ability = GetMonData(Party_GetMonByIndex(party, smp->sel_mons_no), MON_DATA_ABILITY, NULL);
-        if (ability == ABILITY_ILLUSION
+        if (PMFG_MonHasIllusion(Party_GetMonByIndex(party, smp->sel_mons_no))
             && ((DoesSideHave2Battlers(bw, cp->client_no))
                 || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES) && party->count > 2)
                 || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES)) == 0)
@@ -761,12 +758,10 @@ void CT_EncountSendOutMessageParamMake(void *bw, struct CLIENT_PARAM *cp, struct
 
         {
             struct Party *party;
-            u32 ability = 0;
 
             party = BattleWorkPokePartyGet(bw, client1);
 
-            ability = GetMonData(Party_GetMonByIndex(party, esomp->sel_mons_no[client1]), MON_DATA_ABILITY, NULL);
-            if (ability == ABILITY_ILLUSION
+            if (PMFG_MonHasIllusion(Party_GetMonByIndex(party, esomp->sel_mons_no[client1]))
                 && ((DoesSideHave2Battlers(bw, cp->client_no))
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES) && party->count > 2)
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES)) == 0)
@@ -778,12 +773,10 @@ void CT_EncountSendOutMessageParamMake(void *bw, struct CLIENT_PARAM *cp, struct
 
         if (client1 != client2) {
             struct Party *party;
-            u32 ability = 0;
 
             party = BattleWorkPokePartyGet(bw, client2);
 
-            ability = GetMonData(Party_GetMonByIndex(party, esomp->sel_mons_no[client2]), MON_DATA_ABILITY, NULL);
-            if (ability == ABILITY_ILLUSION
+            if (PMFG_MonHasIllusion(Party_GetMonByIndex(party, esomp->sel_mons_no[client2]))
                 && ((DoesSideHave2Battlers(bw, cp->client_no))
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES) && party->count > 2)
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES)) == 0)
@@ -885,12 +878,10 @@ void CT_EncountSendOutMessageParamMake(void *bw, struct CLIENT_PARAM *cp, struct
 
         {
             struct Party *party;
-            u32 ability = 0;
 
             party = BattleWorkPokePartyGet(bw, client1);
 
-            ability = GetMonData(Party_GetMonByIndex(party, esomp->sel_mons_no[client1]), MON_DATA_ABILITY, NULL);
-            if (ability == ABILITY_ILLUSION
+            if (PMFG_MonHasIllusion(Party_GetMonByIndex(party, esomp->sel_mons_no[client1]))
                 && ((DoesSideHave2Battlers(bw, cp->client_no))
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES) && party->count > 2)
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES)) == 0)
@@ -902,12 +893,10 @@ void CT_EncountSendOutMessageParamMake(void *bw, struct CLIENT_PARAM *cp, struct
 
         if (client1 != client2) {
             struct Party *party;
-            u32 ability = 0;
 
             party = BattleWorkPokePartyGet(bw, client2);
 
-            ability = GetMonData(Party_GetMonByIndex(party, esomp->sel_mons_no[client2]), MON_DATA_ABILITY, NULL);
-            if (ability == ABILITY_ILLUSION
+            if (PMFG_MonHasIllusion(Party_GetMonByIndex(party, esomp->sel_mons_no[client2]))
                 && ((DoesSideHave2Battlers(bw, cp->client_no))
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES) && party->count > 2)
                     || (BattleTypeGet(bw) & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLES)) == 0)

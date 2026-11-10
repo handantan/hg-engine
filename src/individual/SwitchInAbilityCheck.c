@@ -20,7 +20,9 @@ static int GetTraceClient(struct BattleSystem *battleSystem, struct BattleStruct
 
 extern struct ILLUSION_STRUCT gIllusionStruct;
 
-// PMFG (REQ-TGT-ABL-001): { ability, subscript, MOVE_SUBSCRIPT_PTR_* stat change or 0 }; at most 32 rows (pmfgEntryDone bits).
+// PMFG (REQ-TGT-ABL-001): { ability, subscript, MOVE_SUBSCRIPT_PTR_* stat change or 0 }; at most 31 rows (pmfgEntryDone
+// bits; bit 31 is Trace's, PMFG_TRACE_DONE).
+#define PMFG_TRACE_DONE (1u << 31)
 // shortcut: a stat raise still fires at +6 (SoulGold skips it), the script then says the stat won't go higher.
 const u16 sPmfgEntryAbilities[][3] = {
     { ABILITY_BATTLE_FERVOR, BATTLE_SUBSCRIPT_HANDLE_ABILITY_STAT_CHANGE, MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE },
@@ -43,6 +45,7 @@ const u16 sPmfgEntryAbilities[][3] = {
     { ABILITY_SUPREME_OVERLORD, BATTLE_SUBSCRIPT_PMFG_ABILITY_POPUP, 0 },
     { ABILITY_COSTAR, BATTLE_SUBSCRIPT_PMFG_COSTAR, 0 },
 };
+_Static_assert(NELEMS(sPmfgEntryAbilities) <= 31, "pmfgEntryDone bit 31 is PMFG_TRACE_DONE");
 
 // PMFG (REQ-TGT-ABL-001): SoulGold GetAdditionalTypeAbilityType
 const u16 sPmfgSoulTypes[][2] = {
@@ -355,12 +358,16 @@ int UNUSED SwitchInAbilityCheck(void *bw, struct BattleStruct *sp)
 
                     sp->defence_client_work = GetTraceClient(bw, sp, def1, def2);
 
+                    // PMFG (B-019): once per switch-in. The trace script clears ability_activated_flag so the copied
+                    // ability fires, and an innate Trace stays, so the flag alone looped forever.
                     if ((sp->battlemon[client_no].ability_activated_flag == 0)
+                        && !(sp->pmfgEntryDone[client_no] & PMFG_TRACE_DONE)
                         && (sp->defence_client_work != 0xFF)
                         && (sp->battlemon[client_no].hp)
                         && (sp->battlemon[client_no].item != ITEM_GRISEOUS_ORB)
                         && (sp->battlemon[sp->defence_client_work].hp)
                         && (BattlerHasAbility(sp, client_no, ABILITY_TRACE))) {
+                        sp->pmfgEntryDone[client_no] |= PMFG_TRACE_DONE;
                         sp->switch_in_check_seq_no = 0; // reset to activate all abilities
                         sp->battlerIdTemp = client_no;
                         scriptnum = BATTLE_SUBSCRIPT_TRACE;

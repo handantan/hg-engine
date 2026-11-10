@@ -97,6 +97,26 @@ void LONG_CALL PMFG_GetSpeciesInnates(u16 species, u8 form, u16 *out)
     }
 }
 
+/// @brief B-019: Illusion as the party mon's ability or an unlocked innate, for battle_pokemon.c's party-level checks
+/// (they run before the mon is a battler, so BattlerHasAbility can't answer)
+BOOL LONG_CALL PMFG_MonHasIllusion(struct PartyPokemon *mon)
+{
+    if (GetMonData(mon, MON_DATA_ABILITY, NULL) == ABILITY_ILLUSION) {
+        return TRUE;
+    }
+    u32 unlocked = PMFG_UnlockedInnateCount();
+    u16 innates[PMFG_NUM_INNATES];
+    if (unlocked) {
+        PMFG_GetSpeciesInnates(GetMonData(mon, MON_DATA_SPECIES, NULL), GetMonData(mon, MON_DATA_FORM, NULL), innates);
+    }
+    for (u32 i = 0; i < unlocked; i++) {
+        if (innates[i] == ABILITY_ILLUSION) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 // REQ-TGT-TRN-002 (refs/soulgold/src/level_scaling.c:32-76): the party's average level, skipping mons 7+ levels below the top
 u32 LONG_CALL PMFG_PartyScalingLevel(void)
 {
