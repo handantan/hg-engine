@@ -417,6 +417,11 @@ _0526:
 	setvar VAR_SPECIAL_x8005, 1
 	setflag FLAG_UNK_0F2
 	callstd std_give_item_verbose
+	// pmfg: REQ-TGT-BTL-010 (D-066 C): the Z-Power Ring comes with the S.S. Ticket, after the Johto League
+	setvar VAR_SPECIAL_x8004, ITEM_Z_POWER_RING
+	setvar VAR_SPECIAL_x8005, 1
+	callstd std_give_item_verbose
+	setflag FLAG_Z_MOVE_ENABLED
 _0541:
 	buffer_players_name 0
 	gender_msgbox 73, 74

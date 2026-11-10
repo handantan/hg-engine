@@ -48,6 +48,9 @@ int CalcBaseDamage(void *bw, struct BattleStruct *sp, int moveno, u32 side_cond 
     damageCalc.movetype = GetAdjustedMoveType(sp, isFutureSightWithoutAttacker ? BATTLER_NONE : attacker, moveno);
     damageCalc.movesplit = GetMoveSplit(sp, moveno);
     damageCalc.movepower = sp->moveTbl[moveno].power;
+    if (!damageCalc.movepower && MoveIsZMove(moveno)) {
+        damageCalc.movepower = sp->pmfgZPower[attacker]; // PMFG REQ-TGT-BTL-010: generic Z-moves have power 0 in Moves.c
+    }
     damageCalc.damage_power = sp->damage_power;
     damageCalc.damage_value = sp->damage_value;
     damageCalc.magnitude = sp->magnitude;

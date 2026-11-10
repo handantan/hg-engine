@@ -50,7 +50,9 @@
 #define MEGA_ICON_BLANK_GFX            (367)
 #define TERA_ICON_SELECTED_GFX         (369) // PMFG REQ-TGT-BTL-007 (D-061): the Mega button's Tera twins
 #define TERA_ICON_BLANK_GFX            (371)
-#define TERA_BUTTON_GFX_OFFSET(canMega) ((canMega) == 2 ? TERA_ICON_SELECTED_GFX - MEGA_ICON_SELECTED_GFX : 0)
+#define Z_ICON_SELECTED_GFX            (373) // PMFG REQ-TGT-BTL-010 (D-066): the Z button, same layout
+#define Z_ICON_BLANK_GFX               (375)
+#define TERA_BUTTON_GFX_OFFSET(canMega) ((canMega) == 2 ? TERA_ICON_SELECTED_GFX - MEGA_ICON_SELECTED_GFX : (canMega) == 3 ? Z_ICON_SELECTED_GFX - MEGA_ICON_SELECTED_GFX : 0)
 
 // a028 file indexes
 #define CODE_ADDON_HIDDEN_ABILITY_LIST    7

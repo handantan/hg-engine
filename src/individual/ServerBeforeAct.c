@@ -455,7 +455,8 @@ static BOOL PMFG_CanTerastallize(struct BattleStruct *sp, int client)
     struct BattlePokemon *bm = &sp->battlemon[client];
     if (!bm->hp || sp->pmfgTeraSlot[client & 1] || sp->playerActions[client][3] != SELECT_FIGHT_COMMAND
         || IsMegaSpecies(bm->species, bm->form_no)
-        || CheckMegaData(bm->species, GetBattleMonItem(sp, client), bm->form_no)) { // SoulGold: no Tera while holding a Mega Stone
+        || CheckMegaData(bm->species, GetBattleMonItem(sp, client), bm->form_no) // SoulGold: no Tera while holding a Mega Stone
+        || IS_ITEM_Z_CRYSTAL(bm->item)) { // or a Z-crystal (battle_terastal.c:103; REQ-TGT-BTL-010)
         return FALSE;
     }
 #ifndef DEBUG_BATTLE_SCENARIOS

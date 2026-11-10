@@ -16,6 +16,7 @@
 #include "item.h"
 #include "mega.h"
 #include "pokemon.h"
+#include "test_battle.h"
 
 /********************************************************************************************************************/
 /********************************************************************************************************************/
@@ -150,6 +151,7 @@ BOOL CanMoveActivateGem(struct BattleStruct *ctx);
 void RemoveItemOnFlingFailure(struct BattleStruct *ctx);
 
 void SortPositionBased(u8 array[2], int size);
+static BOOL PMFG_TryZMove(struct BattleStruct *ctx);
 
 /// @brief Check if ability can be suppressed by Neutralizing Gas if value is not the same as CantSuppress.
 /// @param ability
@@ -308,6 +310,7 @@ void __attribute__((section(".init"))) BattleController_BeforeMove(struct Battle
 #endif
 
         ctx->wb_seq_no++;
+        PMFG_TryZMove(ctx); // PMFG REQ-TGT-BTL-010
         return;
     }
     case BEFORE_MOVE_STATE_TRUANT: {
@@ -5253,4 +5256,210 @@ void RemoveItemOnFlingFailure(struct BattleStruct *ctx)
         ctx->battlemon[ctx->attack_client].item = ITEM_NONE;
         ctx->battlemon[ctx->attack_client].moveeffect.knockOffFlag = TRUE;
     }
+}
+
+// ---- PMFG REQ-TGT-BTL-010 Z-Moves (Docs/plan/phase-4-btl-010.md; rules in phase-4-btl-010-notes.md) ----
+
+#include "pmfg_zmove_effects.h"
+
+// ITEM_NORMALIUM_Z_HELD..ITEM_FAIRIUM_Z_HELD (the expansion's GetItemSecondaryId; hg-engine's crystals carry no type)
+static const u8 sPmfgZCrystalType[] = {
+    TYPE_NORMAL, TYPE_FIRE, TYPE_WATER, TYPE_ELECTRIC, TYPE_GRASS, TYPE_ICE, TYPE_FIGHTING, TYPE_POISON, TYPE_GROUND,
+    TYPE_FLYING, TYPE_PSYCHIC, TYPE_BUG, TYPE_ROCK, TYPE_GHOST, TYPE_DRAGON, TYPE_DARK, TYPE_STEEL, TYPE_FAIRY,
+};
+
+// refs/pokehns-expansion/src/battle_z_move.c:52-97 sSignatureZMoves, species as GetSpeciesBasedOnForm gives them
+static const struct { u16 species, crystal, move, zmove; } sPmfgSignatureZ[] = {
+    { SPECIES_PIKACHU, ITEM_PIKANIUM_Z_HELD, MOVE_VOLT_TACKLE, MOVE_CATASTROPIKA },
+    { SPECIES_PIKACHU_COSPLAY, ITEM_PIKANIUM_Z_HELD, MOVE_VOLT_TACKLE, MOVE_CATASTROPIKA },
+    { SPECIES_PIKACHU_ROCK_STAR, ITEM_PIKANIUM_Z_HELD, MOVE_VOLT_TACKLE, MOVE_CATASTROPIKA },
+    { SPECIES_PIKACHU_BELLE, ITEM_PIKANIUM_Z_HELD, MOVE_VOLT_TACKLE, MOVE_CATASTROPIKA },
+    { SPECIES_PIKACHU_POP_STAR, ITEM_PIKANIUM_Z_HELD, MOVE_VOLT_TACKLE, MOVE_CATASTROPIKA },
+    { SPECIES_PIKACHU_PH_D, ITEM_PIKANIUM_Z_HELD, MOVE_VOLT_TACKLE, MOVE_CATASTROPIKA },
+    { SPECIES_PIKACHU_LIBRE, ITEM_PIKANIUM_Z_HELD, MOVE_VOLT_TACKLE, MOVE_CATASTROPIKA },
+    { SPECIES_PIKACHU_ORIGINAL_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_PIKACHU_HOENN_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_PIKACHU_SINNOH_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_PIKACHU_UNOVA_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_PIKACHU_KALOS_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_PIKACHU_ALOLA_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_PIKACHU_PARTNER_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_PIKACHU_WORLD_CAP, ITEM_PIKASHUNIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_10_000_000_VOLT_THUNDERBOLT },
+    { SPECIES_RAICHU_ALOLAN, ITEM_ALORAICHIUM_Z_HELD, MOVE_THUNDERBOLT, MOVE_STOKED_SPARKSURFER },
+    { SPECIES_DECIDUEYE, ITEM_DECIDIUM_Z_HELD, MOVE_SPIRIT_SHACKLE, MOVE_SINISTER_ARROW_RAID },
+    { SPECIES_INCINEROAR, ITEM_INCINIUM_Z_HELD, MOVE_DARKEST_LARIAT, MOVE_MALICIOUS_MOONSAULT },
+    { SPECIES_PRIMARINA, ITEM_PRIMARIUM_Z_HELD, MOVE_SPARKLING_ARIA, MOVE_OCEANIC_OPERETTA },
+    { SPECIES_KOMMO_O, ITEM_KOMMONIUM_Z_ITEM, MOVE_CLANGING_SCALES, MOVE_CLANGOROUS_SOULBLAZE },
+    { SPECIES_LUNALA, ITEM_LUNALIUM_Z_ITEM, MOVE_MOONGEIST_BEAM, MOVE_MENACING_MOONRAZE_MAELSTROM },
+    { SPECIES_NECROZMA_DAWN_WINGS, ITEM_LUNALIUM_Z_ITEM, MOVE_MOONGEIST_BEAM, MOVE_MENACING_MOONRAZE_MAELSTROM },
+    { SPECIES_SOLGALEO, ITEM_SOLGANIUM_Z_ITEM, MOVE_SUNSTEEL_STRIKE, MOVE_SEARING_SUNRAZE_SMASH },
+    { SPECIES_NECROZMA_DUSK_MANE, ITEM_SOLGANIUM_Z_ITEM, MOVE_SUNSTEEL_STRIKE, MOVE_SEARING_SUNRAZE_SMASH },
+    { SPECIES_NECROZMA_ULTRA_DUSK_MANE, ITEM_ULTRANECROZIUM_Z_ITEM, MOVE_PHOTON_GEYSER, MOVE_LIGHT_THAT_BURNS_THE_SKY },
+    { SPECIES_NECROZMA_ULTRA_DAWN_WINGS, ITEM_ULTRANECROZIUM_Z_ITEM, MOVE_PHOTON_GEYSER, MOVE_LIGHT_THAT_BURNS_THE_SKY },
+    { SPECIES_LYCANROC, ITEM_LYCANIUM_Z_ITEM, MOVE_STONE_EDGE, MOVE_SPLINTERED_STORMSHARDS },
+    { SPECIES_LYCANROC_MIDNIGHT, ITEM_LYCANIUM_Z_ITEM, MOVE_STONE_EDGE, MOVE_SPLINTERED_STORMSHARDS },
+    { SPECIES_LYCANROC_DUSK, ITEM_LYCANIUM_Z_ITEM, MOVE_STONE_EDGE, MOVE_SPLINTERED_STORMSHARDS },
+    { SPECIES_MARSHADOW, ITEM_MARSHADIUM_Z_HELD, MOVE_SPECTRAL_THIEF, MOVE_SOUL_STEALING_7_STAR_STRIKE },
+    { SPECIES_MIMIKYU, ITEM_MIMIKIUM_Z_ITEM, MOVE_PLAY_ROUGH, MOVE_LETS_SNUGGLE_FOREVER },
+    { SPECIES_MIMIKYU_BUSTED, ITEM_MIMIKIUM_Z_ITEM, MOVE_PLAY_ROUGH, MOVE_LETS_SNUGGLE_FOREVER },
+    { SPECIES_MIMIKYU_LARGE, ITEM_MIMIKIUM_Z_ITEM, MOVE_PLAY_ROUGH, MOVE_LETS_SNUGGLE_FOREVER },
+    { SPECIES_MIMIKYU_BUSTED_LARGE, ITEM_MIMIKIUM_Z_ITEM, MOVE_PLAY_ROUGH, MOVE_LETS_SNUGGLE_FOREVER },
+    { SPECIES_TAPU_KOKO, ITEM_TAPUNIUM_Z_HELD, MOVE_NATURES_MADNESS, MOVE_GUARDIAN_OF_ALOLA },
+    { SPECIES_TAPU_LELE, ITEM_TAPUNIUM_Z_HELD, MOVE_NATURES_MADNESS, MOVE_GUARDIAN_OF_ALOLA },
+    { SPECIES_TAPU_BULU, ITEM_TAPUNIUM_Z_HELD, MOVE_NATURES_MADNESS, MOVE_GUARDIAN_OF_ALOLA },
+    { SPECIES_TAPU_FINI, ITEM_TAPUNIUM_Z_HELD, MOVE_NATURES_MADNESS, MOVE_GUARDIAN_OF_ALOLA },
+    { SPECIES_MEW, ITEM_MEWNIUM_Z_HELD, MOVE_PSYCHIC, MOVE_GENESIS_SUPERNOVA },
+    { SPECIES_EEVEE, ITEM_EEVIUM_Z_HELD, MOVE_LAST_RESORT, MOVE_EXTREME_EVOBOOST },
+    { SPECIES_SNORLAX, ITEM_SNORLIUM_Z_HELD, MOVE_GIGA_IMPACT, MOVE_PULVERIZING_PANCAKE },
+};
+
+// moves_info.h .zMove.powerOverride (lines 2021, 8405, 13215, 14114, 14451, 14522, 16766)
+static const u16 sPmfgZPowerOverride[][2] = {
+    { MOVE_MEGA_DRAIN, 120 }, { MOVE_WEATHER_BALL, 160 }, { MOVE_HEX, 160 }, { MOVE_GEAR_GRIND, 180 },
+    { MOVE_V_CREATE, 220 }, { MOVE_FLYING_PRESS, 170 }, { MOVE_CORE_ENFORCER, 140 },
+};
+
+// what PMFG_TryZMove left in temp_work for BATTLE_SUBSCRIPT_PMFG_Z_POWER
+enum { PMFG_Z_MSG_NONE, PMFG_Z_MSG_DAMAGING, PMFG_Z_MSG_STAT_UP, PMFG_Z_MSG_ALL_UP, PMFG_Z_MSG_RESET, PMFG_Z_MSG_CRIT, PMFG_Z_MSG_RECOVER, PMFG_Z_MSG_FOLLOW_ME };
+
+/// the Z-move `move` becomes for this battler's crystal: a signature or generic Z-move, `move` itself for a status move
+/// with a matching crystal, MOVE_NONE if it can't (battle_z_move.c GetUsableZMove)
+static u16 PMFG_ZMoveFor(struct BattleStruct *ctx, int client, u16 move)
+{
+    struct BattlePokemon *bm = &ctx->battlemon[client];
+    u16 species = GetSpeciesBasedOnForm(bm->species, bm->form_no);
+    for (u32 i = 0; i < NELEMS(sPmfgSignatureZ); i++) {
+        if (sPmfgSignatureZ[i].crystal == bm->item && sPmfgSignatureZ[i].move == move && sPmfgSignatureZ[i].species == species) {
+            return sPmfgSignatureZ[i].zmove;
+        }
+    }
+    u32 type = ctx->moveTbl[move].type; // the move's own type: -ate/Normalize don't count (zmove.c:22)
+    if (bm->item < ITEM_NORMALIUM_Z_HELD || bm->item > ITEM_FAIRIUM_Z_HELD || type != sPmfgZCrystalType[bm->item - ITEM_NORMALIUM_Z_HELD]) {
+        return MOVE_NONE;
+    }
+    if (ctx->moveTbl[move].split == SPLIT_STATUS) {
+        return move;
+    }
+    u32 index = type == TYPE_FAIRY ? 17 : (type < TYPE_FAIRY ? type : type - 1); // ZMoveList order: Normal..Steel, Fire..Dark, Fairy
+    return MOVE_BREAKNECK_BLITZ_PHYSICAL + 2 * index + (ctx->moveTbl[move].split == SPLIT_SPECIAL);
+}
+
+/// battle_z_move.c GetZMovePower
+static u8 PMFG_ZPower(struct BattleStruct *ctx, u16 move)
+{
+    static const u8 bands[14] = { 100, 100, 100, 100, 100, 100, 120, 140, 160, 175, 180, 185, 190, 195 }; // by power / 10
+    if (ctx->moveTbl[move].effect == MOVE_EFFECT_ONE_HIT_KO) {
+        return 180;
+    }
+    for (u32 i = 0; i < NELEMS(sPmfgZPowerOverride); i++) {
+        if (sPmfgZPowerOverride[i][0] == move) {
+            return sPmfgZPowerOverride[i][1];
+        }
+    }
+    u32 power = ctx->moveTbl[move].power;
+    return power >= 140 ? 200 : bands[power / 10];
+}
+
+/// a status Z-move's effect (battle_z_move.c SetZEffect); returns what the subscript prints
+static u32 PMFG_ApplyZEffect(struct BattleStruct *ctx, int client, u16 move)
+{
+    struct BattlePokemon *bm = &ctx->battlemon[client];
+    u32 effect = PMFG_Z_EFFECT_NONE;
+    for (u32 i = 0; i < NELEMS(sPmfgZEffects); i++) {
+        if (sPmfgZEffects[i].move == move) {
+            effect = sPmfgZEffects[i].effect;
+            break;
+        }
+    }
+    if (effect == PMFG_Z_EFFECT_CURSE) {
+        effect = HasType(ctx, client, TYPE_GHOST) ? PMFG_Z_EFFECT_RECOVER_HP : PMFG_Z_EFFECT_ATK_UP_1;
+    }
+    switch (effect) {
+    case PMFG_Z_EFFECT_RESET_STATS:
+        for (u32 i = STAT_ATTACK; i <= STAT_EVASION; i++) {
+            if (bm->states[i] < 6) {
+                bm->states[i] = 6;
+            }
+        }
+        return PMFG_Z_MSG_RESET;
+    case PMFG_Z_EFFECT_ALL_STATS_UP_1: {
+        BOOL raised = FALSE;
+        for (u32 i = STAT_ATTACK; i < STAT_ACCURACY; i++) { // not accuracy or evasion
+            if (bm->states[i] < 12) {
+                bm->states[i]++;
+                raised = TRUE;
+            }
+        }
+        return raised ? PMFG_Z_MSG_ALL_UP : PMFG_Z_MSG_NONE;
+    }
+    case PMFG_Z_EFFECT_BOOST_CRITS:
+        if (bm->condition2 & STATUS2_FOCUS_ENERGY) {
+            return PMFG_Z_MSG_NONE;
+        }
+        bm->condition2 |= STATUS2_FOCUS_ENERGY;
+        return PMFG_Z_MSG_CRIT;
+    case PMFG_Z_EFFECT_FOLLOW_ME:
+        ctx->scw[client & 1].followMeFlag = 1;
+        ctx->scw[client & 1].battlerIdFollowMe = client;
+        return PMFG_Z_MSG_FOLLOW_ME;
+    case PMFG_Z_EFFECT_RECOVER_HP:
+        if (bm->hp == (s32)bm->maxhp) {
+            return PMFG_Z_MSG_NONE;
+        }
+        ctx->hp_calc_work = bm->maxhp - bm->hp;
+        return PMFG_Z_MSG_RECOVER;
+    case PMFG_Z_EFFECT_RESTORE_REPLACEMENT_HP:
+        // shortcut: Z-Memento/Z-Parting Shot don't heal the replacement (needs a switch-in hook; the switch-in overlay is full)
+        return PMFG_Z_MSG_NONE;
+    case PMFG_Z_EFFECT_ATK_UP_1 ... PMFG_Z_EFFECT_EVSN_UP_1:
+        ctx->addeffect_param = MOVE_SUBSCRIPT_PTR_ATTACK_UP_1_STAGE + effect - PMFG_Z_EFFECT_ATK_UP_1;
+        return PMFG_Z_MSG_STAT_UP;
+    case PMFG_Z_EFFECT_ATK_UP_2 ... PMFG_Z_EFFECT_EVSN_UP_2:
+        ctx->addeffect_param = MOVE_SUBSCRIPT_PTR_ATTACK_UP_2_STAGES + effect - PMFG_Z_EFFECT_ATK_UP_2;
+        return PMFG_Z_MSG_STAT_UP;
+    case PMFG_Z_EFFECT_ATK_UP_3 ... PMFG_Z_EFFECT_EVSN_UP_3:
+        ctx->addeffect_param = MOVE_SUBSCRIPT_PTR_ATTACK_UP_3_STAGES + effect - PMFG_Z_EFFECT_ATK_UP_3;
+        return PMFG_Z_MSG_STAT_UP;
+    }
+    return PMFG_Z_MSG_NONE;
+}
+
+/**
+ *  @brief BEFORE_MOVE_STATE_DISPLAY_Z_DANCE_AND_EFFECT (after obedience and PP, as CancelerZMoves): if the attacker asked
+ *  for a Z-move and can use one, swap in the Z-move (PP still comes off the base move: moveNoTemp is kept) or apply the
+ *  status Z effect, mark the side's Z-move used and run BATTLE_SUBSCRIPT_PMFG_Z_POWER.
+ *  shortcut: once per battle per side, not per trainer (as Tera); Z-moves keep the base move's priority, no AI, no animation
+ */
+static BOOL PMFG_TryZMove(struct BattleStruct *ctx)
+{
+    int client = ctx->attack_client;
+    u16 move = ctx->current_move_index, zmove;
+
+#ifdef DEBUG_BATTLE_SCENARIOS
+    ctx->pmfgZWant |= TestBattle_TakeZWants();
+#endif
+    if (!(ctx->pmfgZWant & No2Bit(client))) {
+        return FALSE;
+    }
+    ctx->pmfgZWant &= ~No2Bit(client);
+    if ((ctx->pmfgZUsed & (1 << (client & 1))) || ctx->oneTurnFlag[client].struggle_flag || ctx->battlemon[client].is_currently_terastallized
+#ifndef DEBUG_BATTLE_SCENARIOS
+        || (!(client & 1) && !PMFG_PlayerHasZPower())
+#endif
+        || !(zmove = PMFG_ZMoveFor(ctx, client, move))) {
+        return FALSE;
+    }
+    ctx->pmfgZUsed |= 1 << (client & 1);
+    ctx->battlerIdTemp = client;
+    if (zmove != move) {
+        ctx->current_move_index = zmove;
+        ctx->pmfgZPower[client] = PMFG_ZPower(ctx, move);
+        ctx->temp_work = PMFG_Z_MSG_DAMAGING;
+    } else {
+        ctx->temp_work = PMFG_ApplyZEffect(ctx, client, move);
+    }
+    LoadBattleSubSeqScript(ctx, ARC_BATTLE_SUB_SEQ, BATTLE_SUBSCRIPT_PMFG_Z_POWER);
+    ctx->next_server_seq_no = ctx->server_seq_no;
+    ctx->server_seq_no = CONTROLLER_COMMAND_RUN_SCRIPT;
+    return TRUE;
 }

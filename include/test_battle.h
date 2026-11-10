@@ -112,6 +112,9 @@ struct PACKED TestBattleScenario {
 #define ACTION_MOVE_SLOT_4   3
 #define ACTION_TERA          0x80 // PMFG REQ-TGT-BTL-007: | a move slot = Terastallize, then use it
 u8 LONG_CALL TestBattle_TakeTeraWants(void);
+#define ACTION_Z             0x40 // PMFG REQ-TGT-BTL-010: | a move slot = use it as a Z-move
+#define ACTION_GIMMICKS      (ACTION_TERA | ACTION_Z)
+u8 LONG_CALL TestBattle_TakeZWants(void);
 #define ACTION_SWITCH_SLOT_0 4
 #define ACTION_SWITCH_SLOT_1 5
 #define ACTION_SWITCH_SLOT_2 6

@@ -4,6 +4,8 @@
 #include "battle.h"
 #include "test_battle.h"
 #include "save.h"
+#include "bag.h"
+#include "constants/item.h"
 #include "constants/file.h"
 #include "pmfg_innates.h"
 #include "pmfg_level_caps.h"
@@ -196,6 +198,7 @@ void LONG_CALL PMFG_TeraOnLoad(struct BattleStruct *sp, int client)
     BOOL tera = sp->pmfgTeraSlot[client & 1] == sp->sel_mons_no[client] + 1;
     sp->battlemon[client].is_currently_terastallized = tera;
     sp->battlemon[client].tera_type = tera ? sp->pmfgTeraType[client & 1] : 0;
+    sp->pmfgZWant &= ~(1 << client); // REQ-TGT-BTL-010: a Z request of a mon that never moved doesn't pass to the next one
 }
 
 /**
@@ -211,6 +214,26 @@ BOOL LONG_CALL PMFG_CanDrawTeraButton(struct BattleStruct *sp, int client)
 void LONG_CALL PMFG_SetTeraWant(struct BattleStruct *sp, int client, BOOL want)
 {
     sp->pmfgTeraWant = want ? (sp->pmfgTeraWant | (1 << client)) : (sp->pmfgTeraWant & ~(1 << client));
+}
+
+// ---- PMFG REQ-TGT-BTL-010 Z-Moves (Docs/plan/phase-4-btl-010.md). The conversion: BattleController_BeforeMove.c ----
+
+/// D-066 B: the player can use Z-moves with FLAG_Z_MOVE_ENABLED (set by the obtain event) and the Z-Power Ring in the bag
+BOOL LONG_CALL PMFG_PlayerHasZPower(void)
+{
+    return CheckScriptFlag(FLAG_Z_MOVE_ENABLED) && Bag_HasItem(Sav2_Bag_get(SaveBlock2_get()), ITEM_Z_POWER_RING, 1, HEAPID_BATTLE_HEAP);
+}
+
+/// D-066 A (b): the Z button in the Mega button's place, for a Z-crystal holder (a crystal holder can't Mega Evolve or Terastallize)
+BOOL LONG_CALL PMFG_CanDrawZButton(struct BattleStruct *sp, int client)
+{
+    return PMFG_PlayerHasZPower() && !(sp->pmfgZUsed & 1) && !sp->battlemon[client].is_currently_terastallized
+        && !(client && (sp->pmfgZWant & 1)); // doubles: the first mon already asked for its Z-move
+}
+
+void LONG_CALL PMFG_SetZWant(struct BattleStruct *sp, int client, BOOL want)
+{
+    sp->pmfgZWant = want ? (sp->pmfgZWant | (1 << client)) : (sp->pmfgZWant & ~(1 << client));
 }
 
 u32 LONG_CALL PMFG_StabKind(struct BattleStruct *sp, int attacker, int type)

@@ -275,6 +275,172 @@ _PMFG_MegaMenu2:
 	case 5, _PMFG_Mega17
 	goto _01EC
 
+// pmfg: REQ-TGT-BTL-010 (D-066 C): the 18 type Z-crystals after the Johto League, 9,999 Coins each like the Mega stones
+_PMFG_ZMenu0:
+	menu_init 1, 1, 0, 1, VAR_TEMP_x4000
+	menu_item_add 86, 255, 0
+	menu_item_add 87, 255, 1
+	menu_item_add 88, 255, 2
+	menu_item_add 89, 255, 3
+	menu_item_add 90, 255, 4
+	menu_item_add 91, 255, 5
+	menu_item_add 11, 255, 6
+	menu_exec
+	switch VAR_TEMP_x4000
+	case 0, _PMFG_Z0
+	case 1, _PMFG_Z1
+	case 2, _PMFG_Z2
+	case 3, _PMFG_Z3
+	case 4, _PMFG_Z4
+	case 5, _PMFG_Z5
+	goto _01EC
+
+_PMFG_ZMenu1:
+	menu_init 1, 1, 0, 1, VAR_TEMP_x4000
+	menu_item_add 92, 255, 0
+	menu_item_add 93, 255, 1
+	menu_item_add 94, 255, 2
+	menu_item_add 95, 255, 3
+	menu_item_add 96, 255, 4
+	menu_item_add 97, 255, 5
+	menu_item_add 11, 255, 6
+	menu_exec
+	switch VAR_TEMP_x4000
+	case 0, _PMFG_Z6
+	case 1, _PMFG_Z7
+	case 2, _PMFG_Z8
+	case 3, _PMFG_Z9
+	case 4, _PMFG_Z10
+	case 5, _PMFG_Z11
+	goto _01EC
+
+_PMFG_ZMenu2:
+	menu_init 1, 1, 0, 1, VAR_TEMP_x4000
+	menu_item_add 98, 255, 0
+	menu_item_add 99, 255, 1
+	menu_item_add 100, 255, 2
+	menu_item_add 101, 255, 3
+	menu_item_add 102, 255, 4
+	menu_item_add 103, 255, 5
+	menu_item_add 11, 255, 6
+	menu_exec
+	switch VAR_TEMP_x4000
+	case 0, _PMFG_Z12
+	case 1, _PMFG_Z13
+	case 2, _PMFG_Z14
+	case 3, _PMFG_Z15
+	case 4, _PMFG_Z16
+	case 5, _PMFG_Z17
+	goto _01EC
+
+_PMFG_Z0:
+	setvar VAR_SPECIAL_x8004, ITEM_NORMALIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu0
+
+_PMFG_Z1:
+	setvar VAR_SPECIAL_x8004, ITEM_FIRIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu0
+
+_PMFG_Z2:
+	setvar VAR_SPECIAL_x8004, ITEM_WATERIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu0
+
+_PMFG_Z3:
+	setvar VAR_SPECIAL_x8004, ITEM_ELECTRIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu0
+
+_PMFG_Z4:
+	setvar VAR_SPECIAL_x8004, ITEM_GRASSIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu0
+
+_PMFG_Z5:
+	setvar VAR_SPECIAL_x8004, ITEM_ICIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu0
+
+_PMFG_Z6:
+	setvar VAR_SPECIAL_x8004, ITEM_FIGHTINIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu1
+
+_PMFG_Z7:
+	setvar VAR_SPECIAL_x8004, ITEM_POISONIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu1
+
+_PMFG_Z8:
+	setvar VAR_SPECIAL_x8004, ITEM_GROUNDIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu1
+
+_PMFG_Z9:
+	setvar VAR_SPECIAL_x8004, ITEM_FLYINIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu1
+
+_PMFG_Z10:
+	setvar VAR_SPECIAL_x8004, ITEM_PSYCHIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu1
+
+_PMFG_Z11:
+	setvar VAR_SPECIAL_x8004, ITEM_BUGINIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu1
+
+_PMFG_Z12:
+	setvar VAR_SPECIAL_x8004, ITEM_ROCKIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu2
+
+_PMFG_Z13:
+	setvar VAR_SPECIAL_x8004, ITEM_GHOSTIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu2
+
+_PMFG_Z14:
+	setvar VAR_SPECIAL_x8004, ITEM_DRAGONIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu2
+
+_PMFG_Z15:
+	setvar VAR_SPECIAL_x8004, ITEM_DARKINIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu2
+
+_PMFG_Z16:
+	setvar VAR_SPECIAL_x8004, ITEM_STEELIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu2
+
+_PMFG_Z17:
+	setvar VAR_SPECIAL_x8004, ITEM_FAIRIUM_Z_HELD
+	setvar VAR_SPECIAL_x8007, 9999
+	call _PMFG_BuyPrize
+	goto _PMFG_ZMenu2
+
 _PMFG_Mega0:
 	setvar VAR_SPECIAL_x8004, ITEM_BUGTITE
 	setvar VAR_SPECIAL_x8007, 9999
@@ -544,6 +710,10 @@ _01EC:
 	menu_item_add 58, 255, 3
 	menu_item_add 59, 255, 4
 	menu_item_add 60, 255, 5
+	goto_if_unset FLAG_GAME_CLEAR, _PMFG_TopMenuEnd
+	menu_item_add 83, 255, 7
+	menu_item_add 84, 255, 8
+	menu_item_add 85, 255, 9
 _PMFG_TopMenuEnd:
 	menu_item_add 11, 255, 6
 	menu_exec
@@ -554,6 +724,9 @@ _PMFG_TopMenuEnd:
 	case 3, _PMFG_MegaMenu0
 	case 4, _PMFG_MegaMenu1
 	case 5, _PMFG_MegaMenu2
+	case 7, _PMFG_ZMenu0
+	case 8, _PMFG_ZMenu1
+	case 9, _PMFG_ZMenu2
 	goto _0C17
 
 _0234:

@@ -147,6 +147,14 @@ u8 LONG_CALL TestBattle_TakeTeraWants(void)
     return want;
 }
 
+static u8 sZWant; // PMFG REQ-TGT-BTL-010: No2Bit(battler) of ACTION_Z this turn; read by PMFG_TryZMove (BattleController_BeforeMove.c)
+u8 LONG_CALL TestBattle_TakeZWants(void)
+{
+    u8 want = sZWant;
+    sZWant = 0;
+    return want;
+}
+
 /**
  * @brief Loads the current test's scenario and resets its state; NULL when there is none.
  * PMFG B-041: the party override that uses it lives in src/field/test_battle_party.c (overlay 129 is full)
@@ -417,8 +425,11 @@ void LONG_CALL TestBattle_GetAIScriptedMove(int battlerId, u8 *moveSlot, u8 *tar
         return;
     }
 
-    if ((action.action & ~ACTION_TERA) <= ACTION_MOVE_SLOT_4) {
-        *moveSlot = action.action & ~ACTION_TERA;
+    if ((action.action & ~ACTION_GIMMICKS) <= ACTION_MOVE_SLOT_4) {
+        *moveSlot = action.action & ~ACTION_GIMMICKS;
+        if (action.action & ACTION_Z) {
+            sZWant |= No2Bit(battlerId);
+        }
         *target = action.target;
         if (action.action & ACTION_TERA) {
             sTeraWant |= No2Bit(battlerId);
@@ -723,7 +734,10 @@ void LONG_CALL TestBattle_autoSelectPlayerMoves(struct BattleSystem *bsys, struc
             IncrementScriptIndex(0);
         } else {
             // fight
-            u8 moveSlot = action.action & ~ACTION_TERA;
+            u8 moveSlot = action.action & ~ACTION_GIMMICKS;
+            if (action.action & ACTION_Z) {
+                sZWant |= No2Bit(0);
+            }
             if (action.action & ACTION_TERA) {
                 sTeraWant |= No2Bit(0);
             }
@@ -763,7 +777,10 @@ void LONG_CALL TestBattle_autoSelectPlayerMoves(struct BattleSystem *bsys, struc
                 IncrementScriptIndex(2);
             } else {
                 // fight
-                u8 moveSlot = action.action & ~ACTION_TERA;
+                u8 moveSlot = action.action & ~ACTION_GIMMICKS;
+                if (action.action & ACTION_Z) {
+                    sZWant |= No2Bit(2);
+                }
                 if (action.action & ACTION_TERA) {
                     sTeraWant |= No2Bit(2);
                 }

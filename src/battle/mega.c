@@ -1281,7 +1281,8 @@ static BOOL CheckMegaMoveData(u32 mon, u16 *moves, u32 form)
 
 /**
  *  @return 1: the Mega button; 2: PMFG REQ-TGT-BTL-007 (D-061 a) the Tera button in its place, for a mon that can't
- *  Mega Evolve (Mega and Tera are tracked apart, so it still shows after the player Mega Evolved another mon)
+ *  Mega Evolve (Mega and Tera are tracked apart, so it still shows after the player Mega Evolved another mon);
+ *  3: PMFG REQ-TGT-BTL-010 (D-066 A b) the Z button, for a Z-crystal holder
  */
 BOOL CheckCanDrawMegaButton(struct BI_PARAM *bip)
 {
@@ -1312,6 +1313,9 @@ BOOL CheckCanDrawMegaButton(struct BI_PARAM *bip)
             !newBS.PlayerMegaed
             && !(bip->client_no && newBS.playerWantMega) // the player already queued up a mega for the first mon
             && !(bip->bw->sp->battlemon[bip->client_no].condition2 & STATUS2_TRANSFORM); // only base form can mega evolve
+    }
+    if (IS_ITEM_Z_CRYSTAL(item)) { // PMFG REQ-TGT-BTL-010: a crystal holder gets the Z button, never Tera
+        return PMFG_CanDrawZButton(bip->bw->sp, bip->client_no) ? 3 : FALSE;
     }
     return !IsMegaSpecies(mon, form_no) && PMFG_CanDrawTeraButton(bip->bw->sp, bip->client_no) ? 2 : FALSE;
 }

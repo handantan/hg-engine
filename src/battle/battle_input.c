@@ -256,6 +256,8 @@ void Sub_PokeIconResourceFree(struct BI_PARAM *bip)
         newBS.MegaButton = NULL;
         if (newBS.CanMega == 2) { // PMFG REQ-TGT-BTL-007: the Tera button; ServerBeforeAct's SBA_TERASTALLIZING reads it
             PMFG_SetTeraWant(bip->bw->sp, bip->client_no_fight_screen, newBS.MegaIconLight);
+        } else if (newBS.CanMega == 3) { // PMFG REQ-TGT-BTL-010: the Z button; BattleController_BeforeMove's PMFG_TryZMove reads it
+            PMFG_SetZWant(bip->bw->sp, bip->client_no_fight_screen, newBS.MegaIconLight);
         } else if (newBS.MegaIconLight) {
             newBS.playerWantMega = No2Bit(bip->client_no_fight_screen); // determine which party pos queued up the mega for cases where the player is in control of 2 clients
         } else {

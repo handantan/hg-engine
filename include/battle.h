@@ -1135,6 +1135,10 @@ struct BattleStruct {
     u8 pmfgTeraWant;    // No2Bit(battler): Terastallize before this turn's moves (battle input / test ACTION_TERA)
     u8 pmfgTeraSlot[2]; // per side: party slot + 1 of the mon that Terastallized (once per battle), 0 = not yet
     u8 pmfgTeraType[2]; // per side: that mon's Tera type
+    // PMFG (REQ-TGT-BTL-010): Z-Moves, BattleController_BeforeMove.c (PMFG_TryZMove)
+    u8 pmfgZWant;              // No2Bit(battler): use the chosen move as a Z-move (battle input / test ACTION_Z)
+    u8 pmfgZUsed;              // bit = side (client & 1) that used its Z-move this battle
+    u8 pmfgZPower[CLIENT_MAX]; // a generic Z-move's power (its Moves.c power is 0), set at conversion
 };
 
 enum {
@@ -3461,6 +3465,9 @@ BOOL LONG_CALL HasType(struct BattleStruct *ctx, int battlerId, int type);
 void LONG_CALL PMFG_TeraOnLoad(struct BattleStruct *sp, int client);
 BOOL LONG_CALL PMFG_CanDrawTeraButton(struct BattleStruct *sp, int client); // D-061: Tera button in the Mega button's place
 void LONG_CALL PMFG_SetTeraWant(struct BattleStruct *sp, int client, BOOL want);
+BOOL LONG_CALL PMFG_PlayerHasZPower(void); // REQ-TGT-BTL-010 D-066 B: flag + Z-Power Ring
+BOOL LONG_CALL PMFG_CanDrawZButton(struct BattleStruct *sp, int client); // REQ-TGT-BTL-010: Z button in the Mega button's place
+void LONG_CALL PMFG_SetZWant(struct BattleStruct *sp, int client, BOOL want);
 u32 LONG_CALL PMFG_StabKind(struct BattleStruct *sp, int attacker, int type); // 0 none, 1 base type while Tera (no Adaptability), 2 plain STAB, 3 Tera + base type
 BOOL LONG_CALL PMFG_HasLevitateAlias(struct BattleStruct *sp, int attacker, int battler);
 int LONG_CALL PMFG_AbilityPriority(struct BattleStruct *ctx, int battlerId, int move);

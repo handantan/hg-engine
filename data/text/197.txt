@@ -1815,3 +1815,21 @@ The opposing {STRVAR_1 1, 0, 0} copied its\nopponent’s stat changes!
 {STRVAR_1 1, 0, 0} terastallized\ninto the {STRVAR_1 15, 1, 0} type!
 The wild {STRVAR_1 1, 0, 0} terastallized\ninto the {STRVAR_1 15, 1, 0} type!
 The opposing {STRVAR_1 1, 0, 0} terastallized\ninto the {STRVAR_1 15, 1, 0} type!
+{STRVAR_1 1, 0, 0} surrounded itself\nwith its Z-Power!
+The wild {STRVAR_1 1, 0, 0} surrounded itself\nwith its Z-Power!
+The opposing {STRVAR_1 1, 0, 0} surrounded itself\nwith its Z-Power!
+{STRVAR_1 1, 0, 0} unleashes its\nfull-force Z-Move!
+The wild {STRVAR_1 1, 0, 0} unleashes its\nfull-force Z-Move!
+The opposing {STRVAR_1 1, 0, 0} unleashes its\nfull-force Z-Move!
+{STRVAR_1 1, 0, 0} returned its decreased\nstats to normal\rusing its Z-Power!
+The wild {STRVAR_1 1, 0, 0} returned its decreased\nstats to normal\rusing its Z-Power!
+The opposing {STRVAR_1 1, 0, 0} returned its decreased\nstats to normal\rusing its Z-Power!
+{STRVAR_1 1, 0, 0} boosted its stats\nusing its Z-Power!
+The wild {STRVAR_1 1, 0, 0} boosted its stats\nusing its Z-Power!
+The opposing {STRVAR_1 1, 0, 0} boosted its stats\nusing its Z-Power!
+{STRVAR_1 1, 0, 0} boosted its\ncritical-hit ratio\rusing its Z-Power!
+The wild {STRVAR_1 1, 0, 0} boosted its\ncritical-hit ratio\rusing its Z-Power!
+The opposing {STRVAR_1 1, 0, 0} boosted its\ncritical-hit ratio\rusing its Z-Power!
+{STRVAR_1 1, 0, 0} restored its HP\nusing its Z-Power!
+The wild {STRVAR_1 1, 0, 0} restored its HP\nusing its Z-Power!
+The opposing {STRVAR_1 1, 0, 0} restored its HP\nusing its Z-Power!
