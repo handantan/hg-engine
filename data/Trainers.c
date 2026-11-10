@@ -497,7 +497,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_NOTHING,
             .trainerClass = TRAINERCLASS_TEAM_ROCKET_F,
-            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE,
             .battleType = SINGLE_BATTLE,
         },
@@ -1244,7 +1244,7 @@ const TrainerData sTrainerData[] = {
     [30] = {
         .name = "Whitney",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_WHITNEY,
             .items = { ITEM_SUPER_POTION, ITEM_SUPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -1258,6 +1258,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_AUDINO,
                 .item = ITEM_SALAC_BERRY,
                 .moves = { MOVE_LUCKY_CHANT, MOVE_MEGA_PUNCH, MOVE_MISTY_TERRAIN, MOVE_DRAINING_KISS },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -1267,6 +1268,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GIRAFARIG,
                 .item = ITEM_NONE,
                 .moves = { MOVE_HEADBUTT, MOVE_PSYBEAM, MOVE_FUTURE_SIGHT, MOVE_TRAILBLAZE },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -1276,6 +1278,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MILTANK,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_ROLLOUT, MOVE_ATTRACT, MOVE_STOMP, MOVE_HEAL_BELL },
+                .ability = ABILITY_THICK_FAT,
                 .ballSeal = 0,
             },
         },
@@ -1361,7 +1364,7 @@ const TrainerData sTrainerData[] = {
     [32] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_HYPER_POTION, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -1375,6 +1378,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_SALAC_BERRY,
                 .moves = { MOVE_ICE_BEAM, MOVE_BLIZZARD, MOVE_DAZZLING_GLEAM, MOVE_FREEZE_DRY },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -1384,6 +1388,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAMOSWINE,
                 .item = ITEM_AIR_BALLOON,
                 .moves = { MOVE_BLIZZARD, MOVE_ANCIENT_POWER, MOVE_BODY_SLAM, MOVE_EARTHQUAKE },
+                .ability = ABILITY_THICK_FAT,
                 .ballSeal = 0,
             },
             {
@@ -1393,6 +1398,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLACEON,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_ALLURING_VOICE, MOVE_BLIZZARD, MOVE_CHILLING_WATER, MOVE_ICE_BEAM },
+                .ability = ABILITY_ICE_BODY,
                 .ballSeal = 0,
             },
             {
@@ -1402,6 +1408,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_CHOPLE_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_KNOCK_OFF, MOVE_ICE_SPINNER, MOVE_POISON_JAB },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
             {
@@ -1411,6 +1418,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FROSLASS,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_BLIZZARD, MOVE_DRAINING_KISS, MOVE_POLTERGEIST, MOVE_SHADOW_BALL },
+                .ability = ABILITY_SNOW_CLOAK,
                 .ballSeal = 0,
             },
         },
@@ -1505,7 +1513,7 @@ const TrainerData sTrainerData[] = {
     [34] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -1519,6 +1527,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_NONE,
                 .moves = { MOVE_TRIPLE_KICK, MOVE_RAPID_SPIN, MOVE_DIG, MOVE_PURSUIT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -1528,6 +1537,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_NONE,
                 .moves = { MOVE_LOW_KICK, MOVE_U_TURN, MOVE_BOUNCE, MOVE_KNOCK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -1537,6 +1547,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_BLACK_BELT,
                 .moves = { MOVE_HYPNOSIS, MOVE_DRAIN_PUNCH, MOVE_WATERFALL, MOVE_DYNAMIC_PUNCH },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -1546,6 +1557,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_CHESTO_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_TAUNT, MOVE_ASSURANCE, MOVE_PHANTOM_FORCE },
+                .ability = ABILITY_VITAL_SPIRIT,
                 .ballSeal = 0,
             },
         },
@@ -4344,7 +4356,7 @@ const TrainerData sTrainerData[] = {
     [103] = {
         .name = "Blake",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerType = TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ACE_TRAINER_M,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -4356,6 +4368,7 @@ const TrainerData sTrainerData[] = {
                 .abilitySlot = TRAINER_POKEMON_ABILITY_1,
                 .level = 61,
                 .species = SPECIES_ABOMASNOW,
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -4363,6 +4376,7 @@ const TrainerData sTrainerData[] = {
                 .abilitySlot = TRAINER_POKEMON_ABILITY_1,
                 .level = 62,
                 .species = SPECIES_GLACEON,
+                .ability = ABILITY_SNOW_CLOAK,
                 .ballSeal = 0,
             },
             {
@@ -4370,6 +4384,7 @@ const TrainerData sTrainerData[] = {
                 .abilitySlot = TRAINER_POKEMON_ABILITY_1,
                 .level = 62,
                 .species = SPECIES_MAMOSWINE,
+                .ability = ABILITY_OBLIVIOUS,
                 .ballSeal = 0,
             },
         },
@@ -4392,7 +4407,7 @@ const TrainerData sTrainerData[] = {
     [104] = {
         .name = "Brian",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ACE_TRAINER_M,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -4405,6 +4420,7 @@ const TrainerData sTrainerData[] = {
                 .level = 61,
                 .species = SPECIES_SANDACONDA,
                 .item = ITEM_NONE,
+                .ability = ABILITY_SAND_SPIT,
                 .ballSeal = 0,
             },
             {
@@ -4413,6 +4429,7 @@ const TrainerData sTrainerData[] = {
                 .level = 61,
                 .species = SPECIES_SCIZOR,
                 .item = ITEM_NONE,
+                .ability = ABILITY_SWARM,
                 .ballSeal = 0,
             },
             {
@@ -4421,6 +4438,7 @@ const TrainerData sTrainerData[] = {
                 .level = 61,
                 .species = SPECIES_URSARING,
                 .item = ITEM_FLAME_ORB,
+                .ability = ABILITY_GUTS,
                 .ballSeal = 0,
             },
             {
@@ -4429,6 +4447,7 @@ const TrainerData sTrainerData[] = {
                 .level = 61,
                 .species = SPECIES_STEELIX,
                 .item = ITEM_NONE,
+                .ability = ABILITY_ROCK_HEAD,
                 .ballSeal = 0,
             },
         },
@@ -7535,7 +7554,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_NOTHING,
             .trainerClass = TRAINERCLASS_TEAM_ROCKET,
-            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE,
             .battleType = SINGLE_BATTLE,
         },
@@ -7561,7 +7580,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_NOTHING,
             .trainerClass = TRAINERCLASS_TEAM_ROCKET,
-            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE,
             .battleType = SINGLE_BATTLE,
         },
@@ -9835,7 +9854,7 @@ const TrainerData sTrainerData[] = {
     [244] = {
         .name = "Lance",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_CHAMPION,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -9849,6 +9868,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_EXEGGUTOR_ALOLAN,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_DRAGON_HAMMER, MOVE_EARTHQUAKE, MOVE_SEED_BOMB, MOVE_ZEN_HEADBUTT },
+                .ability = ABILITY_HARVEST,
                 .ballSeal = 0,
             },
             {
@@ -9858,6 +9878,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGONITE,
                 .item = ITEM_DRAGOTITE,
                 .moves = { MOVE_THUNDERBOLT, MOVE_DUAL_WINGBEAT, MOVE_IRON_HEAD, MOVE_DRAGON_CLAW },
+                .ability = ABILITY_MULTISCALE,
                 .ballSeal = 0,
             },
             {
@@ -9867,6 +9888,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BAXCALIBUR,
                 .item = ITEM_ABILITY_SHIELD,
                 .moves = { MOVE_GLAIVE_RUSH, MOVE_HIGH_HORSEPOWER, MOVE_ICICLE_CRASH, MOVE_SUBSTITUTE },
+                .ability = ABILITY_THERMAL_EXCHANGE,
                 .ballSeal = 0,
             },
             {
@@ -9876,6 +9898,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HYDRAPPLE,
                 .item = ITEM_YACHE_BERRY,
                 .moves = { MOVE_DRACO_METEOR, MOVE_LEAF_STORM, MOVE_GIGA_DRAIN, MOVE_OUTRAGE },
+                .ability = ABILITY_STICKY_HOLD,
                 .ballSeal = 0,
             },
             {
@@ -9885,6 +9908,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGAPULT,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_DRAGON_DARTS, MOVE_PHANTOM_FORCE, MOVE_BODY_SLAM, MOVE_TRICK },
+                .ability = ABILITY_INFILTRATOR,
                 .ballSeal = 0,
             },
             {
@@ -9894,6 +9918,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARCHALUDON,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_ELECTRO_SHOT, MOVE_DRAGON_PULSE, MOVE_FLASH_CANNON, MOVE_DARK_PULSE },
+                .ability = ABILITY_STAMINA,
                 .ballSeal = 0,
             },
         },
@@ -9916,7 +9941,7 @@ const TrainerData sTrainerData[] = {
     [245] = {
         .name = "Will",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_WILL,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -9930,6 +9955,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FARIGIRAF,
                 .item = ITEM_ABILITY_SHIELD,
                 .moves = { MOVE_CALM_MIND, MOVE_DAZZLING_GLEAM, MOVE_PSYCHIC, MOVE_HYPER_VOICE },
+                .ability = ABILITY_ARMOR_TAIL,
                 .ballSeal = 0,
             },
             {
@@ -9939,6 +9965,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ESPEON,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_DRAINING_KISS, MOVE_GRASS_KNOT, MOVE_POWER_GEM, MOVE_PSYCHIC },
+                .ability = ABILITY_MAGIC_BOUNCE,
                 .ballSeal = 0,
             },
             {
@@ -9948,6 +9975,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SLOWBRO,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BLIZZARD, MOVE_SCALD, MOVE_SLACK_OFF, MOVE_PSYCHIC },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -9957,6 +9985,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_REUNICLUS,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_ACID_ARMOR, MOVE_CALM_MIND, MOVE_PSYCHIC_NOISE, MOVE_TRICK_ROOM },
+                .ability = ABILITY_MAGIC_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -9966,6 +9995,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ALAKAZAM,
                 .item = ITEM_PSYCHITE,
                 .moves = { MOVE_SHADOW_BALL, MOVE_PSYCHIC, MOVE_RECOVER, MOVE_HIDDEN_POWER },
+                .ability = ABILITY_MAGIC_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -9975,6 +10005,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BRAVIARY_HISUIAN,
                 .item = ITEM_TWISTED_SPOON,
                 .moves = { MOVE_AIR_SLASH, MOVE_ESPER_WING, MOVE_U_TURN, MOVE_HYPER_BEAM },
+                .ability = ABILITY_TINTED_LENS,
                 .ballSeal = 0,
             },
         },
@@ -9997,7 +10028,7 @@ const TrainerData sTrainerData[] = {
     [246] = {
         .name = "Karen",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KAREN,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -10011,6 +10042,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GRIMMSNARL,
                 .item = ITEM_LIGHT_CLAY,
                 .moves = { MOVE_REFLECT, MOVE_FAKE_OUT, MOVE_HAMMER_ARM, MOVE_PLAY_ROUGH },
+                .ability = ABILITY_PRANKSTER,
                 .ballSeal = 0,
             },
             {
@@ -10020,6 +10052,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_UMBREON,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_TRAILBLAZE, MOVE_FOUL_PLAY, MOVE_REST, MOVE_SLEEP_TALK },
+                .ability = ABILITY_SYNCHRONIZE,
                 .ballSeal = 0,
             },
             {
@@ -10029,6 +10062,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGAMBIT,
                 .item = ITEM_BLACK_GLASSES,
                 .moves = { MOVE_NIGHT_SLASH, MOVE_IRON_HEAD, MOVE_IRON_DEFENSE, MOVE_TORMENT },
+                .ability = ABILITY_SUPREME_OVERLORD,
                 .ballSeal = 0,
             },
             {
@@ -10038,6 +10072,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCRAFTY,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BRICK_BREAK, MOVE_CRUNCH, MOVE_FACADE, MOVE_WORK_UP },
+                .ability = ABILITY_SHED_SKIN,
                 .ballSeal = 0,
             },
             {
@@ -10047,6 +10082,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HONCHKROW,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_AERIAL_ACE, MOVE_DARK_PULSE, MOVE_STEEL_WING, MOVE_TAUNT },
+                .ability = ABILITY_MOXIE,
                 .ballSeal = 0,
             },
             {
@@ -10056,6 +10092,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ABSOL,
                 .item = ITEM_DARKTITE,
                 .moves = { MOVE_SHADOW_CLAW, MOVE_WILL_O_WISP, MOVE_NIGHT_SLASH, MOVE_SLASH },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
         },
@@ -10078,7 +10115,7 @@ const TrainerData sTrainerData[] = {
     [247] = {
         .name = "Koga",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KOGA,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -10092,6 +10129,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARIADOS,
                 .item = ITEM_PAYAPA_BERRY,
                 .moves = { MOVE_CROSS_POISON, MOVE_SHADOW_SNEAK, MOVE_BUG_BITE, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_SWARM,
                 .ballSeal = 0,
             },
             {
@@ -10101,6 +10139,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ROSERADE,
                 .item = ITEM_EXPERT_BELT,
                 .moves = { MOVE_WEATHER_BALL, MOVE_GIGA_DRAIN, MOVE_INGRAIN, MOVE_SLUDGE_BOMB },
+                .ability = ABILITY_NATURAL_CURE,
                 .ballSeal = 0,
             },
             {
@@ -10110,6 +10149,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MUK_ALOLAN,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_GUNK_SHOT, MOVE_SHADOW_PUNCH, MOVE_KNOCK_OFF, MOVE_SCREECH },
+                .ability = ABILITY_POISON_TOUCH,
                 .ballSeal = 0,
             },
             {
@@ -10119,6 +10159,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_OVERQWIL,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_BARB_BARRAGE, MOVE_CRUNCH, MOVE_SPIKES, MOVE_HAZE },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -10128,6 +10169,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCOLIPEDE,
                 .item = ITEM_POISONTITE,
                 .moves = { MOVE_TAKE_DOWN, MOVE_POISON_JAB, MOVE_SWORDS_DANCE, MOVE_EARTHQUAKE },
+                .ability = ABILITY_SPEED_BOOST,
                 .ballSeal = 0,
             },
             {
@@ -10137,6 +10179,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CROBAT,
                 .item = ITEM_CHARTI_BERRY,
                 .moves = { MOVE_TORMENT, MOVE_AIR_CUTTER, MOVE_LEECH_LIFE, MOVE_GIGA_DRAIN },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
         },
@@ -10369,7 +10412,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_BROCK,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -10450,7 +10493,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_MISTY,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -10522,7 +10565,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_LT_SURGE,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -10603,7 +10646,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_ERIKA,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
             .battleType = SINGLE_BATTLE,
         },
@@ -10684,7 +10727,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_JANINE,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -10765,7 +10808,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_SABRINA,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -10846,7 +10889,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_BLAINE,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
             .battleType = SINGLE_BATTLE,
         },
@@ -10918,7 +10961,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_PKMN_TRAINER_RED,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -10995,7 +11038,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_BLUE,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -17655,7 +17698,7 @@ const TrainerData sTrainerData[] = {
     [418] = {
         .name = "Bruno",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_BRUNO,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -17669,6 +17712,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_WHITE_HERB,
                 .moves = { MOVE_RAPID_SPIN, MOVE_TRIPLE_KICK, MOVE_ICE_SPINNER, MOVE_THUNDER_PUNCH },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -17678,6 +17722,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HERACROSS,
                 .item = ITEM_FLAME_ORB,
                 .moves = { MOVE_SHADOW_CLAW, MOVE_MEGAHORN, MOVE_ARM_THRUST, MOVE_EARTHQUAKE },
+                .ability = ABILITY_GUTS,
                 .ballSeal = 0,
             },
             {
@@ -17687,6 +17732,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STARAPTOR,
                 .item = ITEM_FLYINGITE,
                 .moves = { MOVE_AERIAL_ACE, MOVE_CLOSE_COMBAT, MOVE_FACADE, MOVE_ENDEAVOR },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -17696,6 +17742,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_RAGE_FIST, MOVE_STOMPING_TANTRUM, MOVE_LOW_KICK, MOVE_THRASH },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -17705,6 +17752,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_IRON_DEFENSE, MOVE_DRAGON_CLAW, MOVE_BRICK_BREAK, MOVE_BRUTAL_SWING },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -17714,6 +17762,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MACHAMP,
                 .item = ITEM_EXPERT_BELT,
                 .moves = { MOVE_ROCK_SLIDE, MOVE_ICE_PUNCH, MOVE_DYNAMIC_PUNCH, MOVE_CROSS_CHOP },
+                .ability = ABILITY_NO_GUARD,
                 .ballSeal = 0,
             },
         },
@@ -18670,7 +18719,7 @@ const TrainerData sTrainerData[] = {
     [445] = {
         .name = "Reena",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_NOTHING,
+            .trainerType = TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ACE_TRAINER_F,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -18682,6 +18731,7 @@ const TrainerData sTrainerData[] = {
                 .abilitySlot = TRAINER_POKEMON_ABILITY_1,
                 .level = 63,
                 .species = SPECIES_PALAFIN,
+                .ability = ABILITY_ZERO_TO_HERO,
                 .ballSeal = 0,
             },
             {
@@ -18689,6 +18739,7 @@ const TrainerData sTrainerData[] = {
                 .abilitySlot = TRAINER_POKEMON_ABILITY_1,
                 .level = 61,
                 .species = SPECIES_POLITOED,
+                .ability = ABILITY_DRIZZLE,
                 .ballSeal = 0,
             },
             {
@@ -18696,6 +18747,7 @@ const TrainerData sTrainerData[] = {
                 .abilitySlot = TRAINER_POKEMON_ABILITY_1,
                 .level = 62,
                 .species = SPECIES_KINGDRA,
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
             {
@@ -18703,6 +18755,7 @@ const TrainerData sTrainerData[] = {
                 .abilitySlot = TRAINER_POKEMON_ABILITY_1,
                 .level = 63,
                 .species = SPECIES_FLOATZEL,
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
         },
@@ -20003,9 +20056,9 @@ const TrainerData sTrainerData[] = {
     [479] = {
         .name = "Ariana",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_EXECUTIVE_ARIANA,
-            .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -20017,6 +20070,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARBOK,
                 .item = ITEM_NONE,
                 .moves = { MOVE_MUD_BOMB, MOVE_SLUDGE_BOMB, MOVE_GASTRO_ACID, MOVE_BELCH },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -20026,6 +20080,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_VILEPLUME,
                 .item = ITEM_NONE,
                 .moves = { MOVE_SUNNY_DAY, MOVE_SOLAR_BEAM, MOVE_SLUDGE_BOMB, MOVE_GIGA_DRAIN },
+                .ability = ABILITY_CHLOROPHYLL,
                 .ballSeal = 0,
             },
             {
@@ -20035,6 +20090,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGALGE,
                 .item = ITEM_POISONTITE,
                 .moves = { MOVE_WATER_PULSE, MOVE_TOXIC, MOVE_DRAGON_PULSE, MOVE_AQUA_TAIL },
+                .ability = ABILITY_POISON_POINT,
                 .ballSeal = 0,
             },
         },
@@ -20272,7 +20328,7 @@ const TrainerData sTrainerData[] = {
     [485] = {
         .name = "Archer",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_EXECUTIVE_ARCHER,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -20286,6 +20342,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES,
                 .item = ITEM_NONE,
                 .moves = { MOVE_PSYCHIC, MOVE_SUNNY_DAY, MOVE_FLAMETHROWER, MOVE_ENERGY_BALL },
+                .ability = ABILITY_FLASH_FIRE,
                 .ballSeal = 0,
             },
             {
@@ -20295,6 +20352,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TAUROS_BLAZE,
                 .item = ITEM_NONE,
                 .moves = { MOVE_RAGING_BULL, MOVE_ZEN_HEADBUTT, MOVE_SUNNY_DAY, MOVE_WILD_CHARGE },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -20304,6 +20362,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAROWAK_ALOLAN,
                 .item = ITEM_NONE,
                 .moves = { MOVE_FLARE_BLITZ, MOVE_BONEMERANG, MOVE_BRUTAL_SWING, MOVE_ROCK_SLIDE },
+                .ability = ABILITY_LIGHTNING_ROD,
                 .ballSeal = 0,
             },
             {
@@ -20313,6 +20372,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SLOWKING_GALARIAN,
                 .item = ITEM_NONE,
                 .moves = { MOVE_POWER_GEM, MOVE_SURF, MOVE_PSYCHIC, MOVE_FLAMETHROWER },
+                .ability = ABILITY_CURIOUS_MEDICINE,
                 .ballSeal = 0,
             },
             {
@@ -20322,6 +20382,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HOUNDOOM,
                 .item = ITEM_DARKTITE,
                 .moves = { MOVE_SOLAR_BEAM, MOVE_SLUDGE_BOMB, MOVE_DARK_PULSE, MOVE_FLAMETHROWER },
+                .ability = ABILITY_EARLY_BIRD,
                 .ballSeal = 0,
             },
         },
@@ -25670,7 +25731,7 @@ const TrainerData sTrainerData[] = {
     [616] = {
         .name = "Ian",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_YOUNGSTER,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE,
@@ -25684,6 +25745,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LUNATONE,
                 .item = ITEM_CLEAR_AMULET,
                 .moves = { MOVE_COSMIC_POWER, MOVE_STORED_POWER, MOVE_CALM_MIND, MOVE_POWER_GEM },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -25693,6 +25755,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SOLROCK,
                 .item = ITEM_HEAT_ROCK,
                 .moves = { MOVE_SUNNY_DAY, MOVE_WEATHER_BALL, MOVE_MORNING_SUN, MOVE_SOLAR_BEAM },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -25702,6 +25765,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAGMAR,
                 .item = ITEM_EVIOLITE,
                 .moves = { MOVE_FLAME_CHARGE, MOVE_SUBSTITUTE, MOVE_FOCUS_PUNCH, MOVE_DOUBLE_TEAM },
+                .ability = ABILITY_FLAME_BODY,
                 .ballSeal = 0,
             },
         },
@@ -28970,7 +29034,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES,
             .trainerClass = TRAINERCLASS_ROCKET_BOSS,
-            .items = { ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -29124,7 +29188,7 @@ const TrainerData sTrainerData[] = {
     [702] = {
         .name = "Will",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_WILL,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -29138,6 +29202,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FARIGIRAF,
                 .item = ITEM_SAFETY_GOGGLES,
                 .moves = { MOVE_PSYCHIC, MOVE_DAZZLING_GLEAM, MOVE_ENERGY_BALL, MOVE_TRICK_ROOM },
+                .ability = ABILITY_ARMOR_TAIL,
                 .ballSeal = 0,
             },
             {
@@ -29147,6 +29212,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_REUNICLUS,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_EXPANDING_FORCE, MOVE_SHADOW_BALL, MOVE_ENERGY_BALL, MOVE_PROTECT },
+                .ability = ABILITY_MAGIC_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -29156,6 +29222,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_EXEGGUTOR,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_GIGA_DRAIN, MOVE_PSYCHIC, MOVE_TRICK_ROOM, MOVE_PROTECT },
+                .ability = ABILITY_HARVEST,
                 .ballSeal = 0,
             },
             {
@@ -29165,6 +29232,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_METAGROSS,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_IRON_HEAD, MOVE_ZEN_HEADBUTT, MOVE_HAMMER_ARM, MOVE_ICE_PUNCH },
+                .ability = ABILITY_CLEAR_BODY,
                 .ballSeal = 0,
             },
             {
@@ -29174,6 +29242,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARMAROUGE,
                 .item = ITEM_CHARCOAL,
                 .moves = { MOVE_ARMOR_CANNON, MOVE_EXPANDING_FORCE, MOVE_AURA_SPHERE, MOVE_PROTECT },
+                .ability = ABILITY_FLASH_FIRE,
                 .ballSeal = 0,
             },
             {
@@ -29183,6 +29252,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SLOWBRO,
                 .item = ITEM_WATERTITE,
                 .moves = { MOVE_SCALD, MOVE_PSYCHIC, MOVE_ICE_BEAM, MOVE_SLACK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
         },
@@ -29205,7 +29275,7 @@ const TrainerData sTrainerData[] = {
     [703] = {
         .name = "Koga",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KOGA,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -29219,6 +29289,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CROBAT,
                 .item = ITEM_FOCUS_SASH,
                 .moves = { MOVE_TAILWIND, MOVE_FLY, MOVE_CROSS_POISON, MOVE_TAUNT },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -29228,6 +29299,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_OVERQWIL,
                 .item = ITEM_BLACK_SLUDGE,
                 .moves = { MOVE_BARB_BARRAGE, MOVE_THROAT_CHOP, MOVE_AQUA_JET, MOVE_PROTECT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -29237,6 +29309,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEEZING,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_SLUDGE_BOMB, MOVE_FLAMETHROWER, MOVE_WILL_O_WISP, MOVE_PROTECT },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -29246,6 +29319,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ROSERADE,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_MAGICAL_LEAF, MOVE_SLUDGE_BOMB, MOVE_SLEEP_POWDER, MOVE_PROTECT },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -29255,6 +29329,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MUK_ALOLAN,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_KNOCK_OFF, MOVE_POISON_JAB, MOVE_DRAIN_PUNCH, MOVE_ICE_PUNCH },
+                .ability = ABILITY_POISON_TOUCH,
                 .ballSeal = 0,
             },
             {
@@ -29264,6 +29339,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCOLIPEDE,
                 .item = ITEM_POISONTITE,
                 .moves = { MOVE_MEGAHORN, MOVE_POISON_JAB, MOVE_STOMPING_TANTRUM, MOVE_PROTECT },
+                .ability = ABILITY_SPEED_BOOST,
                 .ballSeal = 0,
             },
         },
@@ -29286,7 +29362,7 @@ const TrainerData sTrainerData[] = {
     [704] = {
         .name = "Bruno",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_BRUNO,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -29300,6 +29376,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_FAKE_OUT, MOVE_CLOSE_COMBAT, MOVE_ICE_SPINNER, MOVE_MACH_PUNCH },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -29309,6 +29386,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STARAPTOR,
                 .item = ITEM_FLYINGITE,
                 .moves = { MOVE_FLY, MOVE_CLOSE_COMBAT, MOVE_TAILWIND, MOVE_PROTECT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -29318,6 +29396,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GALLADE,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_SACRED_SWORD, MOVE_PSYCHO_CUT, MOVE_LEAF_BLADE, MOVE_KNOCK_OFF },
+                .ability = ABILITY_SHARPNESS,
                 .ballSeal = 0,
             },
             {
@@ -29327,6 +29406,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LUCARIO,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_AURA_SPHERE, MOVE_FLASH_CANNON, MOVE_VACUUM_WAVE, MOVE_PROTECT },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -29336,6 +29416,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_THROAT_SPRAY,
                 .moves = { MOVE_CLANGING_SCALES, MOVE_AURA_SPHERE, MOVE_FLAMETHROWER, MOVE_PROTECT },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -29345,6 +29426,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_RAGE_FIST, MOVE_DRAIN_PUNCH, MOVE_BULK_UP, MOVE_PROTECT },
+                .ability = ABILITY_DEFIANT,
                 .ballSeal = 0,
             },
         },
@@ -29367,7 +29449,7 @@ const TrainerData sTrainerData[] = {
     [705] = {
         .name = "Karen",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KAREN,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -29381,6 +29463,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GRIMMSNARL,
                 .item = ITEM_LIGHT_CLAY,
                 .moves = { MOVE_REFLECT, MOVE_LIGHT_SCREEN, MOVE_SPIRIT_BREAK, MOVE_THUNDER_WAVE },
+                .ability = ABILITY_PRANKSTER,
                 .ballSeal = 0,
             },
             {
@@ -29390,6 +29473,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCRAFTY,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_FAKE_OUT, MOVE_DRAIN_PUNCH, MOVE_KNOCK_OFF, MOVE_PROTECT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -29399,6 +29483,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HYDREIGON,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_DARK_PULSE, MOVE_DRACO_METEOR, MOVE_HEAT_WAVE, MOVE_PROTECT },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -29408,6 +29493,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_UMBREON,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_FOUL_PLAY, MOVE_SNARL, MOVE_TOXIC, MOVE_MOONLIGHT },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -29417,6 +29503,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ABSOL,
                 .item = ITEM_DARKTITE,
                 .moves = { MOVE_NIGHT_SLASH, MOVE_PLAY_ROUGH, MOVE_SUCKER_PUNCH, MOVE_PROTECT },
+                .ability = ABILITY_SUPER_LUCK,
                 .ballSeal = 0,
             },
             {
@@ -29426,6 +29513,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGAMBIT,
                 .item = ITEM_BLACK_GLASSES,
                 .moves = { MOVE_KOWTOW_CLEAVE, MOVE_IRON_HEAD, MOVE_SUCKER_PUNCH, MOVE_PROTECT },
+                .ability = ABILITY_SUPREME_OVERLORD,
                 .ballSeal = 0,
             },
         },
@@ -29628,7 +29716,7 @@ const TrainerData sTrainerData[] = {
     [712] = {
         .name = "Falkner",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_FALKNER,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -29642,6 +29730,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SALAMENCE,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_ZEN_HEADBUTT, MOVE_DOUBLE_EDGE, MOVE_DRAGON_CLAW, MOVE_DUAL_WINGBEAT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -29651,6 +29740,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BRAVIARY,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_SUPERPOWER, MOVE_BEAK_BLAST, MOVE_CRUSH_CLAW, MOVE_ACROBATICS },
+                .ability = ABILITY_SHEER_FORCE,
                 .ballSeal = 0,
             },
             {
@@ -29660,6 +29750,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CORVIKNIGHT,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BODY_PRESS, MOVE_IRON_DEFENSE, MOVE_DRILL_PECK, MOVE_ROOST },
+                .ability = ABILITY_MIRROR_ARMOR,
                 .ballSeal = 0,
             },
             {
@@ -29669,6 +29760,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HONCHKROW,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_SUCKER_PUNCH, MOVE_NIGHT_SLASH, MOVE_BRAVE_BIRD, MOVE_U_TURN },
+                .ability = ABILITY_MOXIE,
                 .ballSeal = 0,
             },
             {
@@ -29678,6 +29770,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_PIDGEOT,
                 .item = ITEM_FLYINGITE,
                 .moves = { MOVE_HURRICANE, MOVE_HEAT_WAVE, MOVE_ROOST, MOVE_STEEL_WING },
+                .ability = ABILITY_KEEN_EYE,
                 .ballSeal = 0,
             },
             {
@@ -29687,6 +29780,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLISCOR,
                 .item = ITEM_TOXIC_ORB,
                 .moves = { MOVE_EARTHQUAKE, MOVE_KNOCK_OFF, MOVE_TOXIC, MOVE_PROTECT },
+                .ability = ABILITY_POISON_HEAL,
                 .ballSeal = 0,
             },
         },
@@ -29709,7 +29803,7 @@ const TrainerData sTrainerData[] = {
     [713] = {
         .name = "Bugsy",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_BUGSY,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -29723,6 +29817,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KLEAVOR,
                 .item = ITEM_FOCUS_SASH,
                 .moves = { MOVE_STONE_AXE, MOVE_STONE_EDGE, MOVE_X_SCISSOR, MOVE_AERIAL_ACE },
+                .ability = ABILITY_SHARPNESS,
                 .ballSeal = 0,
             },
             {
@@ -29732,6 +29827,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CENTISKORCH,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_FIRE_LASH, MOVE_LUNGE, MOVE_THUNDER_FANG, MOVE_POWER_WHIP },
+                .ability = ABILITY_WHITE_SMOKE,
                 .ballSeal = 0,
             },
             {
@@ -29741,6 +29837,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RIBOMBEE,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_STICKY_WEB, MOVE_POLLEN_PUFF, MOVE_BUG_BUZZ, MOVE_QUIVER_DANCE },
+                .ability = ABILITY_SHIELD_DUST,
                 .ballSeal = 0,
             },
             {
@@ -29750,6 +29847,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCIZOR,
                 .item = ITEM_BUGTITE,
                 .moves = { MOVE_BULLET_PUNCH, MOVE_SWORDS_DANCE, MOVE_U_TURN, MOVE_ROOST },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -29759,6 +29857,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_VOLCARONA,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_SOLAR_BEAM, MOVE_BUG_BUZZ, MOVE_HURRICANE, MOVE_FIERY_DANCE },
+                .ability = ABILITY_FLAME_BODY,
                 .ballSeal = 0,
             },
             {
@@ -29768,6 +29867,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCOLIPEDE,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_PROTECT, MOVE_TOXIC, MOVE_MEGAHORN, MOVE_EARTHQUAKE },
+                .ability = ABILITY_SPEED_BOOST,
                 .ballSeal = 0,
             },
         },
@@ -29790,7 +29890,7 @@ const TrainerData sTrainerData[] = {
     [714] = {
         .name = "Whitney",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_WHITNEY,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_PRIORITIZE_STATUS_MOVES,
@@ -29804,6 +29904,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ZOROARK_HISUIAN,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_BITTER_MALICE, MOVE_NASTY_PLOT, MOVE_FLAMETHROWER, MOVE_FOCUS_BLAST },
+                .ability = ABILITY_ILLUSION,
                 .ballSeal = 0,
             },
             {
@@ -29813,6 +29914,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LOPUNNY,
                 .item = ITEM_NORMALITE,
                 .moves = { MOVE_HIGH_JUMP_KICK, MOVE_TROP_KICK, MOVE_TRIPLE_AXEL, MOVE_RETURN },
+                .ability = ABILITY_CUTE_CHARM,
                 .ballSeal = 0,
             },
             {
@@ -29822,6 +29924,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BLISSEY,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_SEISMIC_TOSS, MOVE_TOXIC, MOVE_SOFT_BOILED, MOVE_HEAL_BELL },
+                .ability = ABILITY_NATURAL_CURE,
                 .ballSeal = 0,
             },
             {
@@ -29831,6 +29934,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_URSALUNA,
                 .item = ITEM_FLAME_ORB,
                 .moves = { MOVE_PROTECT, MOVE_EARTHQUAKE, MOVE_PLAY_ROUGH, MOVE_RETURN },
+                .ability = ABILITY_GUTS,
                 .ballSeal = 0,
             },
             {
@@ -29840,6 +29944,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAUSHOLD,
                 .item = ITEM_WIDE_LENS,
                 .moves = { MOVE_POPULATION_BOMB, MOVE_BULLET_SEED, MOVE_TIDY_UP, MOVE_LOW_KICK },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -29849,6 +29954,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_PORYGON_Z,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_ICE_BEAM, MOVE_THUNDERBOLT, MOVE_TRI_ATTACK, MOVE_SHADOW_BALL },
+                .ability = ABILITY_DOWNLOAD,
                 .ballSeal = 0,
             },
         },
@@ -29871,7 +29977,7 @@ const TrainerData sTrainerData[] = {
     [715] = {
         .name = "Morty",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_MORTY,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -29885,6 +29991,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_AEGISLASH,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_SHADOW_CLAW, MOVE_KINGS_SHIELD, MOVE_SACRED_SWORD, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_STANCE_CHANGE,
                 .ballSeal = 0,
             },
             {
@@ -29894,6 +30001,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGAPULT,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_FLAMETHROWER, MOVE_SHADOW_BALL, MOVE_SCALD, MOVE_DRAGON_PULSE },
+                .ability = ABILITY_INFILTRATOR,
                 .ballSeal = 0,
             },
             {
@@ -29903,6 +30011,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GENGAR,
                 .item = ITEM_GHOSTITE,
                 .moves = { MOVE_SHADOW_BALL, MOVE_DESTINY_BOND, MOVE_SLUDGE_BOMB, MOVE_NASTY_PLOT },
+                .ability = ABILITY_CURSED_BODY,
                 .ballSeal = 0,
             },
             {
@@ -29912,6 +30021,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MISMAGIUS,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_MOONGEIST_BEAM, MOVE_MYSTICAL_FIRE, MOVE_POWER_GEM, MOVE_THUNDER_WAVE },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -29921,6 +30031,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BASCULEGION,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_WAVE_CRASH, MOVE_DOUBLE_EDGE, MOVE_HEAD_SMASH, MOVE_PHANTOM_FORCE },
+                .ability = ABILITY_ADAPTABILITY,
                 .ballSeal = 0,
             },
             {
@@ -29930,6 +30041,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CERULEDGE,
                 .item = ITEM_FOCUS_SASH,
                 .moves = { MOVE_BITTER_BLADE, MOVE_SWORDS_DANCE, MOVE_PSYCHO_CUT, MOVE_SHADOW_SNEAK },
+                .ability = ABILITY_WEAK_ARMOR,
                 .ballSeal = 0,
             },
         },
@@ -29952,7 +30064,7 @@ const TrainerData sTrainerData[] = {
     [716] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -29966,6 +30078,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_ICY_ROCK,
                 .moves = { MOVE_ICE_BEAM, MOVE_FREEZE_DRY, MOVE_MOONBLAST, MOVE_ENCORE },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -29975,6 +30088,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CLOYSTER,
                 .item = ITEM_WHITE_HERB,
                 .moves = { MOVE_SHELL_SMASH, MOVE_ICICLE_SPEAR, MOVE_DRILL_RUN, MOVE_WATERFALL },
+                .ability = ABILITY_SKILL_LINK,
                 .ballSeal = 0,
             },
             {
@@ -29984,6 +30098,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_HEAVY_DUTY_BOOTS,
                 .moves = { MOVE_SWORDS_DANCE, MOVE_TRIPLE_AXEL, MOVE_KNOCK_OFF, MOVE_LOW_KICK },
+                .ability = ABILITY_PICKPOCKET,
                 .ballSeal = 0,
             },
             {
@@ -29993,6 +30108,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DARMANITAN_GALARIAN,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_U_TURN, MOVE_ICICLE_CRASH, MOVE_FLARE_BLITZ, MOVE_ROCK_SLIDE },
+                .ability = ABILITY_GORILLA_TACTICS,
                 .ballSeal = 0,
             },
             {
@@ -30002,6 +30118,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BAXCALIBUR,
                 .item = ITEM_LOADED_DICE,
                 .moves = { MOVE_ICICLE_SPEAR, MOVE_GLAIVE_RUSH, MOVE_EARTHQUAKE, MOVE_DRAGON_DANCE },
+                .ability = ABILITY_THERMAL_EXCHANGE,
                 .ballSeal = 0,
             },
             {
@@ -30011,6 +30128,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LAPRAS,
                 .item = ITEM_ICETITE,
                 .moves = { MOVE_FREEZE_DRY, MOVE_HYDRO_PUMP, MOVE_ALLURING_VOICE, MOVE_ICE_BEAM },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
         },
@@ -30033,7 +30151,7 @@ const TrainerData sTrainerData[] = {
     [717] = {
         .name = "Jasmine",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_JASMINE,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -30047,6 +30165,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CORVIKNIGHT,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_BRAVE_BIRD, MOVE_BODY_PRESS, MOVE_BULK_UP, MOVE_ROOST },
+                .ability = ABILITY_STURDY,
                 .ballSeal = 0,
             },
             {
@@ -30056,6 +30175,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAGNEZONE,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_DISCHARGE, MOVE_FLASH_CANNON, MOVE_VOLT_SWITCH, MOVE_BODY_PRESS },
+                .ability = ABILITY_ANALYTIC,
                 .ballSeal = 0,
             },
             {
@@ -30065,6 +30185,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_METAGROSS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_HEAVY_SLAM, MOVE_EARTHQUAKE, MOVE_KNOCK_OFF, MOVE_BULLET_PUNCH },
+                .ability = ABILITY_CLEAR_BODY,
                 .ballSeal = 0,
             },
             {
@@ -30074,6 +30195,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STEELIX,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_SANDSTORM, MOVE_HEAVY_SLAM, MOVE_REST, MOVE_SLEEP_TALK },
+                .ability = ABILITY_STURDY,
                 .ballSeal = 0,
             },
             {
@@ -30083,6 +30205,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARCHALUDON,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_DRACO_METEOR, MOVE_THUNDER_WAVE, MOVE_FLASH_CANNON, MOVE_THUNDERBOLT },
+                .ability = ABILITY_STAMINA,
                 .ballSeal = 0,
             },
             {
@@ -30092,6 +30215,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LUCARIO,
                 .item = ITEM_STEELTITE,
                 .moves = { MOVE_AURA_SPHERE, MOVE_DRAGON_PULSE, MOVE_FLASH_CANNON, MOVE_NASTY_PLOT },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
         },
@@ -30114,7 +30238,7 @@ const TrainerData sTrainerData[] = {
     [718] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY | TRAINER_DATA_TYPE_NATURE_SET,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -30128,6 +30252,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_HIGH_JUMP_KICK, MOVE_U_TURN, MOVE_METEOR_MASH, MOVE_TRIPLE_AXEL },
+                .ability = ABILITY_INNER_FOCUS,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -30137,6 +30263,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LILLIGANT_HISUIAN,
                 .item = ITEM_WIDE_LENS,
                 .moves = { MOVE_VICTORY_DANCE, MOVE_CLOSE_COMBAT, MOVE_LEAF_BLADE, MOVE_ICE_SPINNER },
+                .ability = ABILITY_HUSTLE,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -30146,6 +30274,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BULK_UP, MOVE_TAUNT, MOVE_DRAIN_PUNCH, MOVE_RAGE_FIST },
+                .ability = ABILITY_DEFIANT,
+                .nature = NATURE_CAREFUL,
                 .ballSeal = 0,
             },
             {
@@ -30155,6 +30285,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_PAWMOT,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_DOUBLE_SHOCK, MOVE_CLOSE_COMBAT, MOVE_KNOCK_OFF, MOVE_ICE_PUNCH },
+                .ability = ABILITY_IRON_FIST,
+                .nature = NATURE_JOLLY,
                 .ballSeal = 0,
             },
             {
@@ -30164,6 +30296,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAWLUCHA,
                 .item = ITEM_FIGHTITE,
                 .moves = { MOVE_SWORDS_DANCE, MOVE_FLYING_PRESS, MOVE_CLOSE_COMBAT, MOVE_FIRE_PUNCH },
+                .ability = ABILITY_MOLD_BREAKER,
+                .nature = NATURE_ADAMANT,
                 .ballSeal = 0,
             },
             {
@@ -30173,6 +30307,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BULK_UP, MOVE_DRAIN_PUNCH, MOVE_KNOCK_OFF, MOVE_SUBSTITUTE },
+                .ability = ABILITY_WATER_ABSORB,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
         },
@@ -30195,7 +30331,7 @@ const TrainerData sTrainerData[] = {
     [719] = {
         .name = "Clair",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CLAIR,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -30209,6 +30345,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GOODRA,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_DRACO_METEOR, MOVE_FIRE_BLAST, MOVE_SLUDGE_WAVE, MOVE_HYDRO_PUMP },
+                .ability = ABILITY_SAP_SIPPER,
                 .ballSeal = 0,
             },
             {
@@ -30218,6 +30355,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGDRA,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_HYDRO_PUMP, MOVE_DRACO_METEOR, MOVE_HURRICANE, MOVE_RAIN_DANCE },
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
             {
@@ -30227,6 +30365,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAXORUS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_OUTRAGE, MOVE_EARTHQUAKE, MOVE_POISON_JAB },
+                .ability = ABILITY_MOLD_BREAKER,
                 .ballSeal = 0,
             },
             {
@@ -30236,6 +30375,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NOIVERN,
                 .item = ITEM_HEAVY_DUTY_BOOTS,
                 .moves = { MOVE_DRACO_METEOR, MOVE_FLAMETHROWER, MOVE_U_TURN, MOVE_ROOST },
+                .ability = ABILITY_FRISK,
                 .ballSeal = 0,
             },
             {
@@ -30245,6 +30385,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_CLANGOROUS_SOUL, MOVE_DRAIN_PUNCH, MOVE_SHADOW_CLAW, MOVE_SUBSTITUTE },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -30254,6 +30395,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CHARIZARD,
                 .item = ITEM_DRAGOTITE,
                 .moves = { MOVE_DRAGON_CLAW, MOVE_FLARE_BLITZ, MOVE_BRICK_BREAK, MOVE_SHADOW_CLAW },
+                .ability = ABILITY_BLAZE,
                 .ballSeal = 0,
             },
         },
@@ -30276,9 +30418,9 @@ const TrainerData sTrainerData[] = {
     [720] = {
         .name = "Brock",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_BROCK,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -30290,6 +30432,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KLEAVOR,
                 .item = ITEM_RAZOR_CLAW,
                 .moves = { MOVE_STONE_AXE, MOVE_X_SCISSOR, MOVE_AGILITY, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_SHARPNESS,
                 .ballSeal = 0,
             },
             {
@@ -30299,6 +30442,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLISCOR,
                 .item = ITEM_TOXIC_ORB,
                 .moves = { MOVE_SPIKES, MOVE_PROTECT, MOVE_CRABHAMMER, MOVE_EARTHQUAKE },
+                .ability = ABILITY_POISON_HEAL,
                 .ballSeal = 0,
             },
             {
@@ -30308,6 +30452,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_AERODACTYL,
                 .item = ITEM_NONE,
                 .moves = { MOVE_FIRE_FANG, MOVE_SKY_ATTACK, MOVE_EARTHQUAKE, MOVE_DRAGON_DANCE },
+                .ability = ABILITY_UNNERVE,
                 .ballSeal = 0,
             },
             {
@@ -30317,6 +30462,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_OMASTAR,
                 .item = ITEM_NONE,
                 .moves = { MOVE_ANCIENT_POWER, MOVE_SURF, MOVE_ICE_BEAM, MOVE_TOXIC },
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
             {
@@ -30326,6 +30472,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RELICANTH,
                 .item = ITEM_HARD_STONE,
                 .moves = { MOVE_WAVE_CRASH, MOVE_HEAD_SMASH, MOVE_CALM_MIND, MOVE_THUNDERBOLT },
+                .ability = ABILITY_ROCK_HEAD,
                 .ballSeal = 0,
             },
             {
@@ -30335,6 +30482,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GOLEM_ALOLAN,
                 .item = ITEM_MAGNET,
                 .moves = { MOVE_STONE_EDGE, MOVE_BODY_SLAM, MOVE_AUTOTOMIZE, MOVE_CHARGE },
+                .ability = ABILITY_GALVANIZE,
                 .ballSeal = 0,
             },
         },
@@ -30357,9 +30505,9 @@ const TrainerData sTrainerData[] = {
     [721] = {
         .name = "Misty",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_MISTY,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -30371,6 +30519,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLITOED,
                 .item = ITEM_DAMP_ROCK,
                 .moves = { MOVE_WEATHER_BALL, MOVE_SEISMIC_TOSS, MOVE_METRONOME, MOVE_HYPNOSIS },
+                .ability = ABILITY_DRIZZLE,
                 .ballSeal = 0,
             },
             {
@@ -30380,6 +30529,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SWAMPERT,
                 .item = ITEM_QUICK_CLAW,
                 .moves = { MOVE_RAIN_DANCE, MOVE_BARRIER, MOVE_EARTHQUAKE, MOVE_LIQUIDATION },
+                .ability = ABILITY_TORRENT,
                 .ballSeal = 0,
             },
             {
@@ -30389,6 +30539,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_VAPOREON,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_AQUA_RING, MOVE_HYDRO_PUMP, MOVE_ICE_BEAM, MOVE_ACID_ARMOR },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -30398,6 +30549,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MILOTIC,
                 .item = ITEM_SHELL_BELL,
                 .moves = { MOVE_SCALD, MOVE_ICE_BEAM, MOVE_REST, MOVE_SLEEP_TALK },
+                .ability = ABILITY_MARVEL_SCALE,
                 .ballSeal = 0,
             },
             {
@@ -30407,6 +30559,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LAPRAS,
                 .item = ITEM_NONE,
                 .moves = { MOVE_FREEZE_DRY, MOVE_HYDRO_PUMP, MOVE_RAIN_DANCE, MOVE_REFLECT },
+                .ability = ABILITY_SHELL_ARMOR,
                 .ballSeal = 0,
             },
             {
@@ -30416,6 +30569,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STARMIE,
                 .item = ITEM_MYSTIC_WATER,
                 .moves = { MOVE_PSYSHOCK, MOVE_SURF, MOVE_THUNDERBOLT, MOVE_RECOVER },
+                .ability = ABILITY_NATURAL_CURE,
                 .ballSeal = 0,
             },
         },
@@ -30438,9 +30592,9 @@ const TrainerData sTrainerData[] = {
     [722] = {
         .name = "Lt. Surge",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_LT_SURGE,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -30452,6 +30606,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ELECTRODE,
                 .item = ITEM_NORMAL_GEM,
                 .moves = { MOVE_ELECTRO_BALL, MOVE_RAIN_DANCE, MOVE_EXPLOSION, MOVE_NONE },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -30461,6 +30616,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_JOLTEON,
                 .item = ITEM_NONE,
                 .moves = { MOVE_ELECTRIC_TERRAIN, MOVE_THUNDER, MOVE_RAIN_DANCE, MOVE_REFLECT },
+                .ability = ABILITY_VOLT_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -30470,6 +30626,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LANTURN,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_RAIN_DANCE, MOVE_THUNDER, MOVE_ION_DELUGE, MOVE_HYDRO_PUMP },
+                .ability = ABILITY_VOLT_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -30479,6 +30636,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MANECTRIC,
                 .item = ITEM_TERRAIN_EXTENDER,
                 .moves = { MOVE_ELECTRIC_TERRAIN, MOVE_CHARGE, MOVE_WILD_CHARGE, MOVE_CRUNCH },
+                .ability = ABILITY_LIGHTNING_ROD,
                 .ballSeal = 0,
             },
             {
@@ -30488,6 +30646,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ELECTIVIRE,
                 .item = ITEM_SCOPE_LENS,
                 .moves = { MOVE_THUNDER_PUNCH, MOVE_ICE_PUNCH, MOVE_CROSS_CHOP, MOVE_BULK_UP },
+                .ability = ABILITY_MOTOR_DRIVE,
                 .ballSeal = 0,
             },
             {
@@ -30497,6 +30656,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RAICHU_ALOLAN,
                 .item = ITEM_ELECTRIC_SEED,
                 .moves = { MOVE_RISING_VOLTAGE, MOVE_ELECTRIC_TERRAIN, MOVE_PSYSHOCK, MOVE_CALM_MIND },
+                .ability = ABILITY_SURGE_SURFER,
                 .ballSeal = 0,
             },
         },
@@ -30519,9 +30679,9 @@ const TrainerData sTrainerData[] = {
     [723] = {
         .name = "Erika",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_ERIKA,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
             .battleType = SINGLE_BATTLE,
         },
@@ -30533,6 +30693,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ROSERADE,
                 .item = ITEM_FOCUS_SASH,
                 .moves = { MOVE_TOXIC_SPIKES, MOVE_VENOSHOCK, MOVE_TOXIC, MOVE_PETAL_DANCE },
+                .ability = ABILITY_NATURAL_CURE,
                 .ballSeal = 0,
             },
             {
@@ -30542,6 +30703,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TANGROWTH,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_INGRAIN, MOVE_GIGA_DRAIN, MOVE_GRASSY_TERRAIN, MOVE_PROTECT },
+                .ability = ABILITY_CHLOROPHYLL,
                 .ballSeal = 0,
             },
             {
@@ -30551,6 +30713,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_VENUSAUR,
                 .item = ITEM_NONE,
                 .moves = { MOVE_SLUDGE_BOMB, MOVE_ENERGY_BALL, MOVE_SYNTHESIS, MOVE_POISON_POWDER },
+                .ability = ABILITY_OVERGROW,
                 .ballSeal = 0,
             },
             {
@@ -30560,6 +30723,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ELECTRODE_HISUIAN,
                 .item = ITEM_MIRACLE_SEED,
                 .moves = { MOVE_CHLOROBLAST, MOVE_ELECTRO_BALL, MOVE_FOUL_PLAY, MOVE_NONE },
+                .ability = ABILITY_AFTERMATH,
                 .ballSeal = 0,
             },
             {
@@ -30569,6 +30733,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BELLOSSOM,
                 .item = ITEM_LUM_BERRY,
                 .moves = { MOVE_GRASSY_TERRAIN, MOVE_QUIVER_DANCE, MOVE_PETAL_DANCE, MOVE_ATTRACT },
+                .ability = ABILITY_CHLOROPHYLL,
                 .ballSeal = 0,
             },
             {
@@ -30578,6 +30743,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LUDICOLO,
                 .item = ITEM_NONE,
                 .moves = { MOVE_RAIN_DANCE, MOVE_HYDRO_PUMP, MOVE_ENERGY_BALL, MOVE_DOUBLE_TEAM },
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
         },
@@ -30600,9 +30766,9 @@ const TrainerData sTrainerData[] = {
     [724] = {
         .name = "Janine",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_JANINE,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -30614,6 +30780,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SWALOT,
                 .item = ITEM_NONE,
                 .moves = { MOVE_TOXIC_SPIKES, MOVE_STOCKPILE, MOVE_SWALLOW, MOVE_SPIT_UP },
+                .ability = ABILITY_LIQUID_OOZE,
                 .ballSeal = 0,
             },
             {
@@ -30623,6 +30790,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEEZING_GALARIAN,
                 .item = ITEM_FAIRY_FEATHER,
                 .moves = { MOVE_STRANGE_STEAM, MOVE_SLUDGE_BOMB, MOVE_FLAMETHROWER, MOVE_CORROSIVE_GAS },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -30632,6 +30800,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MUK_ALOLAN,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_GUNK_SHOT, MOVE_ACID_ARMOR, MOVE_POWER_UP_PUNCH, MOVE_DISABLE },
+                .ability = ABILITY_POISON_TOUCH,
                 .ballSeal = 0,
             },
             {
@@ -30641,6 +30810,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CROBAT,
                 .item = ITEM_NONE,
                 .moves = { MOVE_LEECH_LIFE, MOVE_CONFUSE_RAY, MOVE_BRAVE_BIRD, MOVE_TOXIC },
+                .ability = ABILITY_INFILTRATOR,
                 .ballSeal = 0,
             },
             {
@@ -30650,6 +30820,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SNEASLER,
                 .item = ITEM_FLYING_GEM,
                 .moves = { MOVE_ACROBATICS, MOVE_DIRE_CLAW, MOVE_CLOSE_COMBAT, MOVE_FAKE_OUT },
+                .ability = ABILITY_UNBURDEN,
                 .ballSeal = 0,
             },
             {
@@ -30659,6 +30830,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_VENOMOTH,
                 .item = ITEM_BRIGHT_POWDER,
                 .moves = { MOVE_VENOSHOCK, MOVE_SIGNAL_BEAM, MOVE_DOUBLE_TEAM, MOVE_TOXIC },
+                .ability = ABILITY_SHIELD_DUST,
                 .ballSeal = 0,
             },
         },
@@ -30681,9 +30853,9 @@ const TrainerData sTrainerData[] = {
     [725] = {
         .name = "Sabrina",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_SABRINA,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_PRIORITIZE_STATUS_MOVES,
             .battleType = SINGLE_BATTLE,
         },
@@ -30695,6 +30867,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MR_MIME_GALARIAN,
                 .item = ITEM_EVIOLITE,
                 .moves = { MOVE_LIGHT_SCREEN, MOVE_REFLECT, MOVE_PSYCHIC, MOVE_FREEZE_DRY },
+                .ability = ABILITY_VITAL_SPIRIT,
                 .ballSeal = 0,
             },
             {
@@ -30704,6 +30877,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SLOWBRO_GALARIAN,
                 .item = ITEM_QUICK_CLAW,
                 .moves = { MOVE_SHELL_SIDE_ARM, MOVE_CALM_MIND, MOVE_PSYSHOCK, MOVE_SLACK_OFF },
+                .ability = ABILITY_QUICK_DRAW,
                 .ballSeal = 0,
             },
             {
@@ -30713,6 +30887,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ESPEON,
                 .item = ITEM_NONE,
                 .moves = { MOVE_PSYCHIC, MOVE_MORNING_SUN, MOVE_PSYCHIC_TERRAIN, MOVE_POWER_GEM },
+                .ability = ABILITY_MAGIC_BOUNCE,
                 .ballSeal = 0,
             },
             {
@@ -30722,6 +30897,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RAPIDASH_GALARIAN,
                 .item = ITEM_NONE,
                 .moves = { MOVE_PLAY_ROUGH, MOVE_PSYCHO_CUT, MOVE_WILD_CHARGE, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_PASTEL_VEIL,
                 .ballSeal = 0,
             },
             {
@@ -30731,6 +30907,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WOBBUFFET,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_COUNTER, MOVE_MIRROR_COAT, MOVE_ENCORE, MOVE_DESTINY_BOND },
+                .ability = ABILITY_SHADOW_TAG,
                 .ballSeal = 0,
             },
             {
@@ -30740,6 +30917,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ALAKAZAM,
                 .item = ITEM_NONE,
                 .moves = { MOVE_PSYSHOCK, MOVE_SHADOW_BALL, MOVE_CALM_MIND, MOVE_TRI_ATTACK },
+                .ability = ABILITY_MAGIC_GUARD,
                 .ballSeal = 0,
             },
         },
@@ -30845,7 +31023,7 @@ const TrainerData sTrainerData[] = {
         .data = {
             .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
             .trainerClass = TRAINERCLASS_LEADER_BLUE,
-            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE },
+            .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
             .battleType = SINGLE_BATTLE,
         },
@@ -31156,7 +31334,7 @@ const TrainerData sTrainerData[] = {
     [733] = {
         .name = "Lance",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_CHAMPION,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -31170,6 +31348,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SALAMENCE,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_DRACO_METEOR, MOVE_IRON_HEAD, MOVE_DOUBLE_EDGE, MOVE_FLY },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -31179,6 +31358,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GYARADOS,
                 .item = ITEM_EJECT_BUTTON,
                 .moves = { MOVE_WATERFALL, MOVE_HYPER_BEAM, MOVE_CRUNCH, MOVE_SCARY_FACE },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -31188,6 +31368,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CHARIZARD,
                 .item = ITEM_NONE,
                 .moves = { MOVE_FIRE_BLAST, MOVE_EARTHQUAKE, MOVE_ACROBATICS, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_BLAZE,
                 .ballSeal = 0,
             },
             {
@@ -31197,6 +31378,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NOIVERN,
                 .item = ITEM_SILK_SCARF,
                 .moves = { MOVE_BOOMBURST, MOVE_DRAGON_PULSE, MOVE_MOONLIGHT, MOVE_SUPER_FANG },
+                .ability = ABILITY_INFILTRATOR,
                 .ballSeal = 0,
             },
             {
@@ -31206,6 +31388,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_AERODACTYL,
                 .item = ITEM_SCOPE_LENS,
                 .moves = { MOVE_ROCK_SLIDE, MOVE_EARTHQUAKE, MOVE_SKY_ATTACK, MOVE_DRAGON_DANCE },
+                .ability = ABILITY_ROCK_HEAD,
                 .ballSeal = 0,
             },
             {
@@ -31215,6 +31398,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGONITE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_IRON_HEAD, MOVE_FIRE_PUNCH, MOVE_DRAGON_RUSH, MOVE_DRAGON_DANCE },
+                .ability = ABILITY_MULTISCALE,
                 .ballSeal = 0,
             },
         },
@@ -31229,7 +31413,7 @@ const TrainerData sTrainerData[] = {
     [734] = {
         .name = "Clair",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CLAIR,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -31243,6 +31427,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GOODRA,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_DRACO_METEOR, MOVE_FIRE_BLAST, MOVE_SLUDGE_WAVE, MOVE_HYDRO_PUMP },
+                .ability = ABILITY_SAP_SIPPER,
                 .ballSeal = 0,
             },
             {
@@ -31252,6 +31437,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGDRA,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_HYDRO_PUMP, MOVE_DRACO_METEOR, MOVE_HURRICANE, MOVE_ICE_BEAM },
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
             {
@@ -31261,6 +31447,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAXORUS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_OUTRAGE, MOVE_EARTHQUAKE, MOVE_POISON_JAB },
+                .ability = ABILITY_MOLD_BREAKER,
                 .ballSeal = 0,
             },
             {
@@ -31270,6 +31457,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RAYQUAZA,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_DRAGON_ASCENT, MOVE_DRAGON_DANCE, MOVE_EXTREME_SPEED, MOVE_OUTRAGE },
+                .ability = ABILITY_AIR_LOCK,
                 .ballSeal = 0,
             },
             {
@@ -31279,6 +31467,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_CLANGOROUS_SOUL, MOVE_DRAIN_PUNCH, MOVE_SHADOW_CLAW, MOVE_SUBSTITUTE },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -31288,6 +31477,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CHARIZARD,
                 .item = ITEM_DRAGOTITE,
                 .moves = { MOVE_DRAGON_CLAW, MOVE_FLARE_BLITZ, MOVE_BRICK_BREAK, MOVE_SHADOW_CLAW },
+                .ability = ABILITY_BLAZE,
                 .ballSeal = 0,
             },
         },
@@ -31422,7 +31612,7 @@ const TrainerData sTrainerData[] = {
     [738] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -31436,6 +31626,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_NONE,
                 .moves = { MOVE_TRIPLE_KICK, MOVE_RAPID_SPIN, MOVE_DIG, MOVE_PURSUIT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -31445,6 +31636,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_NONE,
                 .moves = { MOVE_LOW_KICK, MOVE_U_TURN, MOVE_BOUNCE, MOVE_KNOCK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -31454,6 +31646,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_BLACK_BELT,
                 .moves = { MOVE_HYPNOSIS, MOVE_DRAIN_PUNCH, MOVE_SURF, MOVE_DYNAMIC_PUNCH },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -31463,6 +31656,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_CHESTO_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_TAUNT, MOVE_ASSURANCE, MOVE_PHANTOM_FORCE },
+                .ability = ABILITY_VITAL_SPIRIT,
                 .ballSeal = 0,
             },
             {
@@ -31472,6 +31666,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FALINKS,
                 .item = ITEM_FIGHTITE,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_NO_RETREAT, MOVE_MEGAHORN, MOVE_ZEN_HEADBUTT },
+                .ability = ABILITY_DEFIANT,
                 .ballSeal = 0,
             },
         },
@@ -31493,7 +31688,7 @@ const TrainerData sTrainerData[] = {
     [739] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -31507,6 +31702,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_NONE,
                 .moves = { MOVE_TRIPLE_KICK, MOVE_RAPID_SPIN, MOVE_DIG, MOVE_PURSUIT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -31516,6 +31712,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_NONE,
                 .moves = { MOVE_LOW_KICK, MOVE_U_TURN, MOVE_BOUNCE, MOVE_KNOCK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -31525,6 +31722,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_BLACK_BELT,
                 .moves = { MOVE_HYPNOSIS, MOVE_DRAIN_PUNCH, MOVE_SURF, MOVE_DYNAMIC_PUNCH },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -31534,6 +31732,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_CHESTO_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_TAUNT, MOVE_ASSURANCE, MOVE_PHANTOM_FORCE },
+                .ability = ABILITY_VITAL_SPIRIT,
                 .ballSeal = 0,
             },
             {
@@ -31543,6 +31742,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FALINKS,
                 .item = ITEM_FIGHTITE,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_NO_RETREAT, MOVE_MEGAHORN, MOVE_ZEN_HEADBUTT },
+                .ability = ABILITY_DEFIANT,
                 .ballSeal = 0,
             },
         },
@@ -31706,7 +31906,7 @@ const TrainerData sTrainerData[] = {
     [742] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_HYPER_POTION, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -31720,6 +31920,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_SALAC_BERRY,
                 .moves = { MOVE_ICE_BEAM, MOVE_BLIZZARD, MOVE_DAZZLING_GLEAM, MOVE_FREEZE_DRY },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -31729,6 +31930,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAMOSWINE,
                 .item = ITEM_AIR_BALLOON,
                 .moves = { MOVE_BLIZZARD, MOVE_ANCIENT_POWER, MOVE_BODY_SLAM, MOVE_EARTHQUAKE },
+                .ability = ABILITY_THICK_FAT,
                 .ballSeal = 0,
             },
             {
@@ -31738,6 +31940,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLACEON,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_ALLURING_VOICE, MOVE_BLIZZARD, MOVE_CHILLING_WATER, MOVE_ICE_BEAM },
+                .ability = ABILITY_ICE_BODY,
                 .ballSeal = 0,
             },
             {
@@ -31747,6 +31950,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_CHOPLE_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_KNOCK_OFF, MOVE_ICE_SPINNER, MOVE_POISON_JAB },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
             {
@@ -31756,6 +31960,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FROSLASS,
                 .item = ITEM_ICETITE,
                 .moves = { MOVE_BLIZZARD, MOVE_DRAINING_KISS, MOVE_POLTERGEIST, MOVE_SHADOW_BALL },
+                .ability = ABILITY_SNOW_CLOAK,
                 .ballSeal = 0,
             },
         },
@@ -31777,7 +31982,7 @@ const TrainerData sTrainerData[] = {
     [743] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_HYPER_POTION, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -31791,6 +31996,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_NONE,
                 .moves = { MOVE_ICE_BEAM, MOVE_BLIZZARD, MOVE_DAZZLING_GLEAM, MOVE_FREEZE_DRY },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -31800,6 +32006,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAMOSWINE,
                 .item = ITEM_NONE,
                 .moves = { MOVE_BLIZZARD, MOVE_ANCIENT_POWER, MOVE_BODY_SLAM, MOVE_BULLDOZE },
+                .ability = ABILITY_THICK_FAT,
                 .ballSeal = 0,
             },
             {
@@ -31809,6 +32016,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLACEON,
                 .item = ITEM_NONE,
                 .moves = { MOVE_ALLURING_VOICE, MOVE_BLIZZARD, MOVE_CHILLING_WATER, MOVE_ICE_BEAM },
+                .ability = ABILITY_ICE_BODY,
                 .ballSeal = 0,
             },
             {
@@ -31818,6 +32026,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_NONE,
                 .moves = { MOVE_BRICK_BREAK, MOVE_KNOCK_OFF, MOVE_ICE_SPINNER, MOVE_POISON_JAB },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
             {
@@ -31827,6 +32036,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FROSLASS,
                 .item = ITEM_ICETITE,
                 .moves = { MOVE_BLIZZARD, MOVE_DRAINING_KISS, MOVE_POLTERGEIST, MOVE_SHADOW_BALL },
+                .ability = ABILITY_SNOW_CLOAK,
                 .ballSeal = 0,
             },
         },
@@ -31910,7 +32120,7 @@ const TrainerData sTrainerData[] = {
     [745] = {
         .name = "Anton",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ACE_TRAINER_M,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -31924,6 +32134,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DARMANITAN_GALARIAN,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_ICICLE_CRASH, MOVE_FLARE_BLITZ, MOVE_EARTHQUAKE, MOVE_U_TURN },
+                .ability = ABILITY_GORILLA_TACTICS,
                 .ballSeal = 0,
             },
             {
@@ -31933,6 +32144,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TAUROS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_BODY_SLAM, MOVE_CLOSE_COMBAT, MOVE_EARTHQUAKE, MOVE_IRON_HEAD },
+                .ability = ABILITY_SHEER_FORCE,
                 .ballSeal = 0,
             },
             {
@@ -31942,6 +32154,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAXORUS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_EARTHQUAKE, MOVE_CLOSE_COMBAT, MOVE_ROCK_SLIDE },
+                .ability = ABILITY_MOLD_BREAKER,
                 .ballSeal = 0,
             },
             {
@@ -31951,6 +32164,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARCANINE,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_FLARE_BLITZ, MOVE_CLOSE_COMBAT, MOVE_OUTRAGE, MOVE_BULLDOZE },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
         },
@@ -31968,7 +32182,7 @@ const TrainerData sTrainerData[] = {
     [746] = {
         .name = "Nate",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ACE_TRAINER_M,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -31982,6 +32196,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GEODUDE_ALOLAN,
                 .item = ITEM_AIR_BALLOON,
                 .moves = { MOVE_TACKLE, MOVE_DEFENSE_CURL, MOVE_ROLLOUT, MOVE_MUD_SLAP },
+                .ability = ABILITY_STURDY,
                 .ballSeal = 0,
             },
             {
@@ -31991,6 +32206,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAREEP,
                 .item = ITEM_AIR_BALLOON,
                 .moves = { MOVE_THUNDER_SHOCK, MOVE_TACKLE, MOVE_THUNDER_WAVE, MOVE_GROWL },
+                .ability = ABILITY_STATIC,
                 .ballSeal = 0,
             },
         },
@@ -32188,7 +32404,7 @@ const TrainerData sTrainerData[] = {
     [751] = {
         .name = "Laurel",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ACE_TRAINER_M,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -32202,6 +32418,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCEPTILE,
                 .item = ITEM_POWER_HERB,
                 .moves = { MOVE_SOLAR_BEAM, MOVE_FOCUS_BLAST, MOVE_NIGHT_SLASH, MOVE_GIGA_DRAIN },
+                .ability = ABILITY_UNBURDEN,
                 .ballSeal = 0,
             },
             {
@@ -32211,6 +32428,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CRADILY,
                 .item = ITEM_POWER_HERB,
                 .moves = { MOVE_METEOR_BEAM, MOVE_GIGA_DRAIN, MOVE_ANCIENT_POWER, MOVE_SAPPY_SEED },
+                .ability = ABILITY_STORM_DRAIN,
                 .ballSeal = 0,
             },
             {
@@ -32220,6 +32438,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAWLUCHA,
                 .item = ITEM_WHITE_HERB,
                 .moves = { MOVE_SWORDS_DANCE, MOVE_CLOSE_COMBAT, MOVE_ACROBATICS, MOVE_TAUNT },
+                .ability = ABILITY_UNBURDEN,
                 .ballSeal = 0,
             },
             {
@@ -32229,6 +32448,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CLOYSTER,
                 .item = ITEM_WHITE_HERB,
                 .moves = { MOVE_SHELL_SMASH, MOVE_ICE_BEAM, MOVE_RAZOR_SHELL, MOVE_ICE_SHARD },
+                .ability = ABILITY_OVERCOAT,
                 .ballSeal = 0,
             },
         },
@@ -32293,7 +32513,7 @@ const TrainerData sTrainerData[] = {
     [753] = {
         .name = "Vera",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ACE_TRAINER_F,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -32307,6 +32527,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_OBSTAGOON,
                 .item = ITEM_FLAME_ORB,
                 .moves = { MOVE_KNOCK_OFF, MOVE_FACADE, MOVE_PARTING_SHOT, MOVE_SWITCHEROO },
+                .ability = ABILITY_GUTS,
                 .ballSeal = 0,
             },
             {
@@ -32316,6 +32537,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MUK_ALOLAN,
                 .item = ITEM_TOXIC_ORB,
                 .moves = { MOVE_FLING, MOVE_PURSUIT, MOVE_FIRE_PUNCH, MOVE_DISABLE },
+                .ability = ABILITY_POISON_TOUCH,
                 .ballSeal = 0,
             },
             {
@@ -32325,6 +32547,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLISCOR,
                 .item = ITEM_TOXIC_ORB,
                 .moves = { MOVE_PROTECT, MOVE_FACADE, MOVE_BULLDOZE, MOVE_AERIAL_ACE },
+                .ability = ABILITY_POISON_HEAL,
                 .ballSeal = 0,
             },
             {
@@ -32334,6 +32557,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HERACROSS,
                 .item = ITEM_FLAME_ORB,
                 .moves = { MOVE_FACADE, MOVE_BRICK_BREAK, MOVE_ROCK_TOMB, MOVE_MEGAHORN },
+                .ability = ABILITY_GUTS,
                 .ballSeal = 0,
             },
         },
@@ -32625,7 +32849,7 @@ const TrainerData sTrainerData[] = {
     [760] = {
         .name = "Falkner",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_FALKNER,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS,
@@ -32639,6 +32863,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RUFFLET,
                 .item = ITEM_PECHA_BERRY,
                 .moves = { MOVE_TAILWIND, MOVE_HONE_CLAWS, MOVE_SWIFT, MOVE_HELPING_HAND },
+                .ability = ABILITY_HUSTLE,
                 .ballSeal = 0,
             },
             {
@@ -32648,6 +32873,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NOIBAT,
                 .item = ITEM_NONE,
                 .moves = { MOVE_WING_ATTACK, MOVE_AIR_CUTTER, MOVE_ABSORB, MOVE_TAUNT },
+                .ability = ABILITY_INFILTRATOR,
                 .ballSeal = 0,
             },
             {
@@ -32657,6 +32883,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLIGAR,
                 .item = ITEM_NONE,
                 .moves = { MOVE_QUICK_ATTACK, MOVE_FURY_CUTTER, MOVE_HARDEN, MOVE_POISON_STING },
+                .ability = ABILITY_IMMUNITY,
                 .ballSeal = 0,
             },
             {
@@ -32666,6 +32893,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_PIDGEOTTO,
                 .item = ITEM_ORAN_BERRY,
                 .moves = { MOVE_WING_ATTACK, MOVE_AIR_CUTTER, MOVE_QUICK_ATTACK, MOVE_TWISTER },
+                .ability = ABILITY_BIG_PECKS,
                 .ballSeal = 0,
             },
         },
@@ -32687,7 +32915,7 @@ const TrainerData sTrainerData[] = {
     [761] = {
         .name = "Bugsy",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_BUGSY,
             .items = { ITEM_SUPER_POTION, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -32701,6 +32929,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCIZOR,
                 .item = ITEM_BERRY_JUICE,
                 .moves = { MOVE_STEEL_WING, MOVE_FURY_CUTTER, MOVE_U_TURN, MOVE_PURSUIT },
+                .ability = ABILITY_SWARM,
                 .ballSeal = 0,
             },
             {
@@ -32710,6 +32939,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BEEDRILL,
                 .item = ITEM_BERRY_JUICE,
                 .moves = { MOVE_TWINEEDLE, MOVE_FURY_ATTACK, MOVE_PURSUIT, MOVE_POISON_STING },
+                .ability = ABILITY_SWARM,
                 .ballSeal = 0,
             },
             {
@@ -32719,6 +32949,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_PINSIR,
                 .item = ITEM_NONE,
                 .moves = { MOVE_SEISMIC_TOSS, MOVE_BUG_BITE, MOVE_FOCUS_ENERGY, MOVE_STORM_THROW },
+                .ability = ABILITY_HYPER_CUTTER,
                 .ballSeal = 0,
             },
             {
@@ -32728,6 +32959,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LARVESTA,
                 .item = ITEM_NONE,
                 .moves = { MOVE_BUG_BITE, MOVE_FIRE_SPIN, MOVE_ABSORB, MOVE_STRING_SHOT },
+                .ability = ABILITY_FLAME_BODY,
                 .ballSeal = 0,
             },
         },
@@ -32749,7 +32981,7 @@ const TrainerData sTrainerData[] = {
     [762] = {
         .name = "Whitney",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_WHITNEY,
             .items = { ITEM_SUPER_POTION, ITEM_SUPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -32763,6 +32995,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAUSHOLD,
                 .item = ITEM_SALAC_BERRY,
                 .moves = { MOVE_HEADBUTT, MOVE_BITE, MOVE_TIDY_UP, MOVE_LOW_KICK },
+                .ability = ABILITY_FRIEND_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -32772,6 +33005,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_AUDINO,
                 .item = ITEM_EJECT_BUTTON,
                 .moves = { MOVE_REFLECT, MOVE_LIGHT_SCREEN, MOVE_DRAINING_KISS, MOVE_MEGA_PUNCH },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -32781,6 +33015,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CINCCINO,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_TAIL_SLAP, MOVE_BULLET_SEED, MOVE_HELPING_HAND, MOVE_ENCORE },
+                .ability = ABILITY_SKILL_LINK,
                 .ballSeal = 0,
             },
             {
@@ -32790,6 +33025,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MILTANK,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_ICY_WIND, MOVE_FIRE_PUNCH, MOVE_BODY_SLAM, MOVE_MILK_DRINK },
+                .ability = ABILITY_SCRAPPY,
                 .ballSeal = 0,
             },
         },
@@ -32811,7 +33047,7 @@ const TrainerData sTrainerData[] = {
     [763] = {
         .name = "Morty",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_MORTY,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -32825,6 +33061,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIMIKYU,
                 .item = ITEM_NONE,
                 .moves = { MOVE_SLASH, MOVE_SHADOW_SNEAK, MOVE_CURSE, MOVE_DRAINING_KISS },
+                .ability = ABILITY_DISGUISE,
                 .ballSeal = 0,
             },
             {
@@ -32834,6 +33071,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MISDREAVUS,
                 .item = ITEM_SPELL_TAG,
                 .moves = { MOVE_SHADOW_BALL, MOVE_PAIN_SPLIT, MOVE_PSYCHIC_NOISE, MOVE_HEX },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -32843,6 +33081,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SHEDINJA,
                 .item = ITEM_HEAVY_DUTY_BOOTS,
                 .moves = { MOVE_SHADOW_SNEAK, MOVE_DREAM_EATER, MOVE_ABSORB, MOVE_TOXIC },
+                .ability = ABILITY_WONDER_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -32852,6 +33091,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DOUBLADE,
                 .item = ITEM_EVIOLITE,
                 .moves = { MOVE_NIGHT_SLASH, MOVE_IRON_DEFENSE, MOVE_AERIAL_ACE, MOVE_SHADOW_SNEAK },
+                .ability = ABILITY_NO_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -32861,6 +33101,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GENGAR,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_HYPNOSIS, MOVE_SHADOW_BALL, MOVE_THUNDERBOLT, MOVE_DREAM_EATER },
+                .ability = ABILITY_CURSED_BODY,
                 .ballSeal = 0,
             },
         },
@@ -32882,7 +33123,7 @@ const TrainerData sTrainerData[] = {
     [764] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_HYPER_POTION, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -32896,6 +33137,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_SALAC_BERRY,
                 .moves = { MOVE_AURORA_VEIL, MOVE_BLIZZARD, MOVE_DAZZLING_GLEAM, MOVE_FREEZE_DRY },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -32905,6 +33147,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DARMANITAN_GALARIAN,
                 .item = ITEM_ADRENALINE_ORB,
                 .moves = { MOVE_ICE_PUNCH, MOVE_HAMMER_ARM, MOVE_ROCK_SLIDE, MOVE_AVALANCHE },
+                .ability = ABILITY_ZEN_MODE,
                 .ballSeal = 0,
             },
             {
@@ -32914,6 +33157,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAMOSWINE,
                 .item = ITEM_AIR_BALLOON,
                 .moves = { MOVE_BLIZZARD, MOVE_ANCIENT_POWER, MOVE_BODY_SLAM, MOVE_EARTHQUAKE },
+                .ability = ABILITY_THICK_FAT,
                 .ballSeal = 0,
             },
             {
@@ -32923,6 +33167,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLACEON,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_ALLURING_VOICE, MOVE_BLIZZARD, MOVE_CHILLING_WATER, MOVE_ICE_BEAM },
+                .ability = ABILITY_ICE_BODY,
                 .ballSeal = 0,
             },
             {
@@ -32932,6 +33177,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_CHOPLE_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_KNOCK_OFF, MOVE_ICE_SPINNER, MOVE_POISON_JAB },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
             {
@@ -32941,6 +33187,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FROSLASS,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_BLIZZARD, MOVE_DRAINING_KISS, MOVE_POLTERGEIST, MOVE_SHADOW_BALL },
+                .ability = ABILITY_SNOW_CLOAK,
                 .ballSeal = 0,
             },
         },
@@ -32962,7 +33209,7 @@ const TrainerData sTrainerData[] = {
     [765] = {
         .name = "Jasmine",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_JASMINE,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -32976,6 +33223,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CORVIKNIGHT,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_BODY_PRESS, MOVE_IRON_DEFENSE, MOVE_ROOST, MOVE_STEEL_WING },
+                .ability = ABILITY_MIRROR_ARMOR,
                 .ballSeal = 0,
             },
             {
@@ -32985,6 +33233,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TINKATON,
                 .item = ITEM_SHUCA_BERRY,
                 .moves = { MOVE_LIGHT_SCREEN, MOVE_FAKE_OUT, MOVE_GIGATON_HAMMER, MOVE_THUNDER_WAVE },
+                .ability = ABILITY_OWN_TEMPO,
                 .ballSeal = 0,
             },
             {
@@ -32994,6 +33243,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAGNEZONE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_THUNDERBOLT, MOVE_TRI_ATTACK, MOVE_FLASH_CANNON, MOVE_DISCHARGE },
+                .ability = ABILITY_ANALYTIC,
                 .ballSeal = 0,
             },
             {
@@ -33003,6 +33253,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCIZOR,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_U_TURN, MOVE_BULLET_PUNCH, MOVE_BUG_BITE, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -33012,6 +33263,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STEELIX,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_CRUNCH, MOVE_EARTHQUAKE, MOVE_ROCK_SLIDE, MOVE_IRON_TAIL },
+                .ability = ABILITY_SHEER_FORCE,
                 .ballSeal = 0,
             },
         },
@@ -33033,7 +33285,7 @@ const TrainerData sTrainerData[] = {
     [766] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -33047,6 +33299,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_ADRENALINE_ORB,
                 .moves = { MOVE_TRIPLE_AXEL, MOVE_RAPID_SPIN, MOVE_BULLET_PUNCH, MOVE_PURSUIT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33056,6 +33309,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_CHESTO_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_TAUNT, MOVE_ASSURANCE, MOVE_PHANTOM_FORCE },
+                .ability = ABILITY_VITAL_SPIRIT,
                 .ballSeal = 0,
             },
             {
@@ -33065,6 +33319,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_U_TURN, MOVE_DRAIN_PUNCH, MOVE_ICE_SPINNER, MOVE_KNOCK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -33074,6 +33329,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_BLACK_BELT,
                 .moves = { MOVE_HYPNOSIS, MOVE_DRAIN_PUNCH, MOVE_WATERFALL, MOVE_DYNAMIC_PUNCH },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -33083,6 +33339,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FALINKS,
                 .item = ITEM_BLACK_BELT,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_NO_RETREAT, MOVE_MEGAHORN, MOVE_ZEN_HEADBUTT },
+                .ability = ABILITY_DEFIANT,
                 .ballSeal = 0,
             },
         },
@@ -33104,7 +33361,7 @@ const TrainerData sTrainerData[] = {
     [767] = {
         .name = "Clair",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CLAIR,
             .items = { ITEM_HYPER_POTION, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33118,6 +33375,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GOODRA_HISUIAN,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_BLIZZARD, MOVE_DRACO_METEOR, MOVE_FIRE_BLAST, MOVE_FLASH_CANNON },
+                .ability = ABILITY_SAP_SIPPER,
                 .ballSeal = 0,
             },
             {
@@ -33127,6 +33385,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GYARADOS,
                 .item = ITEM_WATERTITE,
                 .moves = { MOVE_CRUNCH, MOVE_WATERFALL, MOVE_ICE_FANG, MOVE_RAIN_DANCE },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33136,6 +33395,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGONITE,
                 .item = ITEM_CHESTO_BERRY,
                 .moves = { MOVE_OUTRAGE, MOVE_ICE_BEAM, MOVE_THUNDER, MOVE_HURRICANE },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -33145,6 +33405,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ALTARIA,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_MOONBLAST, MOVE_THUNDER, MOVE_FLAMETHROWER, MOVE_DRAGON_PULSE },
+                .ability = ABILITY_NATURAL_CURE,
                 .ballSeal = 0,
             },
             {
@@ -33154,6 +33415,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HYDRAPPLE,
                 .item = ITEM_YACHE_BERRY,
                 .moves = { MOVE_EARTH_POWER, MOVE_SYRUP_BOMB, MOVE_DRAGON_PULSE, MOVE_FICKLE_BEAM },
+                .ability = ABILITY_SUPERSWEET_SYRUP,
                 .ballSeal = 0,
             },
             {
@@ -33163,6 +33425,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGDRA,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_DRACO_METEOR, MOVE_SURF, MOVE_RAIN_DANCE, MOVE_ICE_BEAM },
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
         },
@@ -33184,7 +33447,7 @@ const TrainerData sTrainerData[] = {
     [768] = {
         .name = "Lance",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_CHAMPION,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33198,6 +33461,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BAXCALIBUR,
                 .item = ITEM_ABILITY_SHIELD,
                 .moves = { MOVE_GLAIVE_RUSH, MOVE_HIGH_HORSEPOWER, MOVE_ICICLE_CRASH, MOVE_SUBSTITUTE },
+                .ability = ABILITY_THERMAL_EXCHANGE,
                 .ballSeal = 0,
             },
             {
@@ -33207,6 +33471,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGONITE,
                 .item = ITEM_DRAGOTITE,
                 .moves = { MOVE_DRACO_METEOR, MOVE_HURRICANE, MOVE_FLAMETHROWER, MOVE_ICE_BEAM },
+                .ability = ABILITY_MULTISCALE,
                 .ballSeal = 0,
             },
             {
@@ -33216,6 +33481,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_EXEGGUTOR_ALOLAN,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_DRAGON_HAMMER, MOVE_EARTHQUAKE, MOVE_SEED_BOMB, MOVE_ZEN_HEADBUTT },
+                .ability = ABILITY_HARVEST,
                 .ballSeal = 0,
             },
             {
@@ -33225,6 +33491,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HYDRAPPLE,
                 .item = ITEM_YACHE_BERRY,
                 .moves = { MOVE_DRACO_METEOR, MOVE_LEAF_STORM, MOVE_GIGA_DRAIN, MOVE_OUTRAGE },
+                .ability = ABILITY_STICKY_HOLD,
                 .ballSeal = 0,
             },
             {
@@ -33234,6 +33501,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGAPULT,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_DRAGON_DARTS, MOVE_PHANTOM_FORCE, MOVE_BODY_SLAM, MOVE_TRICK },
+                .ability = ABILITY_INFILTRATOR,
                 .ballSeal = 0,
             },
             {
@@ -33243,6 +33511,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARCHALUDON,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_ELECTRO_SHOT, MOVE_DRAGON_PULSE, MOVE_FLASH_CANNON, MOVE_DARK_PULSE },
+                .ability = ABILITY_STAMINA,
                 .ballSeal = 0,
             },
         },
@@ -33264,7 +33533,7 @@ const TrainerData sTrainerData[] = {
     [769] = {
         .name = "Will",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_WILL,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33278,6 +33547,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FARIGIRAF,
                 .item = ITEM_SAFETY_GOGGLES,
                 .moves = { MOVE_TRICK_ROOM, MOVE_HELPING_HAND, MOVE_PSYCHIC, MOVE_HYPER_VOICE },
+                .ability = ABILITY_ARMOR_TAIL,
                 .ballSeal = 0,
             },
             {
@@ -33287,6 +33557,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_REUNICLUS,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_PSYCHIC, MOVE_CALM_MIND, MOVE_SHADOW_BALL, MOVE_MYSTICAL_FIRE },
+                .ability = ABILITY_MAGIC_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -33296,6 +33567,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ESPEON,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_DRAINING_KISS, MOVE_EXPANDING_FORCE, MOVE_POWER_GEM, MOVE_PSYCHIC },
+                .ability = ABILITY_MAGIC_BOUNCE,
                 .ballSeal = 0,
             },
             {
@@ -33305,6 +33577,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SLOWBRO,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BLIZZARD, MOVE_SCALD, MOVE_SLACK_OFF, MOVE_PSYCHIC },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -33314,6 +33587,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BRAVIARY_HISUIAN,
                 .item = ITEM_TWISTED_SPOON,
                 .moves = { MOVE_AIR_SLASH, MOVE_ESPER_WING, MOVE_U_TURN, MOVE_PSYCHIC_TERRAIN },
+                .ability = ABILITY_TINTED_LENS,
                 .ballSeal = 0,
             },
             {
@@ -33323,6 +33597,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ALAKAZAM,
                 .item = ITEM_PSYCHITE,
                 .moves = { MOVE_SHADOW_BALL, MOVE_PSYCHIC, MOVE_RECOVER, MOVE_EXPANDING_FORCE },
+                .ability = ABILITY_MAGIC_GUARD,
                 .ballSeal = 0,
             },
         },
@@ -33344,7 +33619,7 @@ const TrainerData sTrainerData[] = {
     [770] = {
         .name = "Karen",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KAREN,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33358,6 +33633,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GRIMMSNARL,
                 .item = ITEM_LIGHT_CLAY,
                 .moves = { MOVE_REFLECT, MOVE_LIGHT_SCREEN, MOVE_PARTING_SHOT, MOVE_PLAY_ROUGH },
+                .ability = ABILITY_PRANKSTER,
                 .ballSeal = 0,
             },
             {
@@ -33367,6 +33643,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ABSOL,
                 .item = ITEM_GHOSTITE,
                 .moves = { MOVE_SHADOW_CLAW, MOVE_NIGHT_SLASH, MOVE_SWORDS_DANCE, MOVE_PLAY_ROUGH },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
             {
@@ -33376,6 +33653,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_UMBREON,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_WISH, MOVE_FOUL_PLAY, MOVE_BATON_PASS, MOVE_MOONLIGHT },
+                .ability = ABILITY_SYNCHRONIZE,
                 .ballSeal = 0,
             },
             {
@@ -33385,6 +33663,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGAMBIT,
                 .item = ITEM_BLACK_GLASSES,
                 .moves = { MOVE_KOWTOW_CLEAVE, MOVE_IRON_HEAD, MOVE_SUCKER_PUNCH, MOVE_BRICK_BREAK },
+                .ability = ABILITY_SUPREME_OVERLORD,
                 .ballSeal = 0,
             },
             {
@@ -33394,6 +33673,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCRAFTY,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_HIGH_JUMP_KICK, MOVE_CRUNCH, MOVE_PARTING_SHOT, MOVE_HEAD_SMASH },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33403,6 +33683,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HONCHKROW,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_HEAT_WAVE, MOVE_DARK_PULSE, MOVE_STEEL_WING, MOVE_BRAVE_BIRD },
+                .ability = ABILITY_MOXIE,
                 .ballSeal = 0,
             },
         },
@@ -33424,7 +33705,7 @@ const TrainerData sTrainerData[] = {
     [771] = {
         .name = "Koga",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KOGA,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33438,6 +33719,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TOXAPEX,
                 .item = ITEM_PAYAPA_BERRY,
                 .moves = { MOVE_SCALD, MOVE_SLUDGE_BOMB, MOVE_BANEFUL_BUNKER, MOVE_TOXIC },
+                .ability = ABILITY_MERCILESS,
                 .ballSeal = 0,
             },
             {
@@ -33447,6 +33729,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_OVERQWIL,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_BARB_BARRAGE, MOVE_CRUNCH, MOVE_DESTINY_BOND, MOVE_FELL_STINGER },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33456,6 +33739,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ROSERADE,
                 .item = ITEM_GRASS_GEM,
                 .moves = { MOVE_WEATHER_BALL, MOVE_TOXIC, MOVE_MAGICAL_LEAF, MOVE_SLUDGE_BOMB },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -33465,6 +33749,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MUK_ALOLAN,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_GUNK_SHOT, MOVE_SHADOW_PUNCH, MOVE_KNOCK_OFF, MOVE_PAIN_SPLIT },
+                .ability = ABILITY_POISON_TOUCH,
                 .ballSeal = 0,
             },
             {
@@ -33474,6 +33759,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCOLIPEDE,
                 .item = ITEM_POISONTITE,
                 .moves = { MOVE_MEGAHORN, MOVE_POISON_JAB, MOVE_SWORDS_DANCE, MOVE_EARTHQUAKE },
+                .ability = ABILITY_SPEED_BOOST,
                 .ballSeal = 0,
             },
             {
@@ -33483,6 +33769,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CROBAT,
                 .item = ITEM_CHARTI_BERRY,
                 .moves = { MOVE_SLUDGE_BOMB, MOVE_AIR_CUTTER, MOVE_LEECH_LIFE, MOVE_GIGA_DRAIN },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
         },
@@ -33504,7 +33791,7 @@ const TrainerData sTrainerData[] = {
     [772] = {
         .name = "Bruno",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_BRUNO,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33518,6 +33805,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_WHITE_HERB,
                 .moves = { MOVE_RAPID_SPIN, MOVE_CLOSE_COMBAT, MOVE_ICE_SPINNER, MOVE_THUNDER_PUNCH },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33527,6 +33815,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STARAPTOR,
                 .item = ITEM_FLYINGITE,
                 .moves = { MOVE_BRAVE_BIRD, MOVE_CLOSE_COMBAT, MOVE_KNOCK_OFF, MOVE_BLAZE_KICK },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33536,6 +33825,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GALLADE,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_SHADOW_CLAW, MOVE_LEAF_BLADE, MOVE_CLOSE_COMBAT, MOVE_PSYCHO_CUT },
+                .ability = ABILITY_SHARPNESS,
                 .ballSeal = 0,
             },
             {
@@ -33545,6 +33835,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_RAGE_FIST, MOVE_BULK_UP, MOVE_DRAIN_PUNCH, MOVE_OUTRAGE },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -33554,6 +33845,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_DRAGON_GEM,
                 .moves = { MOVE_DRAGON_DANCE, MOVE_DRAGON_CLAW, MOVE_CLOSE_COMBAT, MOVE_CLANGING_SCALES },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -33563,6 +33855,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MACHAMP,
                 .item = ITEM_EXPERT_BELT,
                 .moves = { MOVE_ROCK_SLIDE, MOVE_ICE_PUNCH, MOVE_DYNAMIC_PUNCH, MOVE_THUNDER_PUNCH },
+                .ability = ABILITY_NO_GUARD,
                 .ballSeal = 0,
             },
         },
@@ -33584,7 +33877,7 @@ const TrainerData sTrainerData[] = {
     [773] = {
         .name = "Ariana",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_EXECUTIVE_ARIANA,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33598,6 +33891,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARBOK,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_FLAMETHROWER, MOVE_DARK_PULSE, MOVE_GLARE, MOVE_SLUDGE_BOMB },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33607,6 +33901,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TOXAPEX,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_SCALD, MOVE_TOXIC, MOVE_BANEFUL_BUNKER, MOVE_SLUDGE_BOMB },
+                .ability = ABILITY_MERCILESS,
                 .ballSeal = 0,
             },
             {
@@ -33616,6 +33911,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_VILEPLUME,
                 .item = ITEM_BLACK_SLUDGE,
                 .moves = { MOVE_SLEEP_POWDER, MOVE_SLUDGE_BOMB, MOVE_STUN_SPORE, MOVE_GIGA_DRAIN },
+                .ability = ABILITY_CHLOROPHYLL,
                 .ballSeal = 0,
             },
             {
@@ -33625,6 +33921,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ROSERADE,
                 .item = ITEM_FOCUS_SASH,
                 .moves = { MOVE_ROUND, MOVE_HIDDEN_POWER, MOVE_POISON_JAB, MOVE_GIGA_DRAIN },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -33634,6 +33931,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TREVENANT,
                 .item = ITEM_MIRACLE_SEED,
                 .moves = { MOVE_PHANTOM_FORCE, MOVE_HORN_LEECH, MOVE_LEECH_SEED, MOVE_POISON_JAB },
+                .ability = ABILITY_NATURAL_CURE,
                 .ballSeal = 0,
             },
             {
@@ -33643,6 +33941,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGALGE,
                 .item = ITEM_POISONTITE,
                 .moves = { MOVE_HYDRO_PUMP, MOVE_SLUDGE_BOMB, MOVE_ICY_WIND, MOVE_FOCUS_BLAST },
+                .ability = ABILITY_POISON_POINT,
                 .ballSeal = 0,
             },
         },
@@ -33672,7 +33971,7 @@ const TrainerData sTrainerData[] = {
     [774] = {
         .name = "Archer",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_EXECUTIVE_ARCHER,
             .items = { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33686,6 +33985,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES,
                 .item = ITEM_HEAT_ROCK,
                 .moves = { MOVE_PSYCHIC, MOVE_SUNNY_DAY, MOVE_FLAMETHROWER, MOVE_ENERGY_BALL },
+                .ability = ABILITY_DROUGHT,
                 .ballSeal = 0,
             },
             {
@@ -33695,6 +33995,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TAUROS_BLAZE,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_RAGING_BULL, MOVE_ZEN_HEADBUTT, MOVE_SUNNY_DAY, MOVE_WILD_CHARGE },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -33704,6 +34005,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAROWAK_ALOLAN,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_FLARE_BLITZ, MOVE_BONEMERANG, MOVE_BRUTAL_SWING, MOVE_ROCK_SLIDE },
+                .ability = ABILITY_LIGHTNING_ROD,
                 .ballSeal = 0,
             },
             {
@@ -33713,6 +34015,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ROTOM_HEAT,
                 .item = ITEM_CHARCOAL,
                 .moves = { MOVE_HEAT_WAVE, MOVE_HEX, MOVE_THUNDER_WAVE, MOVE_DISCHARGE },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -33722,6 +34025,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SLOWKING_GALARIAN,
                 .item = ITEM_NONE,
                 .moves = { MOVE_POWER_GEM, MOVE_SURF, MOVE_PSYCHIC, MOVE_FLAMETHROWER },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -33731,6 +34035,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HOUNDOOM,
                 .item = ITEM_DARKTITE,
                 .moves = { MOVE_SOLAR_BEAM, MOVE_SLUDGE_BOMB, MOVE_DARK_PULSE, MOVE_FLAMETHROWER },
+                .ability = ABILITY_EARLY_BIRD,
                 .ballSeal = 0,
             },
         },
@@ -33903,7 +34208,7 @@ const TrainerData sTrainerData[] = {
     [777] = {
         .name = "Will",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_WILL,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33917,6 +34222,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FARIGIRAF,
                 .item = ITEM_SAFETY_GOGGLES,
                 .moves = { MOVE_PSYCHIC, MOVE_DAZZLING_GLEAM, MOVE_HELPING_HAND, MOVE_TRICK_ROOM },
+                .ability = ABILITY_ARMOR_TAIL,
                 .ballSeal = 0,
             },
             {
@@ -33926,6 +34232,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_REUNICLUS,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_EXPANDING_FORCE, MOVE_SHADOW_BALL, MOVE_ENERGY_BALL, MOVE_FOCUS_BLAST },
+                .ability = ABILITY_MAGIC_GUARD,
                 .ballSeal = 0,
             },
             {
@@ -33935,6 +34242,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_EXEGGUTOR,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_GIGA_DRAIN, MOVE_PSYCHIC, MOVE_TRICK_ROOM, MOVE_PROTECT },
+                .ability = ABILITY_HARVEST,
                 .ballSeal = 0,
             },
             {
@@ -33944,6 +34252,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_METAGROSS,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_IRON_HEAD, MOVE_ZEN_HEADBUTT, MOVE_HAMMER_ARM, MOVE_ICE_PUNCH },
+                .ability = ABILITY_CLEAR_BODY,
                 .ballSeal = 0,
             },
             {
@@ -33953,6 +34262,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARMAROUGE,
                 .item = ITEM_CHARCOAL,
                 .moves = { MOVE_ARMOR_CANNON, MOVE_EXPANDING_FORCE, MOVE_WIDE_GUARD, MOVE_AURA_SPHERE },
+                .ability = ABILITY_FLASH_FIRE,
                 .ballSeal = 0,
             },
             {
@@ -33962,6 +34272,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SLOWBRO,
                 .item = ITEM_WATERTITE,
                 .moves = { MOVE_SCALD, MOVE_PSYCHIC, MOVE_ICE_BEAM, MOVE_SLACK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
         },
@@ -33983,7 +34294,7 @@ const TrainerData sTrainerData[] = {
     [778] = {
         .name = "Koga",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KOGA,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -33997,6 +34308,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CROBAT,
                 .item = ITEM_FOCUS_SASH,
                 .moves = { MOVE_TAILWIND, MOVE_FLY, MOVE_CROSS_POISON, MOVE_TAUNT },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -34006,6 +34318,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_OVERQWIL,
                 .item = ITEM_BLACK_SLUDGE,
                 .moves = { MOVE_BARB_BARRAGE, MOVE_THROAT_CHOP, MOVE_AQUA_JET, MOVE_LIQUIDATION },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -34015,6 +34328,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEEZING,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_SLUDGE_BOMB, MOVE_FLAMETHROWER, MOVE_WILL_O_WISP, MOVE_CLEAR_SMOG },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -34024,6 +34338,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ROSERADE,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_MAGICAL_LEAF, MOVE_SLUDGE_BOMB, MOVE_SLEEP_POWDER, MOVE_DAZZLING_GLEAM },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -34033,6 +34348,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MUK_ALOLAN,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_KNOCK_OFF, MOVE_POISON_JAB, MOVE_DRAIN_PUNCH, MOVE_ICE_PUNCH },
+                .ability = ABILITY_POISON_TOUCH,
                 .ballSeal = 0,
             },
             {
@@ -34042,6 +34358,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCOLIPEDE,
                 .item = ITEM_POISONTITE,
                 .moves = { MOVE_MEGAHORN, MOVE_POISON_JAB, MOVE_STOMPING_TANTRUM, MOVE_PROTECT },
+                .ability = ABILITY_SPEED_BOOST,
                 .ballSeal = 0,
             },
         },
@@ -34063,7 +34380,7 @@ const TrainerData sTrainerData[] = {
     [779] = {
         .name = "Bruno",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_BRUNO,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34077,6 +34394,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_FAKE_OUT, MOVE_CLOSE_COMBAT, MOVE_WIDE_GUARD, MOVE_HELPING_HAND },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -34086,6 +34404,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STARAPTOR,
                 .item = ITEM_FLYINGITE,
                 .moves = { MOVE_FLY, MOVE_CLOSE_COMBAT, MOVE_TAILWIND, MOVE_DOUBLE_EDGE },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -34095,6 +34414,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GALLADE,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_SACRED_SWORD, MOVE_PSYCHO_CUT, MOVE_LEAF_BLADE, MOVE_KNOCK_OFF },
+                .ability = ABILITY_SHARPNESS,
                 .ballSeal = 0,
             },
             {
@@ -34104,6 +34424,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LUCARIO,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_AURA_SPHERE, MOVE_FLASH_CANNON, MOVE_VACUUM_WAVE, MOVE_DARK_PULSE },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -34113,6 +34434,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_THROAT_SPRAY,
                 .moves = { MOVE_CLANGING_SCALES, MOVE_AURA_SPHERE, MOVE_FLAMETHROWER, MOVE_CLANGOROUS_SOUL },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -34122,6 +34444,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_RAGE_FIST, MOVE_DRAIN_PUNCH, MOVE_BULK_UP, MOVE_PROTECT },
+                .ability = ABILITY_DEFIANT,
                 .ballSeal = 0,
             },
         },
@@ -34143,7 +34466,7 @@ const TrainerData sTrainerData[] = {
     [780] = {
         .name = "Karen",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_ELITE_FOUR_KAREN,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34157,6 +34480,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GRIMMSNARL,
                 .item = ITEM_LIGHT_CLAY,
                 .moves = { MOVE_REFLECT, MOVE_LIGHT_SCREEN, MOVE_SPIRIT_BREAK, MOVE_THUNDER_WAVE },
+                .ability = ABILITY_PRANKSTER,
                 .ballSeal = 0,
             },
             {
@@ -34166,6 +34490,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCRAFTY,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_FAKE_OUT, MOVE_DRAIN_PUNCH, MOVE_KNOCK_OFF, MOVE_ROCK_TOMB },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -34175,6 +34500,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HYDREIGON,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_DARK_PULSE, MOVE_DRACO_METEOR, MOVE_HEAT_WAVE, MOVE_PROTECT },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -34184,6 +34510,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_UMBREON,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_FOUL_PLAY, MOVE_SNARL, MOVE_HELPING_HAND, MOVE_MOONLIGHT },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
             {
@@ -34193,6 +34520,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ABSOL,
                 .item = ITEM_DARKTITE,
                 .moves = { MOVE_NIGHT_SLASH, MOVE_PLAY_ROUGH, MOVE_SUCKER_PUNCH, MOVE_CLOSE_COMBAT },
+                .ability = ABILITY_SUPER_LUCK,
                 .ballSeal = 0,
             },
             {
@@ -34202,6 +34530,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGAMBIT,
                 .item = ITEM_BLACK_GLASSES,
                 .moves = { MOVE_KOWTOW_CLEAVE, MOVE_IRON_HEAD, MOVE_SUCKER_PUNCH, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_SUPREME_OVERLORD,
                 .ballSeal = 0,
             },
         },
@@ -34311,7 +34640,7 @@ const TrainerData sTrainerData[] = {
     [782] = {
         .name = "Falkner",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_FALKNER,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34325,6 +34654,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SALAMENCE,
                 .item = ITEM_DRAGOTITE,
                 .moves = { MOVE_ZEN_HEADBUTT, MOVE_DOUBLE_EDGE, MOVE_DRAGON_CLAW, MOVE_DUAL_WINGBEAT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -34334,6 +34664,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FLAMIGO,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_BRAVE_BIRD, MOVE_THROAT_CHOP, MOVE_HIGH_JUMP_KICK, MOVE_U_TURN },
+                .ability = ABILITY_SCRAPPY,
                 .ballSeal = 0,
             },
             {
@@ -34343,6 +34674,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BRAVIARY,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_SUPERPOWER, MOVE_BEAK_BLAST, MOVE_CRUSH_CLAW, MOVE_ACROBATICS },
+                .ability = ABILITY_SHEER_FORCE,
                 .ballSeal = 0,
             },
             {
@@ -34352,6 +34684,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CORVIKNIGHT,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BODY_PRESS, MOVE_IRON_DEFENSE, MOVE_DRILL_PECK, MOVE_ROOST },
+                .ability = ABILITY_MIRROR_ARMOR,
                 .ballSeal = 0,
             },
             {
@@ -34361,6 +34694,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HONCHKROW,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_SUCKER_PUNCH, MOVE_NIGHT_SLASH, MOVE_BRAVE_BIRD, MOVE_U_TURN },
+                .ability = ABILITY_MOXIE,
                 .ballSeal = 0,
             },
             {
@@ -34370,6 +34704,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLISCOR,
                 .item = ITEM_TOXIC_ORB,
                 .moves = { MOVE_EARTHQUAKE, MOVE_KNOCK_OFF, MOVE_TOXIC, MOVE_PROTECT },
+                .ability = ABILITY_POISON_HEAL,
                 .ballSeal = 0,
             },
         },
@@ -34391,7 +34726,7 @@ const TrainerData sTrainerData[] = {
     [783] = {
         .name = "Bugsy",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_BUGSY,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34405,6 +34740,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KLEAVOR,
                 .item = ITEM_FOCUS_SASH,
                 .moves = { MOVE_STONE_AXE, MOVE_STONE_EDGE, MOVE_X_SCISSOR, MOVE_AERIAL_ACE },
+                .ability = ABILITY_SHARPNESS,
                 .ballSeal = 0,
             },
             {
@@ -34414,6 +34750,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RIBOMBEE,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_STICKY_WEB, MOVE_POLLEN_PUFF, MOVE_BUG_BUZZ, MOVE_QUIVER_DANCE },
+                .ability = ABILITY_SHIELD_DUST,
                 .ballSeal = 0,
             },
             {
@@ -34423,6 +34760,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CENTISKORCH,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_FIRE_LASH, MOVE_LUNGE, MOVE_THUNDER_FANG, MOVE_POWER_WHIP },
+                .ability = ABILITY_WHITE_SMOKE,
                 .ballSeal = 0,
             },
             {
@@ -34432,6 +34770,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCIZOR,
                 .item = ITEM_BUGTITE,
                 .moves = { MOVE_BULLET_PUNCH, MOVE_SWORDS_DANCE, MOVE_U_TURN, MOVE_ROOST },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -34441,6 +34780,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_VOLCARONA,
                 .item = ITEM_CHARTI_BERRY,
                 .moves = { MOVE_QUIVER_DANCE, MOVE_BUG_BUZZ, MOVE_HURRICANE, MOVE_FIERY_DANCE },
+                .ability = ABILITY_FLAME_BODY,
                 .ballSeal = 0,
             },
             {
@@ -34450,6 +34790,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GOLISOPOD,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_RAZOR_SHELL, MOVE_SUCKER_PUNCH, MOVE_PROTECT },
+                .ability = ABILITY_EMERGENCY_EXIT,
                 .ballSeal = 0,
             },
         },
@@ -34471,7 +34812,7 @@ const TrainerData sTrainerData[] = {
     [784] = {
         .name = "Whitney",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY | TRAINER_DATA_TYPE_NATURE_SET,
             .trainerClass = TRAINERCLASS_LEADER_WHITNEY,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_PRIORITIZE_STATUS_MOVES,
@@ -34485,6 +34826,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_URSALUNA,
                 .item = ITEM_FLAME_ORB,
                 .moves = { MOVE_PROTECT, MOVE_EARTHQUAKE, MOVE_HEADLONG_RUSH, MOVE_FACADE },
+                .ability = ABILITY_GUTS,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -34494,6 +34837,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_INDEEDEE_FEMALE,
                 .item = ITEM_SAFETY_GOGGLES,
                 .moves = { MOVE_TRICK_ROOM, MOVE_FOLLOW_ME, MOVE_PROTECT, MOVE_PSYCHIC },
+                .ability = ABILITY_PSYCHIC_SURGE,
+                .nature = NATURE_SASSY,
                 .ballSeal = 0,
             },
             {
@@ -34503,6 +34848,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ZOROARK_HISUIAN,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_BITTER_MALICE, MOVE_NASTY_PLOT, MOVE_FLAMETHROWER, MOVE_FOCUS_BLAST },
+                .ability = ABILITY_ILLUSION,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -34512,6 +34859,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAMPA,
                 .item = ITEM_NORMALITE,
                 .moves = { MOVE_HYPER_VOICE, MOVE_ICY_WIND, MOVE_DRACO_METEOR, MOVE_DRAGON_PULSE },
+                .ability = ABILITY_BERSERK,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -34521,6 +34870,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAUSHOLD,
                 .item = ITEM_WIDE_LENS,
                 .moves = { MOVE_POPULATION_BOMB, MOVE_BULLET_SEED, MOVE_TIDY_UP, MOVE_LOW_KICK },
+                .ability = ABILITY_TECHNICIAN,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -34530,6 +34881,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_PORYGON_Z,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_TRICK_ROOM, MOVE_THUNDERBOLT, MOVE_TRI_ATTACK, MOVE_SHADOW_BALL },
+                .ability = ABILITY_DOWNLOAD,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
         },
@@ -34551,7 +34904,7 @@ const TrainerData sTrainerData[] = {
     [785] = {
         .name = "Morty",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_MORTY,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34565,6 +34918,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_AEGISLASH,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_SHADOW_CLAW, MOVE_KINGS_SHIELD, MOVE_SACRED_SWORD, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_STANCE_CHANGE,
                 .ballSeal = 0,
             },
             {
@@ -34574,6 +34928,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DRAGAPULT,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_FLAMETHROWER, MOVE_SHADOW_BALL, MOVE_SCALD, MOVE_DRAGON_PULSE },
+                .ability = ABILITY_INFILTRATOR,
                 .ballSeal = 0,
             },
             {
@@ -34583,6 +34938,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GENGAR,
                 .item = ITEM_GHOSTITE,
                 .moves = { MOVE_SHADOW_BALL, MOVE_DESTINY_BOND, MOVE_SLUDGE_BOMB, MOVE_NASTY_PLOT },
+                .ability = ABILITY_CURSED_BODY,
                 .ballSeal = 0,
             },
             {
@@ -34592,6 +34948,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MISMAGIUS,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_MOONGEIST_BEAM, MOVE_MYSTICAL_FIRE, MOVE_POWER_GEM, MOVE_THUNDER_WAVE },
+                .ability = ABILITY_LEVITATE,
                 .ballSeal = 0,
             },
             {
@@ -34601,6 +34958,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BASCULEGION,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_WAVE_CRASH, MOVE_DOUBLE_EDGE, MOVE_HEAD_SMASH, MOVE_PHANTOM_FORCE },
+                .ability = ABILITY_ADAPTABILITY,
                 .ballSeal = 0,
             },
             {
@@ -34610,6 +34968,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_COFAGRIGUS,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_SHADOW_BALL, MOVE_CALM_MIND, MOVE_ENERGY_BALL, MOVE_TOXIC },
+                .ability = ABILITY_MUMMY,
                 .ballSeal = 0,
             },
         },
@@ -34631,7 +34990,7 @@ const TrainerData sTrainerData[] = {
     [786] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -34645,6 +35004,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_ICY_ROCK,
                 .moves = { MOVE_AURORA_VEIL, MOVE_FREEZE_DRY, MOVE_MOONBLAST, MOVE_ENCORE },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -34654,6 +35014,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LAPRAS,
                 .item = ITEM_ICETITE,
                 .moves = { MOVE_FREEZE_DRY, MOVE_HYPER_VOICE, MOVE_ALLURING_VOICE, MOVE_ICE_BEAM },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -34663,6 +35024,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CLOYSTER,
                 .item = ITEM_WHITE_HERB,
                 .moves = { MOVE_SHELL_SMASH, MOVE_ICICLE_SPEAR, MOVE_DRILL_RUN, MOVE_WATERFALL },
+                .ability = ABILITY_SKILL_LINK,
                 .ballSeal = 0,
             },
             {
@@ -34672,6 +35034,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_HEAVY_DUTY_BOOTS,
                 .moves = { MOVE_SWORDS_DANCE, MOVE_TRIPLE_AXEL, MOVE_KNOCK_OFF, MOVE_LOW_KICK },
+                .ability = ABILITY_PICKPOCKET,
                 .ballSeal = 0,
             },
             {
@@ -34681,6 +35044,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DARMANITAN_GALARIAN,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_U_TURN, MOVE_ICICLE_CRASH, MOVE_FLARE_BLITZ, MOVE_ROCK_SLIDE },
+                .ability = ABILITY_GORILLA_TACTICS,
                 .ballSeal = 0,
             },
             {
@@ -34690,6 +35054,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_BAXCALIBUR,
                 .item = ITEM_LOADED_DICE,
                 .moves = { MOVE_ICICLE_SPEAR, MOVE_GLAIVE_RUSH, MOVE_EARTHQUAKE, MOVE_DRAGON_DANCE },
+                .ability = ABILITY_THERMAL_EXCHANGE,
                 .ballSeal = 0,
             },
         },
@@ -34711,7 +35076,7 @@ const TrainerData sTrainerData[] = {
     [787] = {
         .name = "Jasmine",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_JASMINE,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34725,6 +35090,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CORVIKNIGHT,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_BRAVE_BIRD, MOVE_BODY_PRESS, MOVE_BULK_UP, MOVE_ROOST },
+                .ability = ABILITY_STURDY,
                 .ballSeal = 0,
             },
             {
@@ -34734,6 +35100,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAGNEZONE,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_DISCHARGE, MOVE_FLASH_CANNON, MOVE_VOLT_SWITCH, MOVE_BODY_PRESS },
+                .ability = ABILITY_ANALYTIC,
                 .ballSeal = 0,
             },
             {
@@ -34743,6 +35110,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_METAGROSS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_HEAVY_SLAM, MOVE_EARTHQUAKE, MOVE_KNOCK_OFF, MOVE_BULLET_PUNCH },
+                .ability = ABILITY_CLEAR_BODY,
                 .ballSeal = 0,
             },
             {
@@ -34752,6 +35120,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STEELIX,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_SANDSTORM, MOVE_HEAVY_SLAM, MOVE_REST, MOVE_SLEEP_TALK },
+                .ability = ABILITY_STURDY,
                 .ballSeal = 0,
             },
             {
@@ -34761,6 +35130,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ARCHALUDON,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_DRACO_METEOR, MOVE_THUNDER_WAVE, MOVE_FLASH_CANNON, MOVE_THUNDERBOLT },
+                .ability = ABILITY_STAMINA,
                 .ballSeal = 0,
             },
             {
@@ -34770,6 +35140,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LUCARIO,
                 .item = ITEM_STEELTITE,
                 .moves = { MOVE_AURA_SPHERE, MOVE_DRAGON_PULSE, MOVE_FLASH_CANNON, MOVE_NASTY_PLOT },
+                .ability = ABILITY_INNER_FOCUS,
                 .ballSeal = 0,
             },
         },
@@ -34791,7 +35162,7 @@ const TrainerData sTrainerData[] = {
     [788] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY | TRAINER_DATA_TYPE_NATURE_SET,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -34805,6 +35176,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_HIGH_JUMP_KICK, MOVE_U_TURN, MOVE_METEOR_MASH, MOVE_TRIPLE_AXEL },
+                .ability = ABILITY_INNER_FOCUS,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -34814,6 +35187,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_ANNIHILAPE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BULK_UP, MOVE_PROTECT, MOVE_DRAIN_PUNCH, MOVE_RAGE_FIST },
+                .ability = ABILITY_DEFIANT,
+                .nature = NATURE_CAREFUL,
                 .ballSeal = 0,
             },
             {
@@ -34823,6 +35198,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_LILLIGANT_HISUIAN,
                 .item = ITEM_WIDE_LENS,
                 .moves = { MOVE_VICTORY_DANCE, MOVE_CLOSE_COMBAT, MOVE_LEAF_BLADE, MOVE_ICE_SPINNER },
+                .ability = ABILITY_HUSTLE,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
             {
@@ -34832,6 +35209,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_PAWMOT,
                 .item = ITEM_CHOICE_SCARF,
                 .moves = { MOVE_DOUBLE_SHOCK, MOVE_CLOSE_COMBAT, MOVE_KNOCK_OFF, MOVE_ICE_PUNCH },
+                .ability = ABILITY_IRON_FIST,
+                .nature = NATURE_JOLLY,
                 .ballSeal = 0,
             },
             {
@@ -34841,6 +35220,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAWLUCHA,
                 .item = ITEM_FIGHTITE,
                 .moves = { MOVE_SWORDS_DANCE, MOVE_FLYING_PRESS, MOVE_CLOSE_COMBAT, MOVE_FIRE_PUNCH },
+                .ability = ABILITY_MOLD_BREAKER,
+                .nature = NATURE_ADAMANT,
                 .ballSeal = 0,
             },
             {
@@ -34850,6 +35231,8 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_BULK_UP, MOVE_DRAIN_PUNCH, MOVE_KNOCK_OFF, MOVE_SUBSTITUTE },
+                .ability = ABILITY_WATER_ABSORB,
+                .nature = NATURE_HARDY,
                 .ballSeal = 0,
             },
         },
@@ -34871,7 +35254,7 @@ const TrainerData sTrainerData[] = {
     [789] = {
         .name = "Clair",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CLAIR,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34885,6 +35268,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GOODRA,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_DRACO_METEOR, MOVE_FIRE_BLAST, MOVE_SLUDGE_WAVE, MOVE_HYDRO_PUMP },
+                .ability = ABILITY_SAP_SIPPER,
                 .ballSeal = 0,
             },
             {
@@ -34894,6 +35278,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGDRA,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_HYDRO_PUMP, MOVE_DRACO_METEOR, MOVE_HURRICANE, MOVE_RAIN_DANCE },
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
             {
@@ -34903,6 +35288,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAXORUS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_OUTRAGE, MOVE_EARTHQUAKE, MOVE_POISON_JAB },
+                .ability = ABILITY_MOLD_BREAKER,
                 .ballSeal = 0,
             },
             {
@@ -34912,6 +35298,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NOIVERN,
                 .item = ITEM_HEAVY_DUTY_BOOTS,
                 .moves = { MOVE_DRACO_METEOR, MOVE_FLAMETHROWER, MOVE_U_TURN, MOVE_ROOST },
+                .ability = ABILITY_FRISK,
                 .ballSeal = 0,
             },
             {
@@ -34921,6 +35308,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_CLANGOROUS_SOUL, MOVE_DRAIN_PUNCH, MOVE_SHADOW_CLAW, MOVE_SUBSTITUTE },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -34930,6 +35318,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CHARIZARD,
                 .item = ITEM_DRAGOTITE,
                 .moves = { MOVE_DRAGON_CLAW, MOVE_FLARE_BLITZ, MOVE_BRICK_BREAK, MOVE_SHADOW_CLAW },
+                .ability = ABILITY_BLAZE,
                 .ballSeal = 0,
             },
         },
@@ -34951,7 +35340,7 @@ const TrainerData sTrainerData[] = {
     [790] = {
         .name = "Clair",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CLAIR,
             .items = { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -34965,6 +35354,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GOODRA,
                 .item = ITEM_CHOICE_SPECS,
                 .moves = { MOVE_DRACO_METEOR, MOVE_THUNDER, MOVE_SLUDGE_BOMB, MOVE_HYDRO_PUMP },
+                .ability = ABILITY_SAP_SIPPER,
                 .ballSeal = 0,
             },
             {
@@ -34974,6 +35364,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KINGDRA,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_HYDRO_PUMP, MOVE_DRACO_METEOR, MOVE_HURRICANE, MOVE_ICE_BEAM },
+                .ability = ABILITY_SWIFT_SWIM,
                 .ballSeal = 0,
             },
             {
@@ -34983,6 +35374,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HAXORUS,
                 .item = ITEM_CHOICE_BAND,
                 .moves = { MOVE_CLOSE_COMBAT, MOVE_OUTRAGE, MOVE_STOMPING_TANTRUM, MOVE_POISON_JAB },
+                .ability = ABILITY_MOLD_BREAKER,
                 .ballSeal = 0,
             },
             {
@@ -34992,6 +35384,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_RAYQUAZA,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_DRAGON_ASCENT, MOVE_TAILWIND, MOVE_EXTREME_SPEED, MOVE_DRAGON_CLAW },
+                .ability = ABILITY_AIR_LOCK,
                 .ballSeal = 0,
             },
             {
@@ -35001,6 +35394,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_KOMMO_O,
                 .item = ITEM_THROAT_SPRAY,
                 .moves = { MOVE_CLANGOROUS_SOUL, MOVE_CLANGING_SCALES, MOVE_AURA_SPHERE, MOVE_PROTECT },
+                .ability = ABILITY_SOUNDPROOF,
                 .ballSeal = 0,
             },
             {
@@ -35010,6 +35404,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CHARIZARD,
                 .item = ITEM_DRAGOTITE,
                 .moves = { MOVE_DRAGON_CLAW, MOVE_FLARE_BLITZ, MOVE_THUNDER_PUNCH, MOVE_BRICK_BREAK },
+                .ability = ABILITY_BLAZE,
                 .ballSeal = 0,
             },
         },
@@ -35023,7 +35418,7 @@ const TrainerData sTrainerData[] = {
     [791] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -35037,6 +35432,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_ADRENALINE_ORB,
                 .moves = { MOVE_TRIPLE_AXEL, MOVE_RAPID_SPIN, MOVE_BULLET_PUNCH, MOVE_PURSUIT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -35046,6 +35442,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SIRFETCHD,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_SLASH, MOVE_BRUTAL_SWING, MOVE_LEAF_BLADE, MOVE_BRICK_BREAK },
+                .ability = ABILITY_SCRAPPY,
                 .ballSeal = 0,
             },
             {
@@ -35055,6 +35452,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_U_TURN, MOVE_DRAIN_PUNCH, MOVE_ICE_SPINNER, MOVE_KNOCK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -35064,6 +35462,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_BLACK_BELT,
                 .moves = { MOVE_HYPNOSIS, MOVE_MIND_READER, MOVE_WATERFALL, MOVE_DYNAMIC_PUNCH },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -35073,6 +35472,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FALINKS,
                 .item = ITEM_FIGHTITE,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_NO_RETREAT, MOVE_MEGAHORN, MOVE_ZEN_HEADBUTT },
+                .ability = ABILITY_DEFIANT,
                 .ballSeal = 0,
             },
         },
@@ -35094,7 +35494,7 @@ const TrainerData sTrainerData[] = {
     [792] = {
         .name = "Chuck",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_CHUCK,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EXPERT_ATTACKS,
@@ -35108,6 +35508,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_HITMONTOP,
                 .item = ITEM_ADRENALINE_ORB,
                 .moves = { MOVE_TRIPLE_AXEL, MOVE_RAPID_SPIN, MOVE_BULLET_PUNCH, MOVE_PURSUIT },
+                .ability = ABILITY_INTIMIDATE,
                 .ballSeal = 0,
             },
             {
@@ -35117,6 +35518,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SIRFETCHD,
                 .item = ITEM_ASSAULT_VEST,
                 .moves = { MOVE_SLASH, MOVE_BRUTAL_SWING, MOVE_LEAF_BLADE, MOVE_BRICK_BREAK },
+                .ability = ABILITY_SCRAPPY,
                 .ballSeal = 0,
             },
             {
@@ -35126,6 +35528,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MIENSHAO,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_U_TURN, MOVE_DRAIN_PUNCH, MOVE_ICE_SPINNER, MOVE_KNOCK_OFF },
+                .ability = ABILITY_REGENERATOR,
                 .ballSeal = 0,
             },
             {
@@ -35135,6 +35538,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_POLIWRATH,
                 .item = ITEM_BLACK_BELT,
                 .moves = { MOVE_HYPNOSIS, MOVE_MIND_READER, MOVE_WATERFALL, MOVE_DYNAMIC_PUNCH },
+                .ability = ABILITY_WATER_ABSORB,
                 .ballSeal = 0,
             },
             {
@@ -35144,6 +35548,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FALINKS,
                 .item = ITEM_FIGHTITE,
                 .moves = { MOVE_FIRST_IMPRESSION, MOVE_NO_RETREAT, MOVE_MEGAHORN, MOVE_ZEN_HEADBUTT },
+                .ability = ABILITY_DEFIANT,
                 .ballSeal = 0,
             },
         },
@@ -35165,7 +35570,7 @@ const TrainerData sTrainerData[] = {
     [793] = {
         .name = "Jasmine",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_JASMINE,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -35179,6 +35584,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CORVIKNIGHT,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_BODY_PRESS, MOVE_IRON_DEFENSE, MOVE_ROOST, MOVE_STEEL_WING },
+                .ability = ABILITY_MIRROR_ARMOR,
                 .ballSeal = 0,
             },
             {
@@ -35188,6 +35594,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TINKATON,
                 .item = ITEM_SHUCA_BERRY,
                 .moves = { MOVE_LIGHT_SCREEN, MOVE_FAKE_OUT, MOVE_GIGATON_HAMMER, MOVE_THUNDER_WAVE },
+                .ability = ABILITY_OWN_TEMPO,
                 .ballSeal = 0,
             },
             {
@@ -35197,6 +35604,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAGNEZONE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_THUNDERBOLT, MOVE_TRI_ATTACK, MOVE_FLASH_CANNON, MOVE_DISCHARGE },
+                .ability = ABILITY_ANALYTIC,
                 .ballSeal = 0,
             },
             {
@@ -35206,6 +35614,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCIZOR,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_U_TURN, MOVE_BULLET_PUNCH, MOVE_BUG_BITE, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -35215,6 +35624,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STEELIX,
                 .item = ITEM_STEELTITE,
                 .moves = { MOVE_CRUNCH, MOVE_EARTHQUAKE, MOVE_ROCK_SLIDE, MOVE_IRON_TAIL },
+                .ability = ABILITY_SHEER_FORCE,
                 .ballSeal = 0,
             },
         },
@@ -35236,7 +35646,7 @@ const TrainerData sTrainerData[] = {
     [794] = {
         .name = "Jasmine",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_JASMINE,
             .items = { ITEM_HYPER_POTION, ITEM_HYPER_POTION, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS,
@@ -35250,6 +35660,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_CORVIKNIGHT,
                 .item = ITEM_ROCKY_HELMET,
                 .moves = { MOVE_BODY_PRESS, MOVE_IRON_DEFENSE, MOVE_ROOST, MOVE_STEEL_WING },
+                .ability = ABILITY_MIRROR_ARMOR,
                 .ballSeal = 0,
             },
             {
@@ -35259,6 +35670,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_TINKATON,
                 .item = ITEM_SHUCA_BERRY,
                 .moves = { MOVE_LIGHT_SCREEN, MOVE_FAKE_OUT, MOVE_GIGATON_HAMMER, MOVE_THUNDER_WAVE },
+                .ability = ABILITY_OWN_TEMPO,
                 .ballSeal = 0,
             },
             {
@@ -35268,6 +35680,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAGNEZONE,
                 .item = ITEM_LEFTOVERS,
                 .moves = { MOVE_THUNDERBOLT, MOVE_TRI_ATTACK, MOVE_FLASH_CANNON, MOVE_DISCHARGE },
+                .ability = ABILITY_ANALYTIC,
                 .ballSeal = 0,
             },
             {
@@ -35277,6 +35690,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_SCIZOR,
                 .item = ITEM_SITRUS_BERRY,
                 .moves = { MOVE_U_TURN, MOVE_BULLET_PUNCH, MOVE_BUG_BITE, MOVE_SWORDS_DANCE },
+                .ability = ABILITY_TECHNICIAN,
                 .ballSeal = 0,
             },
             {
@@ -35286,6 +35700,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_STEELIX,
                 .item = ITEM_STEELTITE,
                 .moves = { MOVE_CRUNCH, MOVE_EARTHQUAKE, MOVE_ROCK_SLIDE, MOVE_IRON_TAIL },
+                .ability = ABILITY_SHEER_FORCE,
                 .ballSeal = 0,
             },
         },
@@ -35307,7 +35722,7 @@ const TrainerData sTrainerData[] = {
     [795] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_HYPER_POTION, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -35321,6 +35736,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DARMANITAN_GALARIAN,
                 .item = ITEM_ADRENALINE_ORB,
                 .moves = { MOVE_ICE_PUNCH, MOVE_HAMMER_ARM, MOVE_ROCK_SLIDE, MOVE_AVALANCHE },
+                .ability = ABILITY_ZEN_MODE,
                 .ballSeal = 0,
             },
             {
@@ -35330,6 +35746,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_SALAC_BERRY,
                 .moves = { MOVE_AURORA_VEIL, MOVE_BLIZZARD, MOVE_DAZZLING_GLEAM, MOVE_FREEZE_DRY },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -35339,6 +35756,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAMOSWINE,
                 .item = ITEM_AIR_BALLOON,
                 .moves = { MOVE_BLIZZARD, MOVE_ANCIENT_POWER, MOVE_BODY_SLAM, MOVE_EARTHQUAKE },
+                .ability = ABILITY_THICK_FAT,
                 .ballSeal = 0,
             },
             {
@@ -35348,6 +35766,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLACEON,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_ALLURING_VOICE, MOVE_BLIZZARD, MOVE_CHILLING_WATER, MOVE_ICE_BEAM },
+                .ability = ABILITY_ICE_BODY,
                 .ballSeal = 0,
             },
             {
@@ -35357,6 +35776,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_CHOPLE_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_KNOCK_OFF, MOVE_ICE_SPINNER, MOVE_POISON_JAB },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
             {
@@ -35366,6 +35786,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FROSLASS,
                 .item = ITEM_ICETITE,
                 .moves = { MOVE_BLIZZARD, MOVE_DRAINING_KISS, MOVE_POLTERGEIST, MOVE_SHADOW_BALL },
+                .ability = ABILITY_SNOW_CLOAK,
                 .ballSeal = 0,
             },
         },
@@ -35387,7 +35808,7 @@ const TrainerData sTrainerData[] = {
     [796] = {
         .name = "Pryce",
         .data = {
-            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS,
+            .trainerType = TRAINER_DATA_TYPE_MOVES | TRAINER_DATA_TYPE_ITEMS | TRAINER_DATA_TYPE_ABILITY,
             .trainerClass = TRAINERCLASS_LEADER_PRYCE,
             .items = { ITEM_HYPER_POTION, ITEM_FULL_RESTORE, ITEM_NONE, ITEM_NONE },
             .aiFlags = F_PRIORITIZE_SUPER_EFFECTIVE | F_EVALUATE_ATTACKS | F_EXPERT_ATTACKS | F_USE_WEATHER,
@@ -35401,6 +35822,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_DARMANITAN_GALARIAN,
                 .item = ITEM_ADRENALINE_ORB,
                 .moves = { MOVE_ICE_PUNCH, MOVE_HAMMER_ARM, MOVE_ROCK_SLIDE, MOVE_AVALANCHE },
+                .ability = ABILITY_ZEN_MODE,
                 .ballSeal = 0,
             },
             {
@@ -35410,6 +35832,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_NINETALES_ALOLAN,
                 .item = ITEM_SALAC_BERRY,
                 .moves = { MOVE_AURORA_VEIL, MOVE_BLIZZARD, MOVE_DAZZLING_GLEAM, MOVE_FREEZE_DRY },
+                .ability = ABILITY_SNOW_WARNING,
                 .ballSeal = 0,
             },
             {
@@ -35419,6 +35842,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_MAMOSWINE,
                 .item = ITEM_AIR_BALLOON,
                 .moves = { MOVE_BLIZZARD, MOVE_ANCIENT_POWER, MOVE_BODY_SLAM, MOVE_EARTHQUAKE },
+                .ability = ABILITY_THICK_FAT,
                 .ballSeal = 0,
             },
             {
@@ -35428,6 +35852,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_GLACEON,
                 .item = ITEM_LIFE_ORB,
                 .moves = { MOVE_ALLURING_VOICE, MOVE_BLIZZARD, MOVE_CHILLING_WATER, MOVE_ICE_BEAM },
+                .ability = ABILITY_ICE_BODY,
                 .ballSeal = 0,
             },
             {
@@ -35437,6 +35862,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_WEAVILE,
                 .item = ITEM_CHOPLE_BERRY,
                 .moves = { MOVE_BRICK_BREAK, MOVE_KNOCK_OFF, MOVE_ICE_SPINNER, MOVE_POISON_JAB },
+                .ability = ABILITY_PRESSURE,
                 .ballSeal = 0,
             },
             {
@@ -35446,6 +35872,7 @@ const TrainerData sTrainerData[] = {
                 .species = SPECIES_FROSLASS,
                 .item = ITEM_ICETITE,
                 .moves = { MOVE_BLIZZARD, MOVE_DRAINING_KISS, MOVE_POLTERGEIST, MOVE_SHADOW_BALL },
+                .ability = ABILITY_SNOW_CLOAK,
                 .ballSeal = 0,
             },
         },
